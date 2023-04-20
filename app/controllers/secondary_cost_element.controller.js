@@ -1,6 +1,7 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
+const { paramsSchema } = require('../helpers/validations/common.validation');
 const secondary_cost_element_service = require('../services/secondary_cost_element.service');
 const { createSchema, updateSchema } = require('../helpers/validations/secondary_cost_element.validation');
 

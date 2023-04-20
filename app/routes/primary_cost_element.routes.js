@@ -5,9 +5,11 @@ const pagination = require('../middlewares/pagination.middleware');
 module.exports = (app) => {
     // Create new primary cost element
     app.post(process.env.BASE_URL + '/primary-cost-element', primary_cost_element.create);
-    // Edit primary cost element record
+    // List available primary cost element
+    app.get(process.env.BASE_URL + '/primary-cost-element', pagination.setAttributes, primary_cost_element.search);
+    // Edit primary cost element
     app.put(process.env.BASE_URL + '/primary-cost-element/:id', primary_cost_element.update);
-    // Delete primary_cost_element record
+    // Delete primary_cost_element 
     app.delete(process.env.BASE_URL + '/primary-cost-element/:id', primary_cost_element.delete);
 
 };

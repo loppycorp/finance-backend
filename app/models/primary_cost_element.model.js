@@ -15,8 +15,8 @@ const primaryCstElmtSchema = new mongoose.Schema({
     },
     Basic_Data:{
         cost_elem_ctgry: { type: Number, trim: true, required: true},
-        attribute: { type: String, trim: true, required: true},
-        func_area: { type: String, trim: true, required: true },
+        attribute: { type: String, trim: true, required: false},
+        func_area: { type: String, trim: true, required: false},
     },
     status:  { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
