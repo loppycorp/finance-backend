@@ -62,6 +62,7 @@ exports.getAll = async (query) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
+        code: data.code,
         company_name: data.company_name,
         desc: data.desc,
         status: data.status,

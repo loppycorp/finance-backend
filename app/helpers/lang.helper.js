@@ -132,6 +132,40 @@ i18next.init({
                         not_exists: 'The company record doesn\'t exists!'
                     }
                 },
+                cost_center_category: {
+                    suc: {
+                        create: 'Successfully created cost-center category record!',
+                        read: 'Successfully fetched cost-center category record!',
+                        update: 'Successfully updated cost-center category record!',
+                        delete: 'Successfully deleted cost-center category record!',
+                        search: 'Successfully fetched cost-center category records!',
+                    },
+                    err: {
+                        create: 'Failed to ceate cost-center category record!',
+                        read: 'The departmcost-center categoryent record doesn\'t exists!',
+                        update: 'Failed to update cost-center category record!',
+                        delete: 'Failed to delete cost-center category record!',
+                        search: 'No records found!',
+                        not_exists: 'The cost-center category record doesn\'t exists!'
+                    }
+                },
+                hierarcy_area: {
+                    suc: {
+                        create: 'Successfully created hierarcy area record!',
+                        read: 'Successfully fetched hierarcy area record!',
+                        update: 'Successfully updated hierarcy area record!',
+                        delete: 'Successfully deleted hierarcy area record!',
+                        search: 'Successfully fetched hierarcy area records!',
+                    },
+                    err: {
+                        create: 'Failed to ceatehierarcy area record!',
+                        read: 'The hierarcy area record doesn\'t exists!',
+                        update: 'Failed to update hierarcy area record!',
+                        delete: 'Failed to delete hierarcy area record!',
+                        search: 'No records found!',
+                        not_exists: 'The hierarcy area record doesn\'t exists!'
+                    }
+                },
             },
         }
     }

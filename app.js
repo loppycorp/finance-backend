@@ -27,6 +27,8 @@ require('./app/routes/segment.routes')(app);
 require('./app/routes/profit_center.routes')(app);
 require('./app/routes/profit_center_group.routes')(app);
 require('./app/routes/company.routes')(app);
+require('./app/routes/cost_center_category.routes')(app);
+require('./app/routes/hierarcy_area.routes')(app);
 
 const port = process.env.APP_PORT || 3200;
 app.listen(port, () => logger.info(`Listening on port ${port}`));
