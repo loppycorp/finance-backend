@@ -34,7 +34,7 @@ const defaultSchema = Joi.object({
         telephone: Joi.number().integer().allow(''),
         mobile_phone: Joi.number().integer().allow(''),
         fax: Joi.number().integer().allow(''),
-        email: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR.allow('')),
+        email: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
     },
     account_control: {
         customer: Joi.string().trim().required().hex().length(24).allow(''),
