@@ -49,7 +49,7 @@ exports.getAll = async (query) => {
     const filters = { status: Vendor.STATUS_ACTIVE };
 
     const results = await Vendor.aggregate(this.pipeline(filters))
-        .collation({'locale':'en'}).sort({ [sortBy]: sortOrderInt })
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
@@ -114,43 +114,47 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        vendor_code: data.vendor_code, 
-    company_code_id: data.company_code_id,
-    account_group: data.account_group,
-    name: {
-        title: data.title,
-        name: data.name,
-    },
-    search_terms: {
-        search_term_1: data.search_term_1,
-        search_term_2: data.search_term_2,
-    },
-    street_address: {
-        street: data.street,
-        house_number: data.house_number,
-        postal_code: data.postal_code,
-        city: data.city,
-        country: data.country,
-        region: data.region,
-    },
-    po_box_address: {
-        po_box: data.po_box,
-        postal_code: data.postal_code,
-        company_postal_code: data.company_postal_code
-    },
-    communication: {
-        language: data.language,
-        telephone: data.telephone,
-        mobile_phone: data.mobile_phone,
-        fax: data.fax,
-        email: data.email,
-    },
-    account_control: {
-        customer_id: data.customer_id,
-        trading_partner_id: data.trading_partner_id,
-        authorization_id: data.authorization_id,
-        corporate_group_id: data.corporate_group_id,
-    },
+        vendor_code: data.vendor_code,
+        company_code_id: data.company_code_id,
+        account_group: data.account_group,
+        address: {
+            name: {
+                title: data.title,
+                name: data.name,
+            },
+            search_terms: {
+                search_term_1: data.search_term_1,
+                search_term_2: data.search_term_2,
+            },
+            street_address: {
+                street: data.street,
+                house_number: data.house_number,
+                postal_code: data.postal_code,
+                city: data.city,
+                country: data.country,
+                region: data.region,
+            },
+            po_box_address: {
+                po_box: data.po_box,
+                postal_code: data.postal_code,
+                company_postal_code: data.company_postal_code
+            },
+            communication: {
+                language: data.language,
+                telephone: data.telephone,
+                mobile_phone: data.mobile_phone,
+                fax: data.fax,
+                email: data.email,
+            },
+        },
+        control_data: {
+            account_control: {
+                customer_id: data.customer_id,
+                trading_partner_id: data.trading_partner_id,
+                authorization_id: data.authorization_id,
+                corporate_group_id: data.corporate_group_id,
+            },
+        },
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated
