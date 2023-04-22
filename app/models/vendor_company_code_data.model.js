@@ -4,7 +4,7 @@ const STATUS_ACTIVE = 'ACTIVE';
 const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
-const vendorGeneralDataSchema = new mongoose.Schema({
+const vendorCompanyCodeData = new mongoose.Schema({
     vendor_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendors' },
     vendor_code: { type: Number, trim: true, required: false },
     company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
@@ -79,7 +79,7 @@ const vendorGeneralDataSchema = new mongoose.Schema({
     date_updated: { type: Date, default: () => new Date(), required: true }
 });
 
-module.exports = mongoose.model('vendor_general_data', vendorGeneralDataSchema);
+module.exports = mongoose.model('vendor_company_code_data', vendorCompanyCodeData);
 
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;

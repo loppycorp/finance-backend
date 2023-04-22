@@ -1,5 +1,5 @@
 require('dotenv').config();
-const valuationgroup = require('../controllers/profit_center_group.controller');
+const valuationgroup = require('../controllers/valuation_group.controller');
 const pagination = require('../middlewares/pagination.middleware');
 
 module.exports = (app) => {

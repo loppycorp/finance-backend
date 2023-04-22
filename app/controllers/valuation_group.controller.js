@@ -1,9 +1,9 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const valuatingroupService = require('../services/valuatingroup.service');
+const valuatingroupService = require('../services/valuation_group.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/valuatingroup.validation');
+const { createSchema, updateSchema } = require('../helpers/validations/valuation_group.validation');
 
 exports.create = async (req, res) => {
     try {

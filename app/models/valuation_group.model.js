@@ -4,7 +4,7 @@ const STATUS_ACTIVE = 'ACTIVE';
 const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
-const valuationgroupSchema = new mongoose.Schema({
+const valuationGroupSchema = new mongoose.Schema({
     group_name: { type: String, trim: true, required: true },
     group_code: { type: String, trim: true, required: true },
     desc: { type: String, trim: true, required: false },
@@ -13,7 +13,7 @@ const valuationgroupSchema = new mongoose.Schema({
     date_updated: { type: Date,  default: () => new Date(), required: true }
 });
 
-module.exports = mongoose.model('valuationgroup', valuationgroupSchema);
+module.exports = mongoose.model('valuation_group', valuationGroupSchema);
 
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;

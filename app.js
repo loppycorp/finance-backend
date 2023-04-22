@@ -29,16 +29,7 @@ require('./app/routes/profit_center_group.routes')(app);
 require('./app/routes/company.routes')(app);
 require('./app/routes/cost_center_category.routes')(app);
 require('./app/routes/hierarcy_area.routes')(app);
-<<<<<<< HEAD
-require('./app/routes/primary_cost_element.routes')(app);
-require('./app/routes/secondary_cost_element.routes')(app);
-require('./app/routes/vendor.routes')(app);
-require('./app/routes/gl_accounts.routes')(app);
-require('./app/routes/accountGroup.routes')(app);
-require('./app/routes/valuationgroup.routes')(app);
-require('./app/routes/fieldstatusgroup.routes')(app);
-require('./app/routes/internal_order.routes')(app);
-=======
+
 
 // CHAPTER 2 
 require('./app/routes/primary_cost_element.routes')(app);
@@ -48,8 +39,12 @@ require('./app/routes/vendor_pymnt_transc.routes')(app);
 require('./app/routes/vendor_company_code_data.routes')(app);
 require('./app/routes/trading_partner.routes')(app);
 require('./app/routes/corporate_group.routes')(app);
-
->>>>>>> origin/main
+require('./app/routes/secondary_cost_element.routes')(app);
+require('./app/routes/gl_accounts.routes')(app);
+require('./app/routes/accountGroup.routes')(app);
+require('./app/routes/valuation_group.routes')(app);
+require('./app/routes/fieldstatusgroup.routes')(app);
+require('./app/routes/internal_order.routes')(app);
 
 const port = process.env.APP_PORT || 3200;
 app.listen(port, () => logger.info(`Listening on port ${port}`));

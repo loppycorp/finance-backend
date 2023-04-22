@@ -1,5 +1,5 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-const fieldstatusgroup = require('../models/fieldstatusgroup.model');
+const fieldstatusgroup = require('../models/valuation_group.model');
 
 exports.create = async (data) => {
     const fieldstatusgroup = await fieldstatusgroup.create(data);
