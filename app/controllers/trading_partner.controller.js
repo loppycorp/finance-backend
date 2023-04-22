@@ -1,11 +1,9 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const vendorService = require('../services/vendor.service');
-const companyCodeService = require('../services/company.service');
+const tradingPartnerService = require('../services/trading_partner.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/vendor.validation');
-
+const { createSchema, updateSchema } = require('../helpers/validations/profit_center_group.validation');
 
 exports.create = async (req, res) => {
     try {
@@ -23,20 +21,12 @@ exports.create = async (req, res) => {
             return false;
         }
 
-           // validate company_code_id
-          const companyCode = await companyCodeService.get(body.company_code_id);
-           if (!companyCode) {
-                  return {
-                    status: false,
-                    message: lang.t('company_code.err.not_exists')
-        };
-    }
-        const vendor = await vendorService.create(body);
+        const tradingPartner = await tradingPartnerService.create(body);
 
         res.status(200).send({
             status: 'success',
-            message: lang.t('user.suc.create'),
-            data: vendor
+            message: lang.t('trading_partner.suc.create'),
+            data: tradingPartner
         });
     } catch (err) {
         logger.error(req.path);
@@ -66,11 +56,11 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const vendor = await vendorService.get(params.id);
-        if (!vendor) {
+        const tradingPartner = await tradingPartnerService.get(params.id);
+        if (!tradingPartner) {
             res.status(400).send({
                 status: 'error',
-                message: lang.t('user.err.not_exists')
+                message: lang.t('trading_partner.err.not_exists')
             });
         }
 
@@ -84,12 +74,12 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const updateVendor = await vendorService.update(vendor._id, body);
+        const updateTradingPartner = await tradingPartnerService.update(tradingPartner._id, body);
 
         res.status(200).send({
             status: 'success',
-            message: lang.t('user.suc.update'),
-            data: updateVendor
+            message: lang.t('profit_ctr_group.suc.update'),
+            data: updateTradingPartner
         });
     } catch (err) {
         logger.error(req.path);
@@ -118,18 +108,18 @@ exports.read = async (req, res) => {
             return false;
         }
 
-        const vendor = await vendorService.get(params.id);
-        if (!vendor) {
+        const tradingPartner = await tradingPartnerService.get(params.id);
+        if (!tradingPartner) {
             res.status(400).send({
                 status: 'error',
-                message: lang.t('user.err.not_exists')
+                message: lang.t('trading_partner.err.not_exists')
             });
         }
 
         res.status(200).send({
             status: 'success',
-            message: lang.t('user.suc.read'),
-            data: user
+            message: lang.t('trading_partner.suc.read'),
+            data: profitCtrGroup
         });
     } catch (err) {
         logger.error(req.path);
@@ -150,11 +140,11 @@ exports.search = async (req, res) => {
         const pagination = query.pagination;
         const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-        const { data, total } = await vendorService.getAll(query);
+        const { data, total } = await tradingPartnerService.getAll(query);
 
         res.status(200).send({
             status: 'success',
-            message: lang.t('user.suc.search'),
+            message: lang.t('trading_partner.suc.search'),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -192,20 +182,20 @@ exports.delete = async (req, res) => {
             return false;
         }
 
-        const vendor = await vendorService.get(params.id);
-        if (!vendor) {
+        const tradingPartner = await tradingPartnerService.get(params.id);
+        if (!tradingPartner) {
             res.status(400).send({
                 status: 'error',
-                message: lang.t('user.err.not_exists')
+                message: lang.t('profit_ctr_group.err.not_exists')
             });
         }
 
-        const deletedVendor = await vendorService.delete(user._id); 
+        const deleteTradingPartner = await tradingPartnerService.delete(profitCtrGroup._id); 
 
         res.status(200).send({
             status: 'success',
-            message: lang.t('user.suc.delete'),
-            data: deletedVendor
+            message: lang.t('profit_ctr_group.suc.delete'),
+            data: deleteTradingPartnerq
         });
     } catch (err) {
         logger.error(req.path);
