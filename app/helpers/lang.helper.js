@@ -166,6 +166,40 @@ i18next.init({
                         not_exists: 'The hierarcy area record doesn\'t exists!'
                     }
                 },
+                currency: {
+                    suc: {
+                        create: 'Successfully created currency record!',
+                        read: 'Successfully fetched currency record!',
+                        update: 'Successfully updated currency record!',
+                        delete: 'Successfully deleted currency record!',
+                        search: 'Successfully fetched currency records!',
+                    },
+                    err: {
+                        create: 'Failed to create currency record!',
+                        read: 'The currency record doesn\'t exists!',
+                        update: 'Failed to update  record!',
+                        delete: 'Failed to delete currency record!',
+                        search: 'No records found!',
+                        not_exists: 'The currency area record doesn\'t exists!'
+                    }
+                },
+                cost_center: {
+                    suc: {
+                        create: 'Successfully created cost-center record!',
+                        read: 'Successfully fetched cost-center record!',
+                        update: 'Successfully updated cost-center record!',
+                        delete: 'Successfully deleted cost-center record!',
+                        search: 'Successfully fetched cost-center records!',
+                    },
+                    err: {
+                        create: 'Failed to create cost-center record!',
+                        read: 'The cost-center record doesn\'t exists!',
+                        update: 'Failed to update  record!',
+                        delete: 'Failed to delete cost-center record!',
+                        search: 'No records found!',
+                        not_exists: 'The cost-center area record doesn\'t exists!'
+                    }
+                },
             },
         }
     }
