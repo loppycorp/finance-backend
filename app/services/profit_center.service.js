@@ -126,8 +126,16 @@ exports.mapData = (data) => {
         controlling_area: data.controlling_area, 
         description: data.description,
         basic_data: {
-            user_responsible: data.user_responsible,
-            person_responsible: data.person_responsible,
+            user_responsible: {
+                _id: data.user_responsible._id,
+                first_name: data.user_responsible.first_name,
+                last_name: data.user_responsible.last_name
+            },
+            person_responsible: {
+                _id: data.user_responsible._id,
+                first_name: data.person_responsible.first_name,
+                last_name: data.person_responsible.last_name
+            },
             department: data.department,
             profit_ctr_group: data.profit_ctr_group,
             segment: data.segment,
