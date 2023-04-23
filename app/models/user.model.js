@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     last_name:  { type: String, trim: true, required: true },
     email:  { type: String, trim: true, required: true },
     username:  { type: String, trim: true, required: true },
-    password: { type: String, trim: true, required: true },
+    hash_password: { type: String, trim: true, required: true },
     role:  { type: String, trim: true, default: USER_ROLE_ADMIN, required: true },
     access: [{ type: String, trim: true, required: false }],
     status:  { type: String, default: STATUS_ACTIVE, required: true },

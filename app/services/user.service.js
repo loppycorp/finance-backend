@@ -1,7 +1,20 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../models/user.model');
+const bcrypt = require('bcrypt');
+
+exports.validate = async (username, password) => {
+    const user = await User.findOne({ username: username, status: User.STATUS_ACTIVE });
+    if (!user) return false;
+
+    const pass = await bcrypt.compare(password, user.hash_password);
+    if (!pass) return false;
+    
+    return user;
+};
 
 exports.create = async (data) => {
+    data.hash_password = bcrypt.hashSync(data.password, 10);
+
     const user = await User.create(data);
 
     if (!user) return false;

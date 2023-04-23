@@ -1,20 +1,24 @@
 require('dotenv').config();
 const user = require('../controllers/user.controller');
+const auth = require('../middlewares/authorization.middleware');
 const pagination = require('../middlewares/pagination.middleware');
 
 module.exports = (app) => {
-    // Create new account record
-    app.post(process.env.BASE_URL + '/users', user.create);
+    // Authenticate user
+    app.post(process.env.BASE_URL + '/users/authenticate', user.authenticate);
 
-    // List available account records
-    app.get(process.env.BASE_URL + '/users', pagination.setAttributes, user.search);
+    // Create new user record
+    app.post(process.env.BASE_URL + '/users', auth.validateToken, user.create);
 
-    // View account record
-    app.get(process.env.BASE_URL + '/users/:id', user.read);
+    // List available user records
+    app.get(process.env.BASE_URL + '/users', auth.validateToken, pagination.setAttributes, user.search);
 
-    // Edit account record
-    app.put(process.env.BASE_URL + '/users/:id', user.update);
+    // View user record
+    app.get(process.env.BASE_URL + '/users/:id', auth.validateToken, user.read);
+
+    // Edit user record
+    app.put(process.env.BASE_URL + '/users/:id', auth.validateToken, user.update);
 
     // Delete account record
-    app.delete(process.env.BASE_URL + '/users/:id', user.delete);
+    app.delete(process.env.BASE_URL + '/users/:id', auth.validateToken, user.delete);
 };

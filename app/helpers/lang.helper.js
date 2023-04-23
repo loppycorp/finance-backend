@@ -12,13 +12,20 @@ i18next.init({
                         an_error_occured: 'An error occured while processing the request!'
                     }
                 },
+                auth: {
+                    err: {
+                        invalid: 'Bearer auth token isn\'t valid!',
+                        not_exists: 'Bearer auth token doesn\'t exists!'
+                    }
+                },
                 user: {
                     suc: {
+                        auth: 'Successfully authenticated user!',
                         create: 'Successfully created user record!',
                         read: 'Successfully fetched user record!',
                         update: 'Successfully updated user record!',
                         delete: 'Successfully deleted user record!',
-                        search: 'Successfully fetched user records!',
+                        search: 'Successfully fetched user records!'
                     },
                     err: {
                         create: 'Failed to ceate user record!',
@@ -26,7 +33,8 @@ i18next.init({
                         update: 'Failed to update user record!',
                         delete: 'Failed to delete user record!',
                         search: 'No records found!',
-                        not_exists: 'The user record doesn\'t exists!'
+                        not_exists: 'The user record doesn\'t exists!',
+                        invalid_pass_user: 'Invalid username or password!'
                     }
                 },
                 department: {

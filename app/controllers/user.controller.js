@@ -3,7 +3,58 @@ const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
 const userService = require('../services/user.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/user.validation');
+const { createSchema, updateSchema, authSchema } = require('../helpers/validations/user.validation');
+const jwt = require('jsonwebtoken');
+
+exports.authenticate = async (req, res) => {
+    try {
+        logger.info(req.path);
+
+        const body = req.body;
+
+        const validationBody = authSchema.validate(body, { abortEarly: false });
+        if (validationBody.error) {
+            res.status(400).send({
+                'status': 'error',
+                'message': lang.t('global.err.validation_failed'),
+                'error': validationBody.error.details
+            });
+            return false;
+        }
+
+        const validatedUser = await userService.validate(body.username, body.password);
+        if (!validatedUser) {
+            res.status(400).send({
+                'status': 'error',
+                'message': lang.t('user.err.invalid_pass_user')
+            });
+            return false;
+        }
+
+        const jwtPayload = {
+            _id: validatedUser._id,
+            username: validatedUser.username,
+            first_name: validatedUser.first_name,
+            last_name: validatedUser.last_name
+        };
+
+        const jwtToken = jwt.sign(jwtPayload, process.env.JWT_KEY);
+
+        res.status(200).send({
+            status: 'success',
+            message: lang.t('user.suc.auth'),
+            token: jwtToken
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+
+        res.status(500).send({
+            status: 'error',
+            message: utilities.getMessage(err)
+        });
+    }
+};
 
 exports.create = async (req, res) => {
     try {
