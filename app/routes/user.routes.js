@@ -7,8 +7,11 @@ module.exports = (app) => {
     // Get user record
     app.get(process.env.BASE_URL + '/users/profile', auth.validateToken, user.profile);
 
-    // Authenticate user
-    app.post(process.env.BASE_URL + '/users/authenticate', user.authenticate);
+    // Login user
+    app.post(process.env.BASE_URL + '/users/login', user.authenticate);
+
+    // Logout user
+    app.post(process.env.BASE_URL + '/users/logout', auth.validateToken, user.logout);
 
     // Create new user record
     app.post(process.env.BASE_URL + '/users', auth.validateToken, user.create);

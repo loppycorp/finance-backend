@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
     hash_password: { type: String, trim: true, required: true },
     role:  { type: String, trim: true, default: USER_ROLE_ADMIN, required: true },
     access: [{ type: String, trim: true, required: false }],
+    token: { type: String, default: '', required: true },
     status:  { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
     date_updated: { type: Date,  default: () => new Date(), required: true }
