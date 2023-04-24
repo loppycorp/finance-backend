@@ -15,7 +15,7 @@ const accountGroupSchema = new mongoose.Schema({
 
 
 
-module.exports = mongoose.model("accountGroup", accountGroupSchema);
+module.exports = mongoose.model("account_group", accountGroupSchema);
 
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;

@@ -2,7 +2,7 @@ const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const assets_service = require('../services/assets.service');
+const assetService = require('../services/assets.service');
 const { createSchema, updateSchema } = require('../helpers/validations/assets.validation');
 
 exports.create = async (req, res) => {
@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
             });
             return false;
         }
-        const assets = await assets_service.create(body);
+        const assets = await assetService.create(body);
 
         res.status(200).send({
             status: 'success',
@@ -45,7 +45,7 @@ exports.search = async (req, res) => {
         const pagination = query.pagination;
         const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-        const { data, total } = await assets_service.getAll(query);
+        const { data, total } = await assetService.getAll(query);
 
         res.status(200).send({
             status: 'success',
@@ -89,7 +89,7 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const assets = await assets_service.get(params.id);
+        const assets = await assetService.get(params.id);
         if (!assets) {
             res.status(400).send({
                 status: 'error',
@@ -107,7 +107,7 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const updated_assets = await assets_service.update(assets._id, body);
+        const updated_assets = await assetService.update(assets._id, body);
 
         res.status(200).send({
             status: 'success',
@@ -140,7 +140,7 @@ exports.delete = async (req, res) => {
             return false;
         }
 
-        const assets = await assets_service.get(params.id);
+        const assets = await assetService.get(params.id);
         if (!assets) {
             res.status(400).send({
                 status: 'error',
@@ -148,7 +148,7 @@ exports.delete = async (req, res) => {
             });
         }
 
-        const deleted_assets = await assets_service.delete(assets._id); 
+        const deleted_assets = await assetService.delete(assets._id);
 
         res.status(200).send({
             status: 'success',

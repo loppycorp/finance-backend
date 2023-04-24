@@ -45,19 +45,44 @@ exports.delete = async (id) => {
 exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
-    const options = { status: Assets.STATUS_ACTIVE };
+    const filters = { status: Assets.STATUS_ACTIVE };
 
-    const results = await Assets.find(options)
-        .collation({'locale':'en'}).sort({ [sortBy]: sortOrderInt })
+    const results = await Assets.aggregate(this.pipeline(filters))
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
-    const companiesData = results.map(o => this.mapData(o));
+    const assetData = results.map(o => this.mapData(o));
 
-    const companiesTotal = await Assets.countDocuments(options);
+    const assetTotal = await ProfitCenter.countDocuments(filters);
 
-    return { data: companiesData, total: companiesTotal };
+    return { data: assetData, total: assetTotal };
 };
+
+exports.pipeline = (filters) => {
+    return [
+        {
+            $lookup: {
+                from: 'companies',
+                localField: 'company_code_id',
+                foreignField: '_id',
+                as: 'company'
+            },
+        },
+        { $unwind: '$company' },
+        {
+            $lookup: {
+                from: 'cost_centers',
+                localField: 'time_dependent.interval.cost_center_id',
+                foreignField: '_id',
+                as: 'cost_center'
+            },
+        },
+        { $unwind: '$cost_center' },
+        { $match: filters }
+    ]
+};
+
 
 exports.mapData = (data) => {
     return {
@@ -66,25 +91,8 @@ exports.mapData = (data) => {
         company_code: data.company_code,
         number_of_similar_assets: data.number_of_similar_assets,
         class: data.class,
-        description: data.description,
-        asset_main_no: data.asset_main_no,
-        acct_determination: data.acct_determination,
-        serial_number: data.serial_number,
-        inventory_number: data.inventory_number,
-        quantity: data.quantity,
-        manage_historically: data.anage_historically,
-        last_inventory_on: data.last_inventory_on,
-        inventory_note: data.inventory_note,
-        include_asset_in_inventory_list: data.include_asset_in_inventory_list,
-        capitalized_on: data.capitalized_on,
-        first_acquisition_on: data.first_acquisition_on,
-        acquisition_year: data.acquisition_year,
-        deactivation_on: data.deactivation_on,
-        cost_center: data.cost_center,
-        plant: data.plant,
-        location: data.location,
-        room: data.room,
-        shift_factor: data.shift_factor,
+        general: data.general,
+        time_dependent: data.time_dependent,
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated

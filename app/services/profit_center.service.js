@@ -49,7 +49,7 @@ exports.getAll = async (query) => {
     const filters = { status: ProfitCenter.STATUS_ACTIVE };
 
     const results = await ProfitCenter.aggregate(this.pipeline(filters))
-        .collation({'locale':'en'}).sort({ [sortBy]: sortOrderInt })
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
@@ -123,7 +123,7 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        controlling_area: data.controlling_area, 
+        controlling_area: data.controlling_area,
         description: data.description,
         basic_data: {
             user_responsible: {

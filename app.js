@@ -33,12 +33,6 @@ require('./app/routes/cost_center.routes')(app);
 require('./app/routes/hierarcy_area.routes')(app);
 require('./app/routes/primary_cost_element.routes')(app);
 require('./app/routes/secondary_cost_element.routes')(app);
-require('./app/routes/vendor.routes')(app);
-require('./app/routes/gl_accounts.routes')(app);
-require('./app/routes/accountGroup.routes')(app);
-require('./app/routes/valuation_group.routes')(app);
-require('./app/routes/fieldstatusgroup.routes')(app);
-require('./app/routes/internal_order.routes')(app);
 require('./app/routes/currency.routes')(app);
 
 // CHAPTER 2 

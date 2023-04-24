@@ -23,15 +23,28 @@ exports.create = async (req, res) => {
             return false;
         }
 
-           // validate company_code_id
-          const companyCode = await companyCodeService.get(body.company_code_id);
-           if (!companyCode) {
-                  return {
-                    status: false,
-                    message: lang.t('company_code.err.not_exists')
-        };
-    }
+        // validate company_code_id
+        const companyCode = await companyCodeService.get(body.company_code_id);
+        if (!companyCode) {
+            return {
+                status: false,
+                message: lang.t('company_code.err.not_exists')
+            };
+        }
+
+        const querys = req.query;
+        // validate vendor_code
+        const vendorCode = await vendorService.getAll(querys);
+        if (vendorCode.vendor_code == body.vendor_code) {
+            return {
+                status: false,
+                message: lang.t('vendor_code.err.already_exists')
+            };
+        }
+
+        console.log(vendorCode);
         const vendor = await vendorService.create(body);
+
 
         res.status(200).send({
             status: 'success',
@@ -154,7 +167,7 @@ exports.search = async (req, res) => {
 
         res.status(200).send({
             status: 'success',
-            message: lang.t('user.suc.search'),
+            message: lang.t('vendor.suc.search'),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -200,7 +213,7 @@ exports.delete = async (req, res) => {
             });
         }
 
-        const deletedVendor = await vendorService.delete(user._id); 
+        const deletedVendor = await vendorService.delete(user._id);
 
         res.status(200).send({
             status: 'success',

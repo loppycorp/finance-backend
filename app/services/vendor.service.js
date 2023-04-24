@@ -2,11 +2,13 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const Vendor = require('../models/vendor.model');
 
 exports.create = async (data) => {
+
     const vendor = await Vendor.create(data);
 
     if (!vendor) return false;
 
     return await this.get(vendor._id)
+
 };
 
 exports.get = async (id, options = {}) => {
@@ -64,13 +66,13 @@ exports.pipeline = (filters) => {
     return [
         {
             $lookup: {
-                from: 'controlling_areas',
-                localField: 'controlling_area_id',
+                from: 'companies',
+                localField: 'company_code_id',
                 foreignField: '_id',
-                as: 'controlling_area'
+                as: 'company'
             },
         },
-        { $unwind: '$controlling_area' },
+        { $unwind: '$company' },
         {
             $lookup: {
                 from: 'customers',
@@ -79,7 +81,7 @@ exports.pipeline = (filters) => {
                 as: 'customer'
             },
         },
-        { $unwind: '$customer' },
+        // { $unwind: '$customer' },
         {
             $lookup: {
                 from: 'trading_partners',
@@ -88,7 +90,7 @@ exports.pipeline = (filters) => {
                 as: 'trading_partner'
             },
         },
-        { $unwind: '$trading_partner' },
+        // { $unwind: '$trading_partner' },
         {
             $lookup: {
                 from: 'authorizations',
@@ -97,7 +99,7 @@ exports.pipeline = (filters) => {
                 as: 'authorization'
             },
         },
-        { $unwind: '$authorization' },
+        // { $unwind: '$authorizations' },
         {
             $lookup: {
                 from: 'corporate_groups',
@@ -106,7 +108,7 @@ exports.pipeline = (filters) => {
                 as: 'corporate_group'
             },
         },
-        { $unwind: '$corporate_group' },
+        // { $unwind: '$corporate_group' },
         { $match: filters }
     ];
 };
@@ -117,44 +119,8 @@ exports.mapData = (data) => {
         vendor_code: data.vendor_code,
         company_code_id: data.company_code_id,
         account_group: data.account_group,
-        address: {
-            name: {
-                title: data.title,
-                name: data.name,
-            },
-            search_terms: {
-                search_term_1: data.search_term_1,
-                search_term_2: data.search_term_2,
-            },
-            street_address: {
-                street: data.street,
-                house_number: data.house_number,
-                postal_code: data.postal_code,
-                city: data.city,
-                country: data.country,
-                region: data.region,
-            },
-            po_box_address: {
-                po_box: data.po_box,
-                postal_code: data.postal_code,
-                company_postal_code: data.company_postal_code
-            },
-            communication: {
-                language: data.language,
-                telephone: data.telephone,
-                mobile_phone: data.mobile_phone,
-                fax: data.fax,
-                email: data.email,
-            },
-        },
-        control_data: {
-            account_control: {
-                customer_id: data.customer_id,
-                trading_partner_id: data.trading_partner_id,
-                authorization_id: data.authorization_id,
-                corporate_group_id: data.corporate_group_id,
-            },
-        },
+        address: data.address,
+        control_data: data.control_data,
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated
