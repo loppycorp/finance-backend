@@ -2,7 +2,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 
-exports.validate = async (username, password) => {
+exports.validateCreds = async (username, password) => {
     const user = await User.findOne({ username: username, status: User.STATUS_ACTIVE });
     if (!user) return false;
 
@@ -70,6 +70,26 @@ exports.getAll = async (query) => {
     const usersTotal = await User.countDocuments(options);
 
     return { data: usersData, total: usersTotal };
+};
+
+exports.storeToken = async (id, token) => {
+    const user = await User.findByIdAndUpdate({ _id: ObjectId(id) }, { $set: { token: token } });
+
+    if (!user) return false;
+
+    return await this.get(user._id);
+};
+
+exports.validateToken = async (id, token) => {
+    return await User.findOne({ _id: ObjectId(id), token: token });
+};
+
+exports.destroyToken = async (id, token) => {
+    const user = await User.findByIdAndUpdate({ _id: ObjectId(id) }, { $set: { token: '' } });
+
+    if (!user) return false;
+
+    return await this.get(user._id);
 };
 
 exports.mapData = (data) => {
