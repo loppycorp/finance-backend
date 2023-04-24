@@ -1,6 +1,7 @@
 const { logger } = require('../middlewares/logging.middleware')
 const lang = require('../helpers/lang.helper');
 const jwt = require('jsonwebtoken');
+const userService = require('../services/user.service');
 
 exports.validateToken = async (req, res, next) => {
     const bearerHeader = req.headers['authorization'];
@@ -8,7 +9,7 @@ exports.validateToken = async (req, res, next) => {
     if (!bearerHeader) {
         res.status(403).send({
             'status': 'error',
-            'message': lang.t('auth.err.not_exists')
+            'message': lang.t('auth.err.token_not_exists')
         });
     }
 
@@ -23,7 +24,15 @@ exports.validateToken = async (req, res, next) => {
         if (!jwtPayload) {
             res.status(403).send({
                 'status': 'error',
-                'message': lang.t('auth.err.invalid')
+                'message': lang.t('auth.err.failed_verify')
+            });
+        }
+
+        const validateToken = await userService.validateToken(jwtPayload._id, bearerToken);
+        if (!validateToken) {
+            res.status(403).send({
+                'status': 'error',
+                'message': lang.t('auth.err.invalid_token')
             });
         }
 

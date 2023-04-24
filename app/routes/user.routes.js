@@ -4,8 +4,14 @@ const auth = require('../middlewares/authorization.middleware');
 const pagination = require('../middlewares/pagination.middleware');
 
 module.exports = (app) => {
-    // Authenticate user
-    app.post(process.env.BASE_URL + '/users/authenticate', user.authenticate);
+    // Get user record
+    app.get(process.env.BASE_URL + '/users/profile', auth.validateToken, user.profile);
+
+    // Login user
+    app.post(process.env.BASE_URL + '/users/login', user.authenticate);
+
+    // Logout user
+    app.post(process.env.BASE_URL + '/users/logout', auth.validateToken, user.logout);
 
     // Create new user record
     app.post(process.env.BASE_URL + '/users', user.create);
@@ -19,6 +25,6 @@ module.exports = (app) => {
     // Edit user record
     app.put(process.env.BASE_URL + '/users/:id', auth.validateToken, user.update);
 
-    // Delete account record
+    // Delete user record
     app.delete(process.env.BASE_URL + '/users/:id', auth.validateToken, user.delete);
 };

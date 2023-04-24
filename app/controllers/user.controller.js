@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
@@ -22,7 +24,7 @@ exports.authenticate = async (req, res) => {
             return false;
         }
 
-        const validatedUser = await userService.validate(body.username, body.password);
+        const validatedUser = await userService.validateCreds(body.username, body.password);
         if (!validatedUser) {
             res.status(400).send({
                 'status': 'error',
@@ -38,7 +40,16 @@ exports.authenticate = async (req, res) => {
             last_name: validatedUser.last_name
         };
 
-        const jwtToken = jwt.sign(jwtPayload, process.env.JWT_KEY);
+        const jwtToken = jwt.sign(jwtPayload, process.env.JWT_KEY, { expiresIn: process.env.TOKEN_EXPIRY });
+
+        const storeToken = await userService.storeToken(validatedUser._id, jwtToken);
+        if (!storeToken) {
+            res.status(400).send({
+                'status': 'error',
+                'message': lang.t('user.err.failed_to_store_token')
+            });
+            return false;
+        }
 
         res.status(200).send({
             status: 'success',
@@ -257,4 +268,72 @@ exports.delete = async (req, res) => {
             message: utilities.getMessage(err)
         });
     }
+};
+
+exports.profile = async (req, res) => {
+    try {
+        logger.info(req.path);
+
+        const auth = req.auth;
+
+        const user = await userService.get(auth._id);
+        if (!user) {
+            res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        
+        res.status(200).send({
+            status: 'success',
+            message: lang.t('user.suc.profile'),
+            data: user
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+
+        res.status(500).send({
+            status: 'error',
+            message: utilities.getMessage(err)
+        });
+    }  
+};
+
+exports.logout = async (req, res) => {
+    try {
+        logger.info(req.path);
+
+        const auth = req.auth;
+
+        const user = await userService.get(auth._id);
+        if (!user) {
+            res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+
+        const destroyedToken = await userService.destroyToken(auth._id);
+        if (!destroyedToken) {
+            res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.token_failed_destroyed')
+            });
+        }
+        
+        res.status(200).send({
+            status: 'success',
+            message: lang.t('user.suc.logout'),
+            data: user
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+
+        res.status(500).send({
+            status: 'error',
+            message: utilities.getMessage(err)
+        });
+    }  
 };

@@ -25,7 +25,8 @@ i18next.init({
                         read: 'Successfully fetched user record!',
                         update: 'Successfully updated user record!',
                         delete: 'Successfully deleted user record!',
-                        search: 'Successfully fetched user records!'
+                        search: 'Successfully fetched user records!',
+                        profile: 'Successfully fetched user profile!',
                     },
                     err: {
                         create: 'Failed to ceate user record!',
