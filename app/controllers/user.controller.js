@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
@@ -38,7 +40,7 @@ exports.authenticate = async (req, res) => {
             last_name: validatedUser.last_name
         };
 
-        const jwtToken = jwt.sign(jwtPayload, process.env.JWT_KEY);
+        const jwtToken = jwt.sign(jwtPayload, process.env.JWT_KEY, { expiresIn: process.env.TOKEN_EXPIRY });
 
         const storeToken = await userService.storeToken(validatedUser._id, jwtToken);
         if (!storeToken) {

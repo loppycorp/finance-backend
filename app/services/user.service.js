@@ -80,7 +80,7 @@ exports.storeToken = async (id, token) => {
     return await this.get(user._id);
 };
 
-exports.verifyToken = async (id, token) => {
+exports.validateToken = async (id, token) => {
     return await User.findOne({ _id: ObjectId(id), token: token });
 };
 

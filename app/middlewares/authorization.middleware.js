@@ -24,15 +24,15 @@ exports.validateToken = async (req, res, next) => {
         if (!jwtPayload) {
             res.status(403).send({
                 'status': 'error',
-                'message': lang.t('auth.err.token_invalid')
+                'message': lang.t('auth.err.failed_verify')
             });
         }
 
-        const verifyToken = await userService.verifyToken(jwtPayload._id, bearerToken);
-        if (!verifyToken) {
+        const validateToken = await userService.validateToken(jwtPayload._id, bearerToken);
+        if (!validateToken) {
             res.status(403).send({
                 'status': 'error',
-                'message': lang.t('auth.err.token_failed_verify')
+                'message': lang.t('auth.err.invalid_token')
             });
         }
 
