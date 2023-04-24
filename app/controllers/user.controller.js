@@ -258,3 +258,33 @@ exports.delete = async (req, res) => {
         });
     }
 };
+
+exports.profile = async (req, res) => {
+    try {
+        logger.info(req.path);
+
+        const auth = req.auth;
+
+        const user = await userService.get(auth._id);
+        if (!user) {
+            res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        
+        res.status(200).send({
+            status: 'success',
+            message: lang.t('user.suc.profile'),
+            data: user
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+
+        res.status(500).send({
+            status: 'error',
+            message: utilities.getMessage(err)
+        });
+    }  
+};

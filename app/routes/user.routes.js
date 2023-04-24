@@ -4,6 +4,9 @@ const auth = require('../middlewares/authorization.middleware');
 const pagination = require('../middlewares/pagination.middleware');
 
 module.exports = (app) => {
+    // Get user record
+    app.get(process.env.BASE_URL + '/users/profile', auth.validateToken, user.profile);
+
     // Authenticate user
     app.post(process.env.BASE_URL + '/users/authenticate', user.authenticate);
 
@@ -19,6 +22,6 @@ module.exports = (app) => {
     // Edit user record
     app.put(process.env.BASE_URL + '/users/:id', auth.validateToken, user.update);
 
-    // Delete account record
+    // Delete user record
     app.delete(process.env.BASE_URL + '/users/:id', auth.validateToken, user.delete);
 };
