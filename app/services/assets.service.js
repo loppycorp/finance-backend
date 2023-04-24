@@ -54,33 +54,33 @@ exports.getAll = async (query) => {
 
     const assetData = results.map(o => this.mapData(o));
 
-    const assetTotal = await ProfitCenter.countDocuments(filters);
+    const assetTotal = await Assets.countDocuments(filters);
 
     return { data: assetData, total: assetTotal };
 };
 
 exports.pipeline = (filters) => {
     return [
-        {
-            $lookup: {
-                from: 'companies',
-                localField: 'company_code_id',
-                foreignField: '_id',
-                as: 'company'
-            },
-        },
-        { $unwind: '$company' },
-        {
-            $lookup: {
-                from: 'cost_centers',
-                localField: 'time_dependent.interval.cost_center_id',
-                foreignField: '_id',
-                as: 'cost_center'
-            },
-        },
-        { $unwind: '$cost_center' },
-        { $match: filters }
-    ]
+        // {
+        //     $lookup: {
+        //         from: 'companies',
+        //         localField: 'company_code_id',
+        //         foreignField: '_id',
+        //         as: 'company'
+        //     },
+        // },
+        // { $unwind: '$company' },
+        // {
+        //     $lookup: {
+        //         from: 'cost_centers',
+        //         localField: 'time_dependent.interval.cost_center_id',
+        //         foreignField: '_id',
+        //         as: 'cost_center'
+        //     },
+        // },
+        // { $unwind: '$cost_center' },
+        // { $match: filters }
+    ];
 };
 
 
@@ -88,7 +88,7 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         asset_class: data.asset_class,
-        company_code: data.company_code,
+        company_code_id: data.company_code_id,
         number_of_similar_assets: data.number_of_similar_assets,
         class: data.class,
         general: data.general,

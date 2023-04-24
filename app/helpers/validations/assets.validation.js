@@ -11,10 +11,10 @@ const defaultSchema = Joi.object({
     general_data: {
       description: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
       asset_main_no: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
-      acct_determination: Joi.number().required().max(LIMIT_DEFAULT_CHAR),
-      serial_number: Joi.number().required().max(LIMIT_DEFAULT_CHAR),
-      inventory_number: Joi.number().required().max(LIMIT_DEFAULT_CHAR),
-      quantity: Joi.number().required().max(LIMIT_DEFAULT_CHAR),
+      acct_determination: Joi.number().required(),
+      serial_number: Joi.number().required(),
+      inventory_number: Joi.number().required(),
+      quantity: Joi.number().required(),
       manage_historically: Joi.boolean().required(),
     },
     inventory: {
@@ -31,8 +31,8 @@ const defaultSchema = Joi.object({
   },
   time_dependent: {
     interval: {
-      cost_center: Joi.string().trim().required().hex().max(24),
-      plant: Joi.number().required().max(LIMIT_DEFAULT_CHAR),
+      cost_center_id: Joi.string().trim().required().hex().max(24),
+      plant: Joi.number().required(),
       location: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
       room: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
       shift_factor: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),

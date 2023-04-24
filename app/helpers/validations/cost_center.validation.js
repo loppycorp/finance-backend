@@ -7,7 +7,7 @@ const defaultSchema = Joi.object({
     code: Joi.number().strict().required(),
     controlling_area_id: Joi.string().trim().required().hex().max(24),
     valid_range: {
-        from:  Joi.date().required(),
+        from: Joi.date().required(),
         to: Joi.date().required(),
     },
     names: {
@@ -15,15 +15,15 @@ const defaultSchema = Joi.object({
         desc: Joi.string().trim().max(LIMIT_DEFAULT_CHAR_L),
     },
     basic_data: {
-        user_responsible_id: Joi.string().trim().required().hex().max(24),
-        person_responsible_id: Joi.string().trim().required().hex().max(24),
-        department_id: Joi.string().trim().required().hex().max(24),
-        cost_ctr_category_id: Joi.string().trim().required().hex().max(24),
-        hierarchy_area_id: Joi.string().trim().required().hex().max(24),
-        company_id: Joi.string().trim().required().hex().max(24),
+        user_responsible_id: Joi.string().trim().required().hex().max(24).allow(''),
+        person_responsible_id: Joi.string().trim().hex().max(24).allow('', null),
+        department_id: Joi.string().trim().required().hex().max(24).allow('', null),
+        cost_ctr_category_id: Joi.string().trim().required().hex().max(24).allow('', null),
+        hierarchy_area_id: Joi.string().trim().required().hex().max(24).allow('', null),
+        company_id: Joi.string().trim().required().hex().max(24).allow('', null),
         business_area: Joi.number().strict().required(),
         functional_area: Joi.number().strict().required(),
-        currency_id:  Joi.string().trim().required(),
+        currency_id: Joi.string().trim().required().allow(''),
         profit_center_id: Joi.string().trim().required().hex().max(24),
     },
 });

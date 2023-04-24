@@ -49,7 +49,7 @@ exports.getAll = async (query) => {
     const filters = { status: CostCenter.STATUS_ACTIVE };
 
     const results = await CostCenter.aggregate(this.pipeline(filters))
-        .collation({'locale':'en'}).sort({ [sortBy]: sortOrderInt })
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
@@ -88,7 +88,7 @@ exports.pipeline = (filters) => {
                 as: 'person_responsible'
             },
         },
-        { $unwind: '$person_responsible' },
+        // { $unwind: '$person_responsible' },
         {
             $lookup: {
                 from: 'departments',
@@ -97,7 +97,7 @@ exports.pipeline = (filters) => {
                 as: 'department'
             },
         },
-        { $unwind: '$department' },
+        // { $unwind: '$department' },
         {
             $lookup: {
                 from: 'cost_center_catergories',
@@ -106,7 +106,7 @@ exports.pipeline = (filters) => {
                 as: 'cost_center_category'
             },
         },
-        { $unwind: '$cost_center_category' },
+        // { $unwind: '$cost_center_category' },
         {
             $lookup: {
                 from: 'hierarcy_areas',
@@ -115,7 +115,7 @@ exports.pipeline = (filters) => {
                 as: 'hierarchy_area'
             },
         },
-        { $unwind: '$hierarchy_area' },
+        // { $unwind: '$hierarchy_area' },
         { $match: filters }
     ];
 };
@@ -124,7 +124,7 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         code: data.code,
-        controlling_area: data.controlling_area,
+        controlling_area_id: data.controlling_area_id,
         valid_range: data.valid_range,
         names: data.names,
         basic_data: {
@@ -138,14 +138,14 @@ exports.mapData = (data) => {
                 first_name: data.person_responsible.first_name,
                 last_name: data.person_responsible.last_name
             },
-            department:  data.department,
-            cost_ctr_category:  data.cost_ctr_category,
-            hierarchy_area:  data.hierarchy_area,
-            company:  data.company,
-            business_area:  data.business_area,
+            department_id: data.department_id,
+            cost_ctr_category_id: data.cost_ctr_category_id,
+            hierarchy_area_id: data.hierarchy_area_id,
+            company_id: data.company,
+            business_area: data.business_area,
             functional_area: data.functional_area,
-            currency: data.currency,
-            profit_center: data.profit_center
+            currency_id: data.currency_id,
+            profit_center_id: data.profit_center_id
         },
         status: data.status,
         date_created: data.date_created,
