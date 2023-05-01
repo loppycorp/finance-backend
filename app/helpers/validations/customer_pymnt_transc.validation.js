@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const ProfitCenter = require('../../models/vendor_pymnt_transc.model');
 
 const LIMIT_DEFAULT_CHAR = 128;
 const LIMIT_DEFAULT_CHAR_LONG = 225;
@@ -20,9 +19,6 @@ const defaultSchema = Joi.object({
     },
     payment_transactions: {
         alternative_payee: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
-        dme_indicator: Joi.number().integer().allow(''),
-        instruction_key: Joi.number().integer().allow(''),
-        isr_number: Joi.number().integer().allow(''),
 
     },
     alternative_payee: {

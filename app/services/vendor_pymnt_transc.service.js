@@ -49,7 +49,7 @@ exports.getAll = async (query) => {
     const filters = { status: VendorPymntTransc.STATUS_ACTIVE };
 
     const results = await VendorPymntTransc.aggregate(this.pipeline(filters))
-        .collation({'locale':'en'}).sort({ [sortBy]: sortOrderInt })
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
@@ -62,15 +62,15 @@ exports.getAll = async (query) => {
 
 exports.pipeline = (filters) => {
     return [
-        {
-            $lookup: {
-                from: 'vendors',
-                localField: 'vendor_id',
-                foreignField: '_id',
-                as: 'vendor_id'
-            },
-        },
-        { $unwind: '$vendor_id' },
+        // {
+        //     $lookup: {
+        //         from: 'vendors',
+        //         localField: 'vendor_id',
+        //         foreignField: '_id',
+        //         as: 'vendor_id'
+        //     },
+        // },
+        // { $unwind: '$vendor_id' },
         { $match: filters }
     ];
 };
@@ -80,28 +80,9 @@ exports.mapData = (data) => {
         _id: data._id,
         vendor_id: data.vendor_id,
         vendor_code: data.vendor_code,
-        bank_details: {
-            country: data.country,
-            bank_key: data.bank_key,
-            bank_account: data.bank_account,
-            account_holder: data.account_holder,
-            ck: data.ck,
-            iban_value: data.iban_value,
-            bnkt: data.bnkt,
-            reference: data.reference,
-    
-        },
-        payment_transactions: {
-            alternative_payee: data.alternative_payee,
-            dme_indicator: data.dme_indicator,
-            instruction_key: data.instruction_key,
-            isr_number: data.isr_number,
-    
-        },
-        alternative_payee: {
-            individual_spec: data.individual_spec,
-            spec_reference: data.spec_reference,
-        },
+        bank_details: data.bank_details,
+        payment_transactions: data.payment_transactions,
+        alternative_payee: data.alternative_payee,
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated

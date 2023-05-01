@@ -23,14 +23,14 @@ exports.create = async (req, res) => {
             return false;
         }
 
-            // validate vendor_id
-          const vendors = await vendorsService.get(body.company_code_id);
-          if (!vendors) {
-                 return {
-                   status: false,
-                   message: lang.t('vendor.err.not_exists')
-       };
-    }
+        // validate vendor_id
+        //       const vendors = await vendorsService.get(body.company_code_id);
+        //       if (!vendors) {
+        //              return {
+        //                status: false,
+        //                message: lang.t('vendor.err.not_exists')
+        //    };
+        // }
         const vendor = await vendorService.create(body);
 
         res.status(200).send({
@@ -200,7 +200,7 @@ exports.delete = async (req, res) => {
             });
         }
 
-        const deletedVendor = await vendorService.delete(user._id); 
+        const deletedVendor = await vendorService.delete(user._id);
 
         res.status(200).send({
             status: 'success',

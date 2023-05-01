@@ -1,76 +1,87 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-const Vendor = require('../models/vendor_company_code_data.model');
+const defaultModel = require('../models/customer_company_code_data.model');
 
 exports.create = async (data) => {
-    const vendor = await Vendor.create(data);
+    const customer = await defaultModel.create(data);
 
-    if (!vendor) return false;
+    if (!customer) return false;
 
-    return await this.get(vendor._id)
+    return await this.get(customer._id)
 };
 
 exports.get = async (id, options = {}) => {
-    const filters = { _id: ObjectId(id), status: Vendor.STATUS_ACTIVE };
+    const filters = { _id: ObjectId(id), status: defaultModel.STATUS_ACTIVE };
 
     if (options.allowed_inactive && options.allowed_inactive == true)
-        filters.status = Vendor.STATUS_INACTIVE;
+        filters.status = defaultModel.STATUS_INACTIVE;
 
-    const results = await Vendor.aggregate(this.pipeline(filters))
-    const vendor = results[0];
+    const results = await defaultModel.aggregate(this.pipeline(filters))
+    const customer = results[0];
 
-    if (!vendor) return null;
+    if (!customer) return null;
 
-    return this.mapData(vendor);
+    return this.mapData(customer);
 };
 
 exports.update = async (id, data) => {
     data.date_updated = new Date();
 
-    const vendor = await Vendor.findByIdAndUpdate({ _id: ObjectId(id) }, data);
+    const customer = await defaultModel.findByIdAndUpdate({ _id: ObjectId(id) }, data);
 
-    if (!vendor) return false;
+    if (!customer) return false;
 
-    return await this.get(vendor._id);
+    return await this.get(customer._id);
 };
 
 exports.delete = async (id) => {
-    const vendor = await Vendor.findByIdAndUpdate({ _id: ObjectId(id) }, {
-        $set: { status: Vendor.STATUS_INACTIVE }
+    const customer = await defaultModel.findByIdAndUpdate({ _id: ObjectId(id) }, {
+        $set: { status: defaultModel.STATUS_INACTIVE }
     });
 
-    if (!vendor) return false;
+    if (!customer) return false;
 
-    return await this.get(vendor._id, { allowed_inactive: true });
+    return await this.get(customer._id, { allowed_inactive: true });
 };
 
 exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
-    const filters = { status: Vendor.STATUS_ACTIVE };
+    const filters = { status: defaultModel.STATUS_ACTIVE };
 
-    const results = await Vendor.aggregate(this.pipeline(filters))
+    const results = await defaultModel.aggregate(this.pipeline(filters))
         .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
-    const vendorData = results.map(o => this.mapData(o));
+    const customerData = results.map(o => this.mapData(o));
 
-    const vendorTotal = await Vendor.countDocuments(filters);
+    const customerTotal = await defaultModel.countDocuments(filters);
 
-    return { data: vendorData, total: vendorTotal };
+    return { data: customerData, total: customerTotal };
+};
+
+exports.getByCode = async (company_code) => {
+    const isCodeExists = async (company_code, existing_id) => {
+        const options = { company_code: company_code, status: defaultModel.STATUS_ACTIVE };
+
+        if (existing_id && existing_id != '')
+            options['_id'] = { $ne: existing_id };
+
+        return defaultModel.countDocuments(options) > 0;
+    }
 };
 
 exports.pipeline = (filters) => {
     return [
         {
             $lookup: {
-                from: 'vendor_general_datas',
-                localField: 'vendor_id',
+                from: 'customer_general_datas',
+                localField: 'customer_id',
                 foreignField: '_id',
-                as: 'vendor_id'
+                as: 'customer_id'
             },
         },
-        { $unwind: '$vendor_id' },
+        { $unwind: '$customer_id' },
         {
             $lookup: {
                 from: 'companies',
@@ -114,8 +125,8 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        vendor_id: data.vendor_id,
-        vendor_code: data.vendor_code,
+        customer_id: data.customer_id,
+        customer_code: data.customer_code,
         company_code_id: data.company_code_id,
         account_management: data.account_management,
         payment_transactions: data.payment_transactions,

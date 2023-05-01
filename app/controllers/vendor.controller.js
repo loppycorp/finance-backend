@@ -32,17 +32,17 @@ exports.create = async (req, res) => {
             };
         }
 
-        const querys = req.query;
-        // validate vendor_code
-        const vendorCode = await vendorService.getAll(querys);
-        if (vendorCode.vendor_code == body.vendor_code) {
-            return {
-                status: false,
-                message: lang.t('vendor_code.err.already_exists')
-            };
-        }
+        // const querys = req.query;
+        // // validate vendor_code
+        // const vendorCode = await vendorService.getAll(querys);
+        // if (vendorCode.vendor_code == body.vendor_code) {
+        //     return {
+        //         status: false,
+        //         message: lang.t('vendor_code.err.already_exists')
+        //     };
+        // }
 
-        console.log(vendorCode);
+        // console.log(vendorCode);
         const vendor = await vendorService.create(body);
 
 

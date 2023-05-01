@@ -39,13 +39,13 @@ exports.validate = async (body) => {
     }
 
     // validate person_responsible_id
-    const userPerRes = await userService.get(body.basic_data.person_responsible_id);
-    if (!userPerRes) {
-        return {
-            status: false,
-            message: lang.t('profit_center.err.not_exists_per')
-        };
-    }
+    // const userPerRes = await userService.get(body.basic_data.person_responsible_id);
+    // if (!userPerRes) {
+    //     return {
+    //         status: false,
+    //         message: lang.t('profit_center.err.not_exists_per')
+    //     };
+    // }
 
     // validate department_id
     const department = await departmentService.get(body.basic_data.department_id);
@@ -64,7 +64,7 @@ exports.validate = async (body) => {
             message: lang.t('profit_ctr_group.err.not_exists')
         };
     }
-    
+
     // validate segment_id
     const segment = await segmentService.get(body.basic_data.segment_id);
     if (!segment) {
@@ -73,7 +73,7 @@ exports.validate = async (body) => {
             message: lang.t('segment.err.not_exists')
         };
     }
-    
+
     return { status: true };
 };
 
@@ -152,7 +152,7 @@ exports.update = async (req, res) => {
             status: 'success',
             message: lang.t('profit_center.suc.update'),
             data: updatedProfitCenter
-            
+
         });
     } catch (err) {
         logger.error(req.path);

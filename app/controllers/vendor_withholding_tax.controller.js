@@ -1,10 +1,9 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const vendorService = require('../services/vendor.service');
-const vendorPaymentTransactionsService = require('../services/vendor_pymnt_transc.service');
+const defaultService = require('../services/vendor_withholding_tax.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/vendor_pymnt_transc.validation');
+const { createSchema, updateSchema } = require('../helpers/validations/vendor_withholding_tax.validation');
 
 
 exports.create = async (req, res) => {
@@ -23,15 +22,8 @@ exports.create = async (req, res) => {
             return false;
         }
 
-        // validate vendor_id
-        const vendors = await vendorService.get(body.vendor_id);
-        if (!vendors) {
-            return {
-                status: false,
-                message: lang.t('vendor.err.not_exists')
-            };
-        }
-        const vendor = await vendorPaymentTransactionsService.create(body);
+        const vendor = await defaultService.create(body);
+
 
         res.status(200).send({
             status: 'success',
@@ -66,7 +58,7 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const vendor = await vendorPaymentTransactionsService.get(params.id);
+        const vendor = await defaultService.get(params.id);
         if (!vendor) {
             res.status(400).send({
                 status: 'error',
@@ -84,7 +76,7 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const updateVendor = await vendorPaymentTransactionsService.update(vendor._id, body);
+        const updateVendor = await defaultService.update(vendor._id, body);
 
         res.status(200).send({
             status: 'success',
@@ -118,7 +110,7 @@ exports.read = async (req, res) => {
             return false;
         }
 
-        const vendor = await vendorPaymentTransactionsService.get(params.id);
+        const vendor = await defaultService.get(params.id);
         if (!vendor) {
             res.status(400).send({
                 status: 'error',
@@ -150,11 +142,11 @@ exports.search = async (req, res) => {
         const pagination = query.pagination;
         const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-        const { data, total } = await vendorPaymentTransactionsService.getAll(query);
+        const { data, total } = await defaultService.getAll(query);
 
         res.status(200).send({
             status: 'success',
-            message: lang.t('user.suc.search'),
+            message: lang.t('vendor.suc.search'),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -192,7 +184,7 @@ exports.delete = async (req, res) => {
             return false;
         }
 
-        const vendor = await vendorPaymentTransactionsService.get(params.id);
+        const vendor = await defaultService.get(params.id);
         if (!vendor) {
             res.status(400).send({
                 status: 'error',
@@ -200,7 +192,7 @@ exports.delete = async (req, res) => {
             });
         }
 
-        const deletedVendor = await vendorPaymentTransactionsService.delete(user._id);
+        const deletedVendor = await defaultService.delete(user._id);
 
         res.status(200).send({
             status: 'success',

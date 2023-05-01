@@ -80,15 +80,15 @@ exports.pipeline = (filters) => {
             },
         },
         { $unwind: '$user_responsible' },
-        {
-            $lookup: {
-                from: 'users',
-                localField: 'basic_data.person_responsible_id',
-                foreignField: '_id',
-                as: 'person_responsible'
-            },
-        },
-        { $unwind: '$person_responsible' },
+        // {
+        //     $lookup: {
+        //         from: 'users',
+        //         localField: 'basic_data.person_responsible_id',
+        //         foreignField: '_id',
+        //         as: 'person_responsible'
+        //     },
+        // },
+        // { $unwind: '$person_responsible' },
         {
             $lookup: {
                 from: 'departments',
@@ -131,11 +131,7 @@ exports.mapData = (data) => {
                 first_name: data.user_responsible.first_name,
                 last_name: data.user_responsible.last_name
             },
-            person_responsible: {
-                _id: data.user_responsible._id,
-                first_name: data.person_responsible.first_name,
-                last_name: data.person_responsible.last_name
-            },
+            person_responsible: data.person_responsible,
             department: data.department,
             profit_ctr_group: data.profit_ctr_group,
             segment: data.segment,

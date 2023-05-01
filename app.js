@@ -20,36 +20,44 @@ app.get('/', (req, res) => {
     });
 });
 
-// CHAPTER 1
+//#################### CHAPTER 1 - Major ####################################
 require('./app/routes/user.routes')(app);
-require('./app/routes/department.routes')(app);
-require('./app/routes/controlling_area.routes')(app);
-require('./app/routes/segment.routes')(app);
 require('./app/routes/profit_center.routes')(app);
 require('./app/routes/profit_center_group.routes')(app);
-require('./app/routes/company.routes')(app);
 require('./app/routes/cost_center_category.routes')(app);
 require('./app/routes/cost_center.routes')(app);
+
+//#################### CHAPTER 1 - Minor ####################################
+require('./app/routes/segment.routes')(app);
+require('./app/routes/department.routes')(app);
+require('./app/routes/controlling_area.routes')(app);
+require('./app/routes/company.routes')(app);
 require('./app/routes/hierarcy_area.routes')(app);
-require('./app/routes/primary_cost_element.routes')(app);
-require('./app/routes/secondary_cost_element.routes')(app);
 require('./app/routes/currency.routes')(app);
 
-// CHAPTER 2 
+//#################### CHAPTER 2 - Major ####################################
+require('./app/routes/gl_accounts.routes')(app);
 require('./app/routes/primary_cost_element.routes')(app);
 require('./app/routes/secondary_cost_element.routes')(app);
 require('./app/routes/vendor.routes')(app);
 require('./app/routes/vendor_pymnt_transc.routes')(app);
 require('./app/routes/vendor_company_code_data.routes')(app);
-require('./app/routes/trading_partner.routes')(app);
-require('./app/routes/corporate_group.routes')(app);
+require('./app/routes/vendor_withholding_tax.routes')(app);
+require('./app/routes/customer.routes')(app);
+require('./app/routes/customer_pymnt_transc.routes')(app);
+require('./app/routes/customer_company_code_data.routes')(app);
+require('./app/routes/internal_order.routes')(app);
 require('./app/routes/assets.routes')(app);
-require('./app/routes/secondary_cost_element.routes')(app);
-require('./app/routes/gl_accounts.routes')(app);
+require('./app/routes/bank_key.routes')(app);
+
+
+
+//#################### CHAPTER 2 - Minor ####################################
 require('./app/routes/accountGroup.routes')(app);
 require('./app/routes/valuation_group.routes')(app);
 require('./app/routes/fieldstatusgroup.routes')(app);
-require('./app/routes/internal_order.routes')(app);
+require('./app/routes/trading_partner.routes')(app);
+require('./app/routes/corporate_group.routes')(app);
 
 const port = process.env.APP_PORT || 3200;
 app.listen(port, () => logger.info(`Listening on port ${port}`));

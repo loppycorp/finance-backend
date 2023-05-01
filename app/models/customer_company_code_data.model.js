@@ -4,20 +4,18 @@ const STATUS_ACTIVE = 'ACTIVE';
 const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
-const vendorCompanyCodeData = new mongoose.Schema({
-    vendor_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendor_general_datas' },
-    vendor_code: { type: Number, trim: true, required: false },
+const customerCompanyCodeData = new mongoose.Schema({
+    customer_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'customer_general_datas' },
+    customer_code: { type: Number, trim: true, required: false },
     company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
     account_management: {
         accounting_information: {
             recon_account: { type: Number, trim: true, required: true },
             head_office: { type: String, trim: true, required: true },
             authorization: { type: Number, trim: true, required: false },
-            minority_indic: { type: Number, trim: true, required: false },
-            sort_key: { type: Number, trim: true, required: true },
-            cash_mgmnt_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'cash_mgmnt_grooups' },
-            release_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'release_groups' },
-            certification_date: { type: Date, required: false },
+            sort_key: { type: Number, trim: true, required: false },
+            cash_mgmnt_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'cash_mgmnt_groups' },
+            value_adjustment: { type: Number, trim: true, required: false },
 
         },
         interest_calculation: {
@@ -29,27 +27,36 @@ const vendorCompanyCodeData = new mongoose.Schema({
         reference_data: {
             prev_account_no: { type: Number, trim: true, required: false },
             personnel_number: { type: Number, trim: true, required: false },
+            buying_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'buying_groups' },
+
         },
     },
     payment_transactions: {
         payment_data: {
             payment_terms: { type: Number, trim: true, required: false },
-            chk_cashing_time: { type: Date, required: false },
+            charges_payment_terms: { type: Number, trim: true, required: false },
+            check_paid_time: { type: Date, required: false },
             tolerance_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
-            chk_double_inv: { type: Boolean, required: false },
+            leave: { type: Number, trim: true, required: false },
+            pleding_ind: { type: Number, trim: true, required: false },
+            payment_history: { type: Boolean, required: false },
         },
         auto_payment_transactions: {
             payment_methods: { type: String, trim: true, required: false },
             alternate_payee: { type: String, trim: true, required: false },
-            individual_pmnt: { type: Boolean, required: false },
             exch_limit: { type: Number, trim: true, required: false },
+            single_payment: { type: Boolean, required: false },
             pmnt_adv: { type: Boolean, required: false },
             payment_block: { type: Number, trim: true, required: false },
             house_bank: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'house_banks' },
             grouping_key: { type: Number, trim: true, required: false },
+            next_payee: { type: Number, trim: true, required: false },
+            lockbox: { type: Number, trim: true, required: false },
+
         },
-        invoice_verification: {
-            tolerance_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
+        payment_advice: {
+            rsn_code: { type: Number, trim: true, required: false },
+            selection_rule: { type: Number, trim: true, required: false },
         },
     },
     correspondence: {
@@ -64,14 +71,23 @@ const vendorCompanyCodeData = new mongoose.Schema({
             grouping_key: { type: Number, trim: true, required: false },
         },
         correspondences: {
-            local_process: { type: Boolean, required: false },
             acct_clerk: { type: String, trim: true, required: false },
-            acct_vendor: { type: String, trim: true, required: false },
-            clerk_vendor: { type: String, trim: true, required: false },
+            acct_customer: { type: String, trim: true, required: false },
+            customer_user: { type: String, trim: true, required: false },
             act_clk_tel_no: { type: String, trim: true, required: false },
             clerks_fax: { type: String, trim: true, required: false },
             clerks_internet: { type: String, trim: true, required: false },
             acct_memo: { type: String, trim: true, required: false },
+            bank: { type: Number, trim: true, required: false },
+            invoice: { type: Number, trim: true, required: false },
+            decentralized: { type: Boolean, required: false },
+        },
+        payment_notices: {
+            customer_with: { type: Boolean, required: false },
+            customer_without: { type: Boolean, required: false },
+            sales: { type: Boolean, required: false },
+            accounting: { type: Boolean, required: false },
+            legal_department: { type: Boolean, required: false },
         },
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
@@ -79,8 +95,9 @@ const vendorCompanyCodeData = new mongoose.Schema({
     date_updated: { type: Date, default: () => new Date(), required: true }
 });
 
-module.exports = mongoose.model('vendor_company_code_data', vendorCompanyCodeData);
+module.exports = mongoose.model('customer_company_code_data', customerCompanyCodeData);
 
+module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;
 module.exports.STATUS_DELETED = STATUS_DELETED;

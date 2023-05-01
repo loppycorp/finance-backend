@@ -4,8 +4,8 @@ const STATUS_ACTIVE = 'ACTIVE';
 const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
-const vendorPaymentTransactionsSchema = new mongoose.Schema({
-    vendor_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendors' },
+const customerPaymentTransactionsSchema = new mongoose.Schema({
+    customer_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'customers' },
     vendor_code: { type: Number, trim: true, required: true },
     bank_details: {
         country: { type: String, trim: true, required: false },
@@ -20,9 +20,6 @@ const vendorPaymentTransactionsSchema = new mongoose.Schema({
     },
     payment_transactions: {
         alternative_payee: { type: String, trim: true, required: false },
-        dme_indicator: { type: Number, trim: true, required: false },
-        instruction_key: { type: Number, trim: true, required: false },
-        isr_number: { type: Number, trim: true, required: false },
 
     },
     alternative_payee: {
@@ -35,7 +32,7 @@ const vendorPaymentTransactionsSchema = new mongoose.Schema({
     date_updated: { type: Date, default: () => new Date(), required: true }
 });
 
-module.exports = mongoose.model('vendor_pymnt_transac', vendorPaymentTransactionsSchema);
+module.exports = mongoose.model('customer_pymnt_transac', customerPaymentTransactionsSchema);
 
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;
