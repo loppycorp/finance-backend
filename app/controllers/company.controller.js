@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
 
         const validationBody = createSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -23,7 +23,7 @@ exports.create = async (req, res) => {
 
         const company = await companyService.create(body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('company.suc.create'),
             data: company
@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
 
         const validationBody = updateSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -58,7 +58,7 @@ exports.update = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -68,7 +68,7 @@ exports.update = async (req, res) => {
 
         const company = await companyService.get(params.id);
         if (!company) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('company.err.not_exists')
             });
@@ -76,7 +76,7 @@ exports.update = async (req, res) => {
 
         const updatedDepartment = await companyService.update(company._id, body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('company.suc.update'),
             data: updatedDepartment
@@ -85,7 +85,7 @@ exports.update = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -100,7 +100,7 @@ exports.read = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -110,13 +110,13 @@ exports.read = async (req, res) => {
 
         const company = await companyService.get(params.id);
         if (!company) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('company.err.not_exists')
             });
         }
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('company.suc.read'),
             data: company
@@ -125,7 +125,7 @@ exports.read = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -142,7 +142,7 @@ exports.search = async (req, res) => {
 
         const { data, total } = await companyService.getAll(query);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('company.suc.search'),
             data: data,
@@ -159,7 +159,7 @@ exports.search = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -174,7 +174,7 @@ exports.delete = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -184,7 +184,7 @@ exports.delete = async (req, res) => {
 
         const company = await companyService.get(params.id);
         if (!company) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('company.err.not_exists')
             });
@@ -192,7 +192,7 @@ exports.delete = async (req, res) => {
 
         const deletedDepartment = await companyService.delete(company._id); 
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('company.suc.delete'),
             data: deletedDepartment
@@ -201,7 +201,7 @@ exports.delete = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });

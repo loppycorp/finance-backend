@@ -15,7 +15,7 @@ exports.create = async (req, res) => {
 
         const validationBody = createSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -46,7 +46,7 @@ exports.create = async (req, res) => {
         const vendor = await vendorService.create(body);
 
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.create'),
             data: vendor
@@ -55,7 +55,7 @@ exports.create = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -71,7 +71,7 @@ exports.update = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -81,7 +81,7 @@ exports.update = async (req, res) => {
 
         const vendor = await vendorService.get(params.id);
         if (!vendor) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.not_exists')
             });
@@ -89,7 +89,7 @@ exports.update = async (req, res) => {
 
         const validationBody = updateSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -99,7 +99,7 @@ exports.update = async (req, res) => {
 
         const updateVendor = await vendorService.update(vendor._id, body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.update'),
             data: updateVendor
@@ -108,7 +108,7 @@ exports.update = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -123,7 +123,7 @@ exports.read = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -133,13 +133,13 @@ exports.read = async (req, res) => {
 
         const vendor = await vendorService.get(params.id);
         if (!vendor) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.not_exists')
             });
         }
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.read'),
             data: user
@@ -148,7 +148,7 @@ exports.read = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -165,7 +165,7 @@ exports.search = async (req, res) => {
 
         const { data, total } = await vendorService.getAll(query);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('vendor.suc.search'),
             data: data,
@@ -182,7 +182,7 @@ exports.search = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -197,7 +197,7 @@ exports.delete = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -207,7 +207,7 @@ exports.delete = async (req, res) => {
 
         const vendor = await vendorService.get(params.id);
         if (!vendor) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.not_exists')
             });
@@ -215,7 +215,7 @@ exports.delete = async (req, res) => {
 
         const deletedVendor = await vendorService.delete(user._id);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.delete'),
             data: deletedVendor
@@ -224,7 +224,7 @@ exports.delete = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });

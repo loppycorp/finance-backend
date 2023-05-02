@@ -7,7 +7,7 @@ exports.validateToken = async (req, res, next) => {
     const bearerHeader = req.headers['authorization'];
 
     if (!bearerHeader) {
-        res.status(403).send({
+        return res.status(403).send({
             'status': 'error',
             'message': lang.t('auth.err.token_not_exists')
         });
@@ -22,7 +22,7 @@ exports.validateToken = async (req, res, next) => {
     try {
         const jwtPayload = jwt.verify(bearerToken, process.env.JWT_KEY);
         if (!jwtPayload) {
-            res.status(403).send({
+            return res.status(403).send({
                 'status': 'error',
                 'message': lang.t('auth.err.failed_verify')
             });
@@ -30,7 +30,7 @@ exports.validateToken = async (req, res, next) => {
 
         const validateToken = await userService.validateToken(jwtPayload._id, bearerToken);
         if (!validateToken) {
-            res.status(403).send({
+            return res.status(403).send({
                 'status': 'error',
                 'message': lang.t('auth.err.invalid_token')
             });
@@ -42,7 +42,7 @@ exports.validateToken = async (req, res, next) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(403).send({
+        return res.status(403).send({
             'status': 'error',
             'message': `Auth Error: ${err.message}`
         });

@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
 
         const validationBody = createSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -22,7 +22,7 @@ exports.create = async (req, res) => {
         }
         const internal_order = await internal_order_service.create(body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('internal_order.suc.create'),
             data: internal_order
@@ -31,7 +31,7 @@ exports.create = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -47,7 +47,7 @@ exports.search = async (req, res) => {
 
         const { data, total } = await internal_order_service.getAll(query);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('internal_order.suc.search'),
             data: data,
@@ -64,7 +64,7 @@ exports.search = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -81,7 +81,7 @@ exports.update = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -91,7 +91,7 @@ exports.update = async (req, res) => {
 
         const internal_order = await internal_order_service.get(params.id);
         if (!internal_order) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('internal_order.err.not_exists')
             });
@@ -99,7 +99,7 @@ exports.update = async (req, res) => {
 
         const validationBody = updateSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -109,7 +109,7 @@ exports.update = async (req, res) => {
 
         const updated_internal_order = await internal_order_service.update(internal_order._id, body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('internal_order.suc.update'),
             data: updated_internal_order
@@ -118,7 +118,7 @@ exports.update = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -132,7 +132,7 @@ exports.delete = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -142,7 +142,7 @@ exports.delete = async (req, res) => {
 
         const internal_order = await internal_order_service.get(params.id);
         if (!internal_order) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('internal_order.err.not_exists')
             });
@@ -150,7 +150,7 @@ exports.delete = async (req, res) => {
 
         const deleted_internal_order = await internal_order_service.delete(internal_order._id); 
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('pinternal_order.suc.delete'),
             data: deleted_internal_order
@@ -159,7 +159,7 @@ exports.delete = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });

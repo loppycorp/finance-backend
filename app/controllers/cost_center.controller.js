@@ -122,7 +122,7 @@ exports.create = async (req, res) => {
 
         const validate = await this.validate(body);
         if (!validate.status) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: validate.message,
                 error: validate.error
@@ -132,7 +132,7 @@ exports.create = async (req, res) => {
 
         const costCenter = await costCenterSerrvice.create(body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('cost_center.suc.create'),
             data: costCenter
@@ -141,7 +141,7 @@ exports.create = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -157,7 +157,7 @@ exports.update = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -167,7 +167,7 @@ exports.update = async (req, res) => {
 
         const costCenter = await costCenterSerrvice.get(params.id);
         if (!costCenter) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('cost_center.err.not_exists')
             });
@@ -175,7 +175,7 @@ exports.update = async (req, res) => {
 
         const validate = await this.validate(body);
         if (!validate.status) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: validate.message,
                 error: validate.error
@@ -185,7 +185,7 @@ exports.update = async (req, res) => {
 
         const updatedCostCenter = await costCenterSerrvice.update(costCenter._id, body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('cost_center.suc.update'),
             data: updatedCostCenter
@@ -194,7 +194,7 @@ exports.update = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -209,7 +209,7 @@ exports.read = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -219,13 +219,13 @@ exports.read = async (req, res) => {
 
         const costCenter = await costCenterSerrvice.get(params.id);
         if (!costCenter) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('cost_center.err.not_exists')
             });
         }
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('cost_center.suc.read'),
             data: costCenter
@@ -234,7 +234,7 @@ exports.read = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -251,7 +251,7 @@ exports.search = async (req, res) => {
 
         const { data, total } = await costCenterSerrvice.getAll(query);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('cost_center.suc.search'),
             data: data,
@@ -268,7 +268,7 @@ exports.search = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -283,7 +283,7 @@ exports.delete = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -293,7 +293,7 @@ exports.delete = async (req, res) => {
 
         const costCenter = await costCenterSerrvice.get(params.id);
         if (!costCenter) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('cost_center.err.not_exists')
             });
@@ -301,7 +301,7 @@ exports.delete = async (req, res) => {
 
         const deletedCostCenter = await costCenterSerrvice.delete(costCenter._id);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('cost_center.suc.delete'),
             data: deletedCostCenter
@@ -310,7 +310,7 @@ exports.delete = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });

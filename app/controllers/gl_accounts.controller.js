@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
 
         const validationBody = createSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -22,7 +22,7 @@ exports.create = async (req, res) => {
         }
         const gl_accounts = await gl_accounts_service.create(body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('gl_accounts.suc.create'),
             data: gl_accounts
@@ -31,7 +31,7 @@ exports.create = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -47,7 +47,7 @@ exports.search = async (req, res) => {
 
         const { data, total } = await gl_accounts_service.getAll(query);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('gl_accounts.suc.search'),
             data: data,
@@ -64,7 +64,7 @@ exports.search = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -81,7 +81,7 @@ exports.update = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -91,7 +91,7 @@ exports.update = async (req, res) => {
 
         const gl_accounts = await gl_accounts_service.get(params.id);
         if (!gl_accounts) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('gl_accounts.err.not_exists')
             });
@@ -99,7 +99,7 @@ exports.update = async (req, res) => {
 
         const validationBody = updateSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -109,7 +109,7 @@ exports.update = async (req, res) => {
 
         const updated_gl_accounts = await gl_accounts_service.update(gl_accounts._id, body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('gl_accounts.suc.update'),
             data: updated_gl_accounts
@@ -118,7 +118,7 @@ exports.update = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -132,7 +132,7 @@ exports.delete = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -142,7 +142,7 @@ exports.delete = async (req, res) => {
 
         const gl_accounts = await gl_accounts_service.get(params.id);
         if (!gl_accounts) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('gl_accounts.err.not_exists')
             });
@@ -150,7 +150,7 @@ exports.delete = async (req, res) => {
 
         const deleted_gl_accounts = await gl_accounts_service.delete(gl_accounts._id); 
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('gl_accounts.suc.delete'),
             data: deleted_gl_accounts
@@ -159,7 +159,7 @@ exports.delete = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });

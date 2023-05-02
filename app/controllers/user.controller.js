@@ -16,7 +16,7 @@ exports.authenticate = async (req, res) => {
 
         const validationBody = authSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -26,7 +26,7 @@ exports.authenticate = async (req, res) => {
 
         const validatedUser = await userService.validateCreds(body.username, body.password);
         if (!validatedUser) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('user.err.invalid_pass_user')
             });
@@ -44,14 +44,14 @@ exports.authenticate = async (req, res) => {
 
         const storeToken = await userService.storeToken(validatedUser._id, jwtToken);
         if (!storeToken) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('user.err.failed_to_store_token')
             });
             return false;
         }
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.auth'),
             token: jwtToken
@@ -60,7 +60,7 @@ exports.authenticate = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -75,7 +75,7 @@ exports.create = async (req, res) => {
 
         const validationBody = createSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -85,7 +85,7 @@ exports.create = async (req, res) => {
 
         const user = await userService.create(body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.create'),
             data: user
@@ -94,7 +94,7 @@ exports.create = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -110,7 +110,7 @@ exports.update = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -120,7 +120,7 @@ exports.update = async (req, res) => {
 
         const user = await userService.get(params.id);
         if (!user) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.not_exists')
             });
@@ -128,7 +128,7 @@ exports.update = async (req, res) => {
 
         const validationBody = updateSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -138,7 +138,7 @@ exports.update = async (req, res) => {
 
         const updateUser = await userService.update(user._id, body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.update'),
             data: updateUser
@@ -147,7 +147,7 @@ exports.update = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -162,7 +162,7 @@ exports.read = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -172,13 +172,13 @@ exports.read = async (req, res) => {
 
         const user = await userService.get(params.id);
         if (!user) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.not_exists')
             });
         }
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.read'),
             data: user
@@ -187,7 +187,7 @@ exports.read = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -204,7 +204,7 @@ exports.search = async (req, res) => {
 
         const { data, total } = await userService.getAll(query);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.search'),
             data: data,
@@ -221,7 +221,7 @@ exports.search = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -236,7 +236,7 @@ exports.delete = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -246,7 +246,7 @@ exports.delete = async (req, res) => {
 
         const user = await userService.get(params.id);
         if (!user) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.not_exists')
             });
@@ -254,7 +254,7 @@ exports.delete = async (req, res) => {
 
         const deletedUser = await userService.delete(user._id); 
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.delete'),
             data: deletedUser
@@ -263,7 +263,7 @@ exports.delete = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -278,13 +278,13 @@ exports.profile = async (req, res) => {
 
         const user = await userService.get(auth._id);
         if (!user) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.not_exists')
             });
         }
         
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.profile'),
             data: user
@@ -293,7 +293,7 @@ exports.profile = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -308,7 +308,7 @@ exports.logout = async (req, res) => {
 
         const user = await userService.get(auth._id);
         if (!user) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.not_exists')
             });
@@ -316,13 +316,13 @@ exports.logout = async (req, res) => {
 
         const destroyedToken = await userService.destroyToken(auth._id);
         if (!destroyedToken) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('user.err.token_failed_destroyed')
             });
         }
         
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.logout'),
             data: user
@@ -331,7 +331,7 @@ exports.logout = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });

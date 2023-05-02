@@ -85,7 +85,7 @@ exports.create = async (req, res) => {
 
         const validate = await this.validate(body);
         if (!validate.status) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: validate.message,
                 error: validate.error
@@ -95,7 +95,7 @@ exports.create = async (req, res) => {
 
         const createdProfitCenter = await profitCenterService.create(body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('profit_center.suc.create'),
             data: createdProfitCenter
@@ -104,7 +104,7 @@ exports.create = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -120,7 +120,7 @@ exports.update = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -130,7 +130,7 @@ exports.update = async (req, res) => {
 
         const profitCenter = await profitCenterService.get(params.id);
         if (!profitCenter) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('profit_center.err.not_exists')
             });
@@ -138,7 +138,7 @@ exports.update = async (req, res) => {
 
         const validate = await this.validate(body);
         if (!validate.status) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: validate.message,
                 error: validate.error
@@ -148,7 +148,7 @@ exports.update = async (req, res) => {
 
         const updatedProfitCenter = await profitCenterService.update(profitCenter._id, body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('profit_center.suc.update'),
             data: updatedProfitCenter
@@ -158,7 +158,7 @@ exports.update = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -173,7 +173,7 @@ exports.get = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -183,13 +183,13 @@ exports.get = async (req, res) => {
 
         const profitCenter = await profitCenterService.get(params.id);
         if (!profitCenter) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('profit_center.err.not_exists')
             });
         }
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('profit_center.suc.read'),
             data: profitCenter
@@ -198,7 +198,7 @@ exports.get = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -215,7 +215,7 @@ exports.search = async (req, res) => {
 
         const { data, total } = await profitCenterService.getAll(query);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('profit_center.suc.search'),
             data: data,
@@ -232,7 +232,7 @@ exports.search = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -245,7 +245,7 @@ exports.delete = async (req, res) => {
 
         const params = req.params;
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('profit_center.suc.delete'),
             data: {}
@@ -254,7 +254,7 @@ exports.delete = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });

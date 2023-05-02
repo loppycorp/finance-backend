@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
 
         const validationBody = createSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -23,7 +23,7 @@ exports.create = async (req, res) => {
 
         const currency = await currencytService.create(body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('currency.suc.create'),
             data: currency
@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -58,7 +58,7 @@ exports.update = async (req, res) => {
 
         const currency = await currencytService.get(params.id);
         if (!currency) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('currency.err.not_exists')
             });
@@ -66,7 +66,7 @@ exports.update = async (req, res) => {
 
         const validationBody = updateSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
@@ -76,7 +76,7 @@ exports.update = async (req, res) => {
 
         const updateCurrency = await currencytService.update(currency._id, body);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('currency.suc.update'),
             data: updateCurrency
@@ -85,7 +85,7 @@ exports.update = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -100,7 +100,7 @@ exports.read = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -110,13 +110,13 @@ exports.read = async (req, res) => {
 
         const currency = await currencytService.get(params.id);
         if (!currency) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('currency.err.not_exists')
             });
         }
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('currency.suc.read'),
             data: currency
@@ -125,7 +125,7 @@ exports.read = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -142,7 +142,7 @@ exports.search = async (req, res) => {
 
         const { data, total } = await currencytService.getAll(query);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('currency.suc.search'),
             data: data,
@@ -159,7 +159,7 @@ exports.search = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
@@ -174,7 +174,7 @@ exports.delete = async (req, res) => {
 
         const validationParams = paramsSchema.validate(params, { abortEarly: false });
         if (validationParams.error) {
-            res.status(400).send({
+            return res.status(400).send({
                 'status': 'error',
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
@@ -184,7 +184,7 @@ exports.delete = async (req, res) => {
 
         const currency = await currencytService.get(params.id);
         if (!currency) {
-            res.status(400).send({
+            return res.status(400).send({
                 status: 'error',
                 message: lang.t('currency.err.not_exists')
             });
@@ -192,7 +192,7 @@ exports.delete = async (req, res) => {
 
         const deletedCurrency = await currencytService.delete(currency._id); 
 
-        res.status(200).send({
+        return res.status(200).send({
             status: 'success',
             message: lang.t('currency.suc.delete'),
             data: deletedCurrency
@@ -201,7 +201,7 @@ exports.delete = async (req, res) => {
         logger.error(req.path);
         logger.error(err);
 
-        res.status(500).send({
+        return res.status(500).send({
             status: 'error',
             message: utilities.getMessage(err)
         });
