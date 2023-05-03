@@ -38,7 +38,6 @@ require("./app/routes/hierarcy_area.routes")(app);
 require("./app/routes/currency.routes")(app);
 
 //#################### CHAPTER 2 - Major ####################################
-<<<<<<< HEAD
 require("./app/routes/gl_accounts.routes")(app);
 require("./app/routes/primary_cost_element.routes")(app);
 require("./app/routes/secondary_cost_element.routes")(app);
@@ -67,32 +66,6 @@ require("./app/routes/reverse_accrual_document.routes")(app);
 require("./app/routes/reverse_document.routes")(app);
 require("./app/routes/recurring_entry_header.routes")(app);
 require("./app/routes/recurring_entry_item.routes")(app);
-=======
-require('./app/routes/gl_accounts.routes')(app);
-require('./app/routes/primary_cost_element.routes')(app);
-require('./app/routes/secondary_cost_element.routes')(app);
-require('./app/routes/vendor.routes')(app);
-require('./app/routes/vendor_pymnt_transc.routes')(app);
-require('./app/routes/vendor_company_code_data.routes')(app);
-require('./app/routes/vendor_withholding_tax.routes')(app);
-require('./app/routes/customer.routes')(app);
-require('./app/routes/customer_pymnt_transc.routes')(app);
-require('./app/routes/customer_company_code_data.routes')(app);
-require('./app/routes/internal_order.routes')(app);
-require('./app/routes/assets.routes')(app);
-require('./app/routes/bank_key.routes')(app);
-require('./app/routes/house_bank.routes')(app);
-require('./app/routes/cheque_lot.routes')(app);
-
-
-
-//#################### CHAPTER 2 - Minor ####################################
-require('./app/routes/account_group.routes')(app);
-require('./app/routes/valuation_group.routes')(app);
-require('./app/routes/fieldstatusgroup.routes')(app);
-require('./app/routes/trading_partner.routes')(app);
-require('./app/routes/corporate_group.routes')(app);
->>>>>>> origin/main
 
 const port = process.env.APP_PORT || 3200;
 app.listen(port, () => logger.info(`Listening on port ${port}`));
