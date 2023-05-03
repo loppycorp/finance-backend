@@ -1,63 +1,71 @@
-require('dotenv').config();
-require('./config/mongodb.config');
+require("dotenv").config();
+require("./config/mongodb.config");
 
-const express = require('express');
-const cors = require('cors');
-const { logger } = require('./app/middlewares/logging.middleware');
+const express = require("express");
+const cors = require("cors");
+const { logger } = require("./app/middlewares/logging.middleware");
 
 const app = express();
 
 app.use(express.json());
 
-app.use(cors({
-    origin: '*'
-}));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
-app.get('/', (req, res) => {
-    res.send({
-        'status': 'success',
-        'message': 'Welcome to Asia Fi-Co api'
-    });
+app.get("/", (req, res) => {
+  res.send({
+    status: "success",
+    message: "Welcome to Asia Fi-Co api",
+  });
 });
 
 //#################### CHAPTER 1 - Major ####################################
-require('./app/routes/user.routes')(app);
-require('./app/routes/profit_center.routes')(app);
-require('./app/routes/profit_center_group.routes')(app);
-require('./app/routes/cost_center_category.routes')(app);
-require('./app/routes/cost_center.routes')(app);
+require("./app/routes/user.routes")(app);
+require("./app/routes/profit_center.routes")(app);
+require("./app/routes/profit_center_group.routes")(app);
+require("./app/routes/cost_center_category.routes")(app);
+require("./app/routes/cost_center.routes")(app);
 
 //#################### CHAPTER 1 - Minor ####################################
-require('./app/routes/segment.routes')(app);
-require('./app/routes/department.routes')(app);
-require('./app/routes/controlling_area.routes')(app);
-require('./app/routes/company.routes')(app);
-require('./app/routes/hierarcy_area.routes')(app);
-require('./app/routes/currency.routes')(app);
+require("./app/routes/segment.routes")(app);
+require("./app/routes/department.routes")(app);
+require("./app/routes/controlling_area.routes")(app);
+require("./app/routes/company.routes")(app);
+require("./app/routes/hierarcy_area.routes")(app);
+require("./app/routes/currency.routes")(app);
 
 //#################### CHAPTER 2 - Major ####################################
-require('./app/routes/gl_accounts.routes')(app);
-require('./app/routes/primary_cost_element.routes')(app);
-require('./app/routes/secondary_cost_element.routes')(app);
-require('./app/routes/vendor.routes')(app);
-require('./app/routes/vendor_pymnt_transc.routes')(app);
-require('./app/routes/vendor_company_code_data.routes')(app);
-require('./app/routes/vendor_withholding_tax.routes')(app);
-require('./app/routes/customer.routes')(app);
-require('./app/routes/customer_pymnt_transc.routes')(app);
-require('./app/routes/customer_company_code_data.routes')(app);
-require('./app/routes/internal_order.routes')(app);
-require('./app/routes/assets.routes')(app);
-require('./app/routes/bank_key.routes')(app);
-
-
+require("./app/routes/gl_accounts.routes")(app);
+require("./app/routes/primary_cost_element.routes")(app);
+require("./app/routes/secondary_cost_element.routes")(app);
+require("./app/routes/vendor.routes")(app);
+require("./app/routes/vendor_pymnt_transc.routes")(app);
+require("./app/routes/vendor_company_code_data.routes")(app);
+require("./app/routes/vendor_withholding_tax.routes")(app);
+require("./app/routes/customer.routes")(app);
+require("./app/routes/customer_pymnt_transc.routes")(app);
+require("./app/routes/customer_company_code_data.routes")(app);
+require("./app/routes/internal_order.routes")(app);
+require("./app/routes/assets.routes")(app);
+require("./app/routes/bank_key.routes")(app);
 
 //#################### CHAPTER 2 - Minor ####################################
-require('./app/routes/accountGroup.routes')(app);
-require('./app/routes/valuation_group.routes')(app);
-require('./app/routes/fieldstatusgroup.routes')(app);
-require('./app/routes/trading_partner.routes')(app);
-require('./app/routes/corporate_group.routes')(app);
+require("./app/routes/accountGroup.routes")(app);
+require("./app/routes/valuation_group.routes")(app);
+require("./app/routes/fieldstatusgroup.routes")(app);
+require("./app/routes/trading_partner.routes")(app);
+require("./app/routes/corporate_group.routes")(app);
+
+//#################### CHAPTER 3 ####################################
+require("./app/routes/gl_account_header.routes.js")(app);
+require("./app/routes/gl_account_item.routes.js")(app);
+require("./app/routes/reverse_accrual_document.routes")(app);
+require("./app/routes/reverse_document.routes")(app);
+require("./app/routes/recurring_entry_header.routes")(app);
+require("./app/routes/recurring_entry_item.routes")(app);
 
 const port = process.env.APP_PORT || 3200;
 app.listen(port, () => logger.info(`Listening on port ${port}`));
