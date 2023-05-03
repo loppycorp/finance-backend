@@ -5,21 +5,13 @@ const STATUS_INACTIVE = "INACTIVE";
 const STATUS_DELETED = "DELETED";
 
 const defaultSchema = new mongoose.Schema({
-  gl_account_header_id: {
-    type: mongoose.SchemaTypes.ObjectId,
-    required: true,
-    ref: "gl_account_headers",
-  },
+  gl_account_header_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "gl_account_headers", },
   line_item: {
     pstky: { type: String, trim: true, required: true },
-    gl_account_id: {
-      type: mongoose.SchemaTypes.ObjectId,
-      required: true,
-      ref: "gl_accounts",
-    },
-    sgl_ind: { type: String, trim: true, required: true },
-    t_type: { type: String, trim: true, required: true },
-    new_code: { type: Number, trim: true, required: true },
+    gl_account_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "gl_accounts" },
+    sgl_ind: { type: String, trim: true, required: false },
+    t_type: { type: String, trim: true, required: false },
+    new_code: { type: Number, trim: true, required: false },
   },
   gl_account_document: {
     item: {

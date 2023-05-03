@@ -14,11 +14,7 @@ const defaultSchema = new mongoose.Schema({
     trading_part_ba: { type: String, trim: true, required: true },
     type: { type: String, trim: true, required: true },
     period: { type: String, trim: true, required: true },
-    company_code_id: {
-      type: mongoose.SchemaTypes.ObjectId,
-      required: true,
-      ref: "companies",
-    },
+    company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "companies", },
     currency_rate: { type: String, trim: true, required: true },
     translatn_date: { type: Date, default: () => new Date(), required: true },
     cross_cc_no: { type: Number, trim: true, required: true },

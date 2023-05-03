@@ -60,6 +60,17 @@ exports.getAll = async (query) => {
     return { data: profitCenterData, total: profitCenterTotal };
 };
 
+exports.getByCode = async (profit_center_code, existing_id) => {
+    const options = { profit_center_code: profit_center_code, status: ProfitCenter.STATUS_ACTIVE };
+
+    if (existing_id && existing_id != '')
+        options['_id'] = { $ne: existing_id };
+
+    return await ProfitCenter.countDocuments(options) > 0;
+
+};
+
+
 exports.pipeline = (filters) => {
     return [
         {

@@ -60,6 +60,16 @@ exports.getAll = async (query) => {
     return { data: costCenterData, total: costCenterTotal };
 };
 
+exports.getByCode = async (cost_center_code, existing_id) => {
+    const options = { cost_center_code: cost_center_code, status: CostCenter.STATUS_ACTIVE };
+
+    if (existing_id && existing_id != '')
+        options['_id'] = { $ne: existing_id };
+
+    return await CostCenter.countDocuments(options) > 0;
+
+};
+
 exports.pipeline = (filters) => {
     return [
         {
@@ -123,7 +133,7 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        code: data.code,
+        cost_center_code: data.cost_center_code,
         controlling_area_id: data.controlling_area_id,
         valid_range: data.valid_range,
         names: data.names,
@@ -133,11 +143,7 @@ exports.mapData = (data) => {
                 first_name: data.user_responsible.first_name,
                 last_name: data.user_responsible.last_name
             },
-            person_responsible: {
-                _id: data.person_responsible._id,
-                first_name: data.person_responsible.first_name,
-                last_name: data.person_responsible.last_name
-            },
+            person_responsible: data.person_responsible,
             department_id: data.department_id,
             cost_ctr_category_id: data.cost_ctr_category_id,
             hierarchy_area_id: data.hierarchy_area_id,

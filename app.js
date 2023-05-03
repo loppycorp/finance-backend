@@ -10,16 +10,16 @@ const app = express();
 app.use(express.json());
 
 app.use(
-  cors({
-    origin: "*",
-  })
+    cors({
+        origin: "*",
+    })
 );
 
 app.get("/", (req, res) => {
-  res.send({
-    status: "success",
-    message: "Welcome to Asia Fi-Co api",
-  });
+    res.send({
+        status: "success",
+        message: "Welcome to Asia Fi-Co api",
+    });
 });
 
 //#################### CHAPTER 1 - Major ####################################
@@ -53,11 +53,13 @@ require("./app/routes/assets.routes")(app);
 require("./app/routes/bank_key.routes")(app);
 
 //#################### CHAPTER 2 - Minor ####################################
-require("./app/routes/accountGroup.routes")(app);
+require("./app/routes/account_group.routes")(app);
 require("./app/routes/valuation_group.routes")(app);
 require("./app/routes/fieldstatusgroup.routes")(app);
 require("./app/routes/trading_partner.routes")(app);
 require("./app/routes/corporate_group.routes")(app);
+require("./app/routes/cost_element_category.routes")(app);
+
 
 //#################### CHAPTER 3 ####################################
 require("./app/routes/gl_account_header.routes.js")(app);

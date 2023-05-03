@@ -4,7 +4,7 @@ const LIMIT_DEFAULT_CHAR = 128;
 const LIMIT_DEFAULT_CHAR_L = 100;
 
 const defaultSchema = Joi.object({
-    code: Joi.number().strict().required(),
+    cost_center_code: Joi.number().required(),
     controlling_area_id: Joi.string().trim().required().hex().max(24),
     valid_range: {
         from: Joi.date().required(),
@@ -16,7 +16,7 @@ const defaultSchema = Joi.object({
     },
     basic_data: {
         user_responsible_id: Joi.string().trim().required().hex().max(24).allow(''),
-        person_responsible_id: Joi.string().trim().hex().max(24).allow('', null),
+        person_responsible: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
         department_id: Joi.string().trim().required().hex().max(24).allow('', null),
         cost_ctr_category_id: Joi.string().trim().required().hex().max(24).allow('', null),
         hierarchy_area_id: Joi.string().trim().required().hex().max(24).allow('', null),

@@ -74,6 +74,8 @@ exports.validate = async (body) => {
         };
     }
 
+
+
     return { status: true };
 };
 
@@ -91,6 +93,15 @@ exports.create = async (req, res) => {
                 error: validate.error
             });
 
+        }
+
+        // validate profit_center_code
+        const profitCode = await profitCenterService.getByCode(body.profit_center_code);
+        if (profitCode) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('Profit Center already exists')
+            });
         }
 
         const createdProfitCenter = await profitCenterService.create(body);

@@ -111,6 +111,8 @@ exports.validate = async (body) => {
         };
     }
 
+
+
     return { status: true };
 };
 
@@ -127,7 +129,16 @@ exports.create = async (req, res) => {
                 message: validate.message,
                 error: validate.error
             });
-            return false;
+
+        }
+
+        // validate cost_center_code
+        const costCode = await costCenterSerrvice.getByCode(body.cost_center_code);
+        if (costCode) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('Cost Center already exists')
+            });
         }
 
         const costCenter = await costCenterSerrvice.create(body);
