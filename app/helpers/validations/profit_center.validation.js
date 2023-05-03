@@ -25,7 +25,7 @@ const defaultSchema = Joi.object({
     },
     basic_data: {
         user_responsible_id: Joi.string().trim().required().hex().length(24),
-        person_responsible: Joi.string().trim().required(),
+        person_responsible: Joi.string().trim().allow(''),
         department_id: Joi.string().trim().required().hex().length(24),
         profit_ctr_group_id: Joi.string().trim().required().hex().length(24),
         segment_id: Joi.string().trim().required().hex().length(24)
