@@ -1,9 +1,9 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const accountGroupService = require('../services/accountGroup.service');
+const accountGroupService = require('../services/account_group.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/accountGroup.validation');
+const { createSchema, updateSchema } = require('../helpers/validations/account_group.validation');
 
 exports.create = async (req, res) => {
     try {
@@ -190,7 +190,7 @@ exports.delete = async (req, res) => {
             });
         }
 
-        const deletedaccountGroup = await accountGroupService.delete(accountGroup._id); 
+        const deletedaccountGroup = await accountGroupService.delete(accountGroup._id);
 
         return res.status(200).send({
             status: 'success',

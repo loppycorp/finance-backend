@@ -4,6 +4,8 @@ const Joi = require('joi');
 const LIMIT_DEFAULT_CHAR = 128;
 
 const defaultSchema = Joi.object({
+    bank_country: Joi.string().trim().required().hex().length(24),
+    house_bank_code: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
     bank_country: Joi.string().trim().required().hex().length(24).allow(null),
     bank_key_code: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
     address: {
@@ -21,7 +23,14 @@ const defaultSchema = Joi.object({
     }
 });
 
+const authSchema = Joi.object({
+    username: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+    password: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR)
+});
+
+
 module.exports = {
     createSchema: defaultSchema,
     updateSchema: defaultSchema,
+    authSchema
 };

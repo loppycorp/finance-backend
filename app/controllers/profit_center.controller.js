@@ -90,7 +90,7 @@ exports.create = async (req, res) => {
                 message: validate.message,
                 error: validate.error
             });
-            return false;
+
         }
 
         const createdProfitCenter = await profitCenterService.create(body);
@@ -125,7 +125,7 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
+
         }
 
         const profitCenter = await profitCenterService.get(params.id);
@@ -143,7 +143,7 @@ exports.update = async (req, res) => {
                 message: validate.message,
                 error: validate.error
             });
-            return false;
+
         }
 
         const updatedProfitCenter = await profitCenterService.update(profitCenter._id, body);
