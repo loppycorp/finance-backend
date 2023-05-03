@@ -50,6 +50,8 @@ require('./app/routes/internal_order.routes')(app);
 require('./app/routes/assets.routes')(app);
 require('./app/routes/bank_key.routes')(app);
 require('./app/routes/house_bank.routes')(app);
+require('./app/routes/cheque_lot.routes')(app);
+
 
 
 //#################### CHAPTER 2 - Minor ####################################
