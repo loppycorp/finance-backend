@@ -1,9 +1,10 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const accountGroupService = require('../services/account_group.service');
+const defaultService = require('../services/cost_element_category.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/account_group.validation');
+const { createSchema, updateSchema } = require('../helpers/validations/cost_element_category.validation');
+
 
 exports.create = async (req, res) => {
     try {
@@ -18,15 +19,32 @@ exports.create = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
 
-        const accountGroup = await accountGroupService.create(body);
+        // validate code
+        const Code = await defaultService.getByCode(body.code);
+        if (Code) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('code already exists')
+            });
+        }
+
+        // validate name
+        const Name = await defaultService.getByName(body.name);
+        if (Name) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('name already exists')
+            });
+        }
+
+        const defaultVariable = await defaultService.create(body);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.create'),
-            data: accountGroup
+            message: lang.t('cost_element_category.suc.create'),
+            data: defaultVariable
         });
     } catch (err) {
         logger.error(req.path);
@@ -56,11 +74,11 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const accountGroup = await accountGroupService.get(params.id);
-        if (!accountGroup) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('accountGroup.err.not_exists')
+                message: lang.t('cost_element_category.err.not_exists')
             });
         }
 
@@ -74,12 +92,12 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const updatedaccountGroup = await accountGroupService.update(accountGroup._id, body);
+        const updateVendor = await defaultService.update(defaultVariable._id, body);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.update'),
-            data: updatedaccountGroup
+            message: lang.t('cost_element_category.suc.update'),
+            data: updateVendor
         });
     } catch (err) {
         logger.error(req.path);
@@ -108,18 +126,18 @@ exports.read = async (req, res) => {
             return false;
         }
 
-        const accountGroup = await accountGroupService.get(params.id);
-        if (!accountGroup) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('accountGroup.err.not_exists')
+                message: lang.t('bank.err.not_exists')
             });
         }
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.read'),
-            data: profitCtrGroup
+            message: lang.t('cost_element_category.suc.read'),
+            data: defaultVariable
         });
     } catch (err) {
         logger.error(req.path);
@@ -140,11 +158,11 @@ exports.search = async (req, res) => {
         const pagination = query.pagination;
         const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-        const { data, total } = await accountGroupService.getAll(query);
+        const { data, total } = await defaultService.getAll(query);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.search'),
+            message: lang.t('cost_element_category.suc.search'),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -179,23 +197,22 @@ exports.delete = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
-        const accountGroup = await accountGroupService.get(params.id);
-        if (!accountGroup) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('accountGroup.err.not_exists')
+                message: lang.t('cost_element_category.err.not_exists')
             });
         }
 
-        const deletedaccountGroup = await accountGroupService.delete(accountGroup._id);
+        const deletedVendor = await defaultService.delete(defaultVariable._id);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.delete'),
-            data: deletedaccountGroup
+            message: lang.t('cost_element_category.suc.delete'),
+            data: deletedVendor
         });
     } catch (err) {
         logger.error(req.path);

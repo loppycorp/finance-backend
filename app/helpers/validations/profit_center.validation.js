@@ -3,11 +3,12 @@ const ProfitCenter = require('../../models/profit_center.model');
 
 const LIMIT_DEFAULT_CHAR = 128;
 const LIMIT_DEFAULT_CHAR_LONG = 225;
+const LIMIT_DEFAULT_CODE = 32;
 
 const defaultSchema = Joi.object({
     controlling_area_id: Joi.string().trim().required().hex().max(24),
     description: {
-        profit_center_code: Joi.string().trim().required(),
+        profit_center_code: Joi.number().strict().required(),
         analysis_period: {
             from: Joi.date().required(),
             to: Joi.date().required(),
@@ -25,8 +26,8 @@ const defaultSchema = Joi.object({
     },
     basic_data: {
         user_responsible_id: Joi.string().trim().required().hex().length(24),
-        person_responsible: Joi.string().trim().allow(''),
-        department_id: Joi.string().trim().required().hex().length(24),
+        person_responsible: Joi.string().trim().required().allow(''),
+        department_id: Joi.string().trim().required().hex().length(24).allow(null),
         profit_ctr_group_id: Joi.string().trim().required().hex().length(24),
         segment_id: Joi.string().trim().required().hex().length(24)
     }

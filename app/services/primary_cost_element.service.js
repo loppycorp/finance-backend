@@ -39,30 +39,14 @@ exports.delete = async (id) => {
 
     return await this.get(prmry_cst_elmt._id, { allowed_inactive: true });
 };
-exports.mapData = (data) => {
-    return {
-        _id: data._id,
-        cost_element: data.cost_element,
-        controlling_area_id: data.controlling_area_id,
-        valid_from: data.valid_from,
-        valid_to: data.valid_to,
-        name: data.name,
-        description: data.description,
-        cost_elem_ctgry: data.cost_elem_ctgry,
-        attribute: data.attribute,
-        func_area: data.func_area,
-        status: data.status,
-        date_created: data.date_created,
-        date_updated: data.date_updated
-    };
-};
+
 exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
     const options = { status: Prmry_cst_elmt.STATUS_ACTIVE };
 
-    const results = await Prmry_cst_elmt.find(options)
-        .collation({'locale':'en'}).sort({ [sortBy]: sortOrderInt })
+    const results = await Prmry_cst_elmt.aggregate(this.pipeline(filters))
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
@@ -73,3 +57,51 @@ exports.getAll = async (query) => {
     return { data: prmryCstElmtData, total: prmryCstElmtTotal };
 };
 
+exports.getByCode = async (cost_element, existing_id) => {
+    const options = { cost_element: cost_element, status: Prmry_cst_elmt.STATUS_ACTIVE };
+
+    if (existing_id && existing_id != '')
+        options['_id'] = { $ne: existing_id };
+
+    return await Prmry_cst_elmt.countDocuments(options) > 0;
+
+};
+
+exports.pipeline = (filters) => {
+    return [
+        {
+            $lookup: {
+                from: 'controlling_areas',
+                localField: 'controlling_area_id',
+                foreignField: '_id',
+                as: 'controlling_area_id'
+            },
+        },
+        { $unwind: '$controlling_area_id' },
+        {
+            $lookup: {
+                from: 'cost_elem_categries',
+                localField: 'basic_data.cost_elem_ctgry',
+                foreignField: '_id',
+                as: 'cost_elem_ctgry'
+            },
+        },
+        { $unwind: '$cost_elem_ctgry' },
+        { $match: filters }
+    ];
+};
+
+exports.mapData = (data) => {
+    return {
+        _id: data._id,
+        cost_element: data.cost_element,
+        controlling_area_id: data.controlling_area_id,
+        valid_from: data.valid_from,
+        valid_to: data.valid_to,
+        names: data.names,
+        basic_data: data.basic_data,
+        status: data.status,
+        date_created: data.date_created,
+        date_updated: data.date_updated
+    };
+};

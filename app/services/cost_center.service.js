@@ -48,6 +48,8 @@ exports.getAll = async (query) => {
 
     const filters = { status: CostCenter.STATUS_ACTIVE };
 
+    console.log(this.pipeline(filters));
+
     const results = await CostCenter.aggregate(this.pipeline(filters))
         .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
@@ -60,6 +62,16 @@ exports.getAll = async (query) => {
     return { data: costCenterData, total: costCenterTotal };
 };
 
+exports.getByCode = async (cost_center_code, existing_id) => {
+    const options = { cost_center_code: cost_center_code, status: CostCenter.STATUS_ACTIVE };
+
+    if (existing_id && existing_id != '')
+        options['_id'] = { $ne: existing_id };
+
+    return await CostCenter.countDocuments(options) > 0;
+
+};
+
 exports.pipeline = (filters) => {
     return [
         {
@@ -67,10 +79,10 @@ exports.pipeline = (filters) => {
                 from: 'controlling_areas',
                 localField: 'controlling_area_id',
                 foreignField: '_id',
-                as: 'controlling_area'
+                as: 'controlling_area_id'
             },
         },
-        { $unwind: '$controlling_area' },
+        { $unwind: '$controlling_area_id' },
         {
             $lookup: {
                 from: 'users',
@@ -82,40 +94,58 @@ exports.pipeline = (filters) => {
         { $unwind: '$user_responsible' },
         {
             $lookup: {
-                from: 'users',
-                localField: 'basic_data.person_responsible_id',
-                foreignField: '_id',
-                as: 'person_responsible'
-            },
-        },
-        // { $unwind: '$person_responsible' },
-        {
-            $lookup: {
                 from: 'departments',
                 localField: 'basic_data.department_id',
                 foreignField: '_id',
-                as: 'department'
+                as: 'department_id'
             },
         },
-        // { $unwind: '$department' },
+        // { $unwind: '$department_id' },
         {
             $lookup: {
                 from: 'cost_center_catergories',
                 localField: 'basic_data.cost_ctr_category_id',
                 foreignField: '_id',
-                as: 'cost_center_category'
+                as: 'cost_ctr_category_id'
             },
         },
-        // { $unwind: '$cost_center_category' },
+        // { $unwind: '$cost_ctr_category_id' },
         {
             $lookup: {
                 from: 'hierarcy_areas',
                 localField: 'basic_data.hierarchy_area_id',
                 foreignField: '_id',
-                as: 'hierarchy_area'
+                as: 'hierarchy_area_id'
             },
         },
-        // { $unwind: '$hierarchy_area' },
+        // { $unwind: '$hierarchy_area_id' },
+        {
+            $lookup: {
+                from: 'companies',
+                localField: 'basic_data.company_id',
+                foreignField: '_id',
+                as: 'company_id'
+            },
+        },
+        { $unwind: '$company_id' },
+        {
+            $lookup: {
+                from: 'currencies',
+                localField: 'basic_data.currency_id',
+                foreignField: '_id',
+                as: 'currency_id'
+            },
+        },
+        { $unwind: '$currency_id' },
+        {
+            $lookup: {
+                from: 'profit_centers',
+                localField: 'basic_data.profit_center_id',
+                foreignField: '_id',
+                as: 'profit_center_id'
+            },
+        },
+        { $unwind: '$profit_center_id' },
         { $match: filters }
     ];
 };
@@ -123,7 +153,7 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        code: data.code,
+        cost_center_code: data.cost_center_code,
         controlling_area_id: data.controlling_area_id,
         valid_range: data.valid_range,
         names: data.names,
@@ -133,19 +163,20 @@ exports.mapData = (data) => {
                 first_name: data.user_responsible.first_name,
                 last_name: data.user_responsible.last_name
             },
-            person_responsible: {
-                _id: data.person_responsible._id,
-                first_name: data.person_responsible.first_name,
-                last_name: data.person_responsible.last_name
-            },
+            person_responsible: data.person_responsible,
             department_id: data.department_id,
-            cost_ctr_category_id: data.cost_ctr_category_id,
-            hierarchy_area_id: data.hierarchy_area_id,
-            company_id: data.company,
-            business_area: data.business_area,
-            functional_area: data.functional_area,
+            cost_ctr_category_id: (data.cost_ctr_category_id.length > 0) ? data.cost_ctr_category_id[0] : null,
+            hierarchy_area_id: (data.hierarchy_area_id.length > 0) ? data.hierarchy_area_id[0] : null,
+            company_id: data.company_id,
+            business_area: data.basic_data.business_area,
+            functional_area: data.basic_data.functional_area,
             currency_id: data.currency_id,
-            profit_center_id: data.profit_center_id
+            profit_center_id: {
+                _id: data.profit_center_id._id,
+                description: {
+                    name: data.profit_center_id.description.name
+                },
+            },
         },
         status: data.status,
         date_created: data.date_created,

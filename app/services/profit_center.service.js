@@ -60,6 +60,18 @@ exports.getAll = async (query) => {
     return { data: profitCenterData, total: profitCenterTotal };
 };
 
+exports.getByCode = async (code, existing_id) => {
+    const options = { 'description.profit_center_code': code, status: ProfitCenter.STATUS_ACTIVE };
+
+    console.log(code);
+    if (existing_id && existing_id != '')
+        options['_id'] = { $ne: existing_id };
+
+    return await ProfitCenter.countDocuments(options) > 0;
+
+};
+
+
 exports.pipeline = (filters) => {
     return [
         {
@@ -76,19 +88,10 @@ exports.pipeline = (filters) => {
                 from: 'users',
                 localField: 'basic_data.user_responsible_id',
                 foreignField: '_id',
-                as: 'user_responsible'
+                as: 'user_responsible_id'
             },
         },
-        { $unwind: '$user_responsible' },
-        // {
-        //     $lookup: {
-        //         from: 'users',
-        //         localField: 'basic_data.person_responsible_id',
-        //         foreignField: '_id',
-        //         as: 'person_responsible'
-        //     },
-        // },
-        // { $unwind: '$person_responsible' },
+        { $unwind: '$user_responsible_id' },
         {
             $lookup: {
                 from: 'departments',
@@ -103,10 +106,11 @@ exports.pipeline = (filters) => {
                 from: 'profit_center_groups',
                 localField: 'basic_data.profit_ctr_group_id',
                 foreignField: '_id',
-                as: 'profit_center_group'
+                as: 'profit_ctr_group_id'
             },
         },
-        { $unwind: '$profit_center_group' },
+        { $unwind: '$profit_ctr_group_id' },
+
         {
             $lookup: {
                 from: 'segments',
@@ -126,14 +130,14 @@ exports.mapData = (data) => {
         controlling_area: data.controlling_area,
         description: data.description,
         basic_data: {
-            user_responsible: {
-                _id: data.user_responsible._id,
-                first_name: data.user_responsible.first_name,
-                last_name: data.user_responsible.last_name
+            user_responsible_id: {
+                _id: data.user_responsible_id._id,
+                first_name: data.user_responsible_id.first_name,
+                last_name: data.user_responsible_id.last_name
             },
-            person_responsible: data.person_responsible,
+            person_responsible: data.basic_data.person_responsible,
             department: data.department,
-            profit_ctr_group: data.profit_ctr_group,
+            profit_ctr_group_id: data.profit_ctr_group_id,
             segment: data.segment,
         },
         status: data.status,

@@ -38,15 +38,6 @@ exports.validate = async (body) => {
         };
     }
 
-    // validate person_responsible_id
-    // const userPerRes = await userService.get(body.basic_data.person_responsible_id);
-    // if (!userPerRes) {
-    //     return {
-    //         status: false,
-    //         message: lang.t('profit_center.err.not_exists_per')
-    //     };
-    // }
-
     // validate department_id
     const department = await departmentService.get(body.basic_data.department_id);
     if (!department) {
@@ -73,7 +64,6 @@ exports.validate = async (body) => {
             message: lang.t('segment.err.not_exists')
         };
     }
-
     return { status: true };
 };
 
@@ -91,6 +81,16 @@ exports.create = async (req, res) => {
                 error: validate.error
             });
 
+        }
+
+        // validate profit_center_code
+        const profitCode = await profitCenterService.getByCode(body.description.profit_center_code);
+        console.log(profitCode);
+        if (profitCode) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('Profit Center already exists')
+            });
         }
 
         const createdProfitCenter = await profitCenterService.create(body);
@@ -178,7 +178,7 @@ exports.get = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
+
         }
 
         const profitCenter = await profitCenterService.get(params.id);

@@ -1,5 +1,5 @@
 require('dotenv').config();
-const accountGroup = require('../controllers/account_group.controller');
+const accountGroup = require('../controllers/gl_account_group.controller');
 const pagination = require('../middlewares/pagination.middleware');
 
 module.exports = (app) => {
