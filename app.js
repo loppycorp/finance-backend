@@ -53,11 +53,7 @@ require("./app/routes/assets.routes")(app);
 require("./app/routes/bank_key.routes")(app);
 
 //#################### CHAPTER 2 - Minor ####################################
-<<<<<<< HEAD
-require("./app/routes/account_group.routes")(app);
-=======
 require("./app/routes/gl_account_group.routes")(app);
->>>>>>> origin/main
 require("./app/routes/valuation_group.routes")(app);
 require("./app/routes/fieldstatusgroup.routes")(app);
 require("./app/routes/trading_partner.routes")(app);
