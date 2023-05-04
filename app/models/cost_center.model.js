@@ -18,7 +18,7 @@ const costCtrSchema = new mongoose.Schema({
     basic_data: {
         user_responsible_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'users' },
         person_responsible: { type: String, trim: true, required: false },
-        department_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'departments' },
+        department_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'departments' },
         cost_ctr_category_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'cost_center_catergories' },
         hierarchy_area_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'hierarcy_areas' },
         company_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },

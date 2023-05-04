@@ -3,10 +3,8 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaultService = require("../services/gl_account_header.service");
-const {
-  createSchema,
-  updateSchema,
-} = require("../helpers/validations/gl_account_header.validation");
+const companyService = require("../services/company.service");
+const { createSchema, updateSchema, } = require("../helpers/validations/gl_account_header.validation");
 
 exports.create = async (req, res) => {
   try {
@@ -21,8 +19,19 @@ exports.create = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-      return false;
+
     }
+
+    // Validate company_id
+    const company = await companyService.get(body.basic_data.company_id);
+    if (!company) {
+      return {
+        status: false,
+        message: lang.t('company.err.not_exists')
+      };
+    }
+
+
     const defaultService = await DefaultService.create(body);
 
     return res.status(200).send({

@@ -79,10 +79,10 @@ exports.pipeline = (filters) => {
                 from: 'controlling_areas',
                 localField: 'controlling_area_id',
                 foreignField: '_id',
-                as: 'controlling_area'
+                as: 'controlling_area_id'
             },
         },
-        { $unwind: '$controlling_area' },
+        { $unwind: '$controlling_area_id' },
         {
             $lookup: {
                 from: 'users',
@@ -92,15 +92,6 @@ exports.pipeline = (filters) => {
             },
         },
         { $unwind: '$user_responsible' },
-        // {
-        //     $lookup: {
-        //         from: 'users',
-        //         localField: 'basic_data.person_responsible_id',
-        //         foreignField: '_id',
-        //         as: 'person_responsible'
-        //     },
-        // },
-        // { $unwind: '$person_responsible' },
         {
             $lookup: {
                 from: 'departments',
@@ -174,11 +165,11 @@ exports.mapData = (data) => {
             },
             person_responsible: data.person_responsible,
             department_id: data.department_id,
-            cost_ctr_category_id: data.cost_ctr_category_id,
-            hierarchy_area_id: (data.hierarchy_area_id.length > 0) ? data.hierarchy_area_id[0] : undefined,
+            cost_ctr_category_id: (data.cost_ctr_category_id.length > 0) ? data.cost_ctr_category_id[0] : null,
+            hierarchy_area_id: (data.hierarchy_area_id.length > 0) ? data.hierarchy_area_id[0] : null,
             company_id: data.company_id,
-            business_area: data.business_area,
-            functional_area: data.functional_area,
+            business_area: data.basic_data.business_area,
+            functional_area: data.basic_data.functional_area,
             currency_id: data.currency_id,
             profit_center_id: {
                 _id: data.profit_center_id._id,

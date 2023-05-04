@@ -94,15 +94,13 @@ exports.validate = async (body) => {
     }
 
     // Validate currency
-    const currency = await currencytService.get(body.currency_id);
+    const currency = await currencytService.get(body.basic_data.currency_id);
     if (!currency) {
         return {
             status: false,
             message: lang.t('currency.err.not_exists')
         };
     }
-
-
 
     return { status: true };
 };

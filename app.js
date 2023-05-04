@@ -53,7 +53,7 @@ require("./app/routes/assets.routes")(app);
 require("./app/routes/bank_key.routes")(app);
 
 //#################### CHAPTER 2 - Minor ####################################
-require("./app/routes/account_group.routes")(app);
+require("./app/routes/gl_account_group.routes")(app);
 require("./app/routes/valuation_group.routes")(app);
 require("./app/routes/fieldstatusgroup.routes")(app);
 require("./app/routes/trading_partner.routes")(app);
@@ -61,7 +61,7 @@ require("./app/routes/corporate_group.routes")(app);
 require("./app/routes/cost_element_category.routes")(app);
 
 
-//#################### CHAPTER 3 ####################################
+//#################### CHAPTER 3 - Major #####################################
 require("./app/routes/gl_account_header.routes.js")(app);
 require("./app/routes/gl_account_item.routes.js")(app);
 require("./app/routes/reverse_accrual_document.routes")(app);
