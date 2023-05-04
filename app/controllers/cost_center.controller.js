@@ -88,7 +88,7 @@ exports.validate = async (body) => {
     const company = await companyService.get(body.basic_data.company_id);
     if (!company) {
         return {
-            status: 'error',
+            status: false,
             message: lang.t('company.err.not_exists')
         };
     }
@@ -97,17 +97,8 @@ exports.validate = async (body) => {
     const currency = await currencytService.get(body.currency_id);
     if (!currency) {
         return {
-            status: 'error',
+            status: false,
             message: lang.t('currency.err.not_exists')
-        };
-    }
-
-    // Validate profit_center_id
-    const profitCenter = await profitCenterService.get(body.basic_data.profit_center_id);
-    if (!profitCenter) {
-        return {
-            status: 'error',
-            message: lang.t('profit_center.err.not_exists')
         };
     }
 
@@ -138,6 +129,15 @@ exports.create = async (req, res) => {
             return res.status(400).send({
                 status: 'error',
                 message: lang.t('Cost Center already exists')
+            });
+        }
+
+        // Validate profit_center_id
+        const profitCenter = await profitCenterService.get(body.basic_data.profit_center_id);
+        if (!profitCenter) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('profit_center.err.not_exists')
             });
         }
 

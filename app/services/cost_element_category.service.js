@@ -67,7 +67,6 @@ exports.getByCode = async (code, existing_id) => {
         options['_id'] = { $ne: existing_id };
 
     return await DefaultModel.countDocuments(options) > 0;
-
 };
 
 exports.getByName = async (name, existing_id) => {

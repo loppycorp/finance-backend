@@ -25,8 +25,8 @@ const profitCtrSchema = new mongoose.Schema({
     },
     basic_data: {
         user_responsible_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'users' },
-        person_responsible: { type: String, trim: true, required: false },
-        department_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'departmens' },
+        person_responsible: { type: String, trim: true, required: true },
+        department_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'departments' },
         profit_ctr_group_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'profit_center_groups' },
         segment_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'segments' },
     },
