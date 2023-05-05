@@ -13,7 +13,7 @@ const defaultSchema = new mongoose.Schema({
     doc_header_text: { type: String, trim: true, required: true },
     trading_part_ba: { type: String, trim: true, required: false },
     type: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "document_types", },
-    period: { type: Number, required: true },
+    period: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "fiscal_periods", },
     company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "companies", },
     currency_rate: { type: String, trim: true, required: true },
     translatn_date: { type: Date, required: true },
