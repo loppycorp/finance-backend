@@ -10,16 +10,16 @@ const app = express();
 app.use(express.json());
 
 app.use(
-    cors({
-        origin: "*",
-    })
+  cors({
+    origin: "*",
+  })
 );
 
 app.get("/", (req, res) => {
-    res.send({
-        status: "success",
-        message: "Welcome to Asia Fi-Co api",
-    });
+  res.send({
+    status: "success",
+    message: "Welcome to Asia Fi-Co api",
+  });
 });
 
 //#################### CHAPTER 1 - Major ####################################
@@ -60,7 +60,6 @@ require("./app/routes/trading_partner.routes")(app);
 require("./app/routes/corporate_group.routes")(app);
 require("./app/routes/cost_element_category.routes")(app);
 
-
 //#################### CHAPTER 3 - Major #####################################
 require("./app/routes/gl_account_header.routes.js")(app);
 require("./app/routes/gl_account_item.routes.js")(app);
@@ -74,10 +73,14 @@ require("./app/routes/recurring_entry_item.routes")(app);
 require("./app/routes/posting_document.routes")(app);
 require("./app/routes/gl_account_document.routes")(app);
 
+//#################### CHAPTER 5 - Major #####################################
+require("./app/routes/customer_invoice_header.routes")(app);
+
 //#################### codes ####################################
 require("./app/routes/posting_key.routes")(app);
 require("./app/routes/document_type.routes")(app);
 require("./app/routes/order_type.routes")(app);
+require("./app/routes/fiscal_period.routes")(app);
 
 const port = process.env.APP_PORT || 3200;
 app.listen(port, () => logger.info(`Listening on port ${port}`));

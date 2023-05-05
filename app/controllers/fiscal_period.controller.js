@@ -2,12 +2,11 @@ const { logger } = require("../middlewares/logging.middleware");
 const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaultService = require("../services/gl_account_header.service");
-const companyService = require("../services/company.service");
+const DefaultService = require("../services/fiscal_period.service");
 const {
   createSchema,
   updateSchema,
-} = require("../helpers/validations/gl_account_header.validation");
+} = require("../helpers/validations/fiscal_period.validation");
 
 exports.create = async (req, res) => {
   try {
@@ -22,22 +21,13 @@ exports.create = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
+      return false;
     }
-
-    // Validate company_id
-    const company = await companyService.get(body.basic_data.company_id);
-    if (!company) {
-      return {
-        status: false,
-        message: lang.t("company.err.not_exists"),
-      };
-    }
-
     const defaultService = await DefaultService.create(body);
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("gl_account_header.suc.create"),
+      message: lang.t("fiscal_period.suc.create"),
       data: defaultService,
     });
   } catch (err) {
@@ -62,7 +52,7 @@ exports.search = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("gl_account_header.suc.search"),
+      message: lang.t("fiscal_period.suc.search"),
       data: data,
       pagination: {
         page_num: pageNum,
@@ -107,7 +97,7 @@ exports.update = async (req, res) => {
     if (!defaultService) {
       return res.status(400).send({
         status: "error",
-        message: lang.t("gl_account_header.err.not_exists"),
+        message: lang.t("fiscal_period.err.not_exists"),
       });
     }
 
@@ -128,7 +118,7 @@ exports.update = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("gl_account_header.suc.update"),
+      message: lang.t("fiscal_period.suc.update"),
       data: updated_defaultService,
     });
   } catch (err) {
@@ -163,7 +153,7 @@ exports.delete = async (req, res) => {
     if (!defaultService) {
       return res.status(400).send({
         status: "error",
-        message: lang.t("gl_account_header.err.not_exists"),
+        message: lang.t("fiscal_period.err.not_exists"),
       });
     }
 
@@ -173,7 +163,7 @@ exports.delete = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("gl_account_header.suc.delete"),
+      message: lang.t("fiscal_period.suc.delete"),
       data: deleted_defaultService,
     });
   } catch (err) {
