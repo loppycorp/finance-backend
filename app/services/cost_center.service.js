@@ -63,7 +63,7 @@ exports.getAll = async (query) => {
 };
 
 exports.getByCode = async (cost_center_code, existing_id) => {
-    const options = { cost_center_code: cost_center_code, status: CostCenter.STATUS_ACTIVE };
+    const options = { 'header.cost_center_code': cost_center_code, status: CostCenter.STATUS_ACTIVE };
 
     if (existing_id && existing_id != '')
         options['_id'] = { $ne: existing_id };
@@ -77,75 +77,117 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'controlling_areas',
-                localField: 'controlling_area_id',
+                localField: 'header.controlling_area',
                 foreignField: '_id',
-                as: 'controlling_area_id'
+                as: 'controlling_area'
             },
         },
-        { $unwind: '$controlling_area_id' },
+        { $unwind: '$controlling_area' },
         {
             $lookup: {
                 from: 'users',
-                localField: 'basic_data.user_responsible_id',
+                localField: 'basic_data.basic_data.user_responsible',
                 foreignField: '_id',
                 as: 'user_responsible'
             },
         },
-        { $unwind: '$user_responsible' },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$user_responsible",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'departments',
-                localField: 'basic_data.department_id',
+                localField: 'basic_data.basic_data.department',
                 foreignField: '_id',
-                as: 'department_id'
+                as: 'department'
             },
         },
-        // { $unwind: '$department_id' },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$department",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'cost_center_catergories',
-                localField: 'basic_data.cost_ctr_category_id',
+                localField: 'basic_data.basic_data.cost_ctr_category',
                 foreignField: '_id',
-                as: 'cost_ctr_category_id'
+                as: 'cost_ctr_category'
             },
         },
-        // { $unwind: '$cost_ctr_category_id' },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$cost_ctr_category",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'hierarcy_areas',
-                localField: 'basic_data.hierarchy_area_id',
+                localField: 'basic_data.basic_data.hierarchy_area',
                 foreignField: '_id',
-                as: 'hierarchy_area_id'
+                as: 'hierarchy_area'
             },
         },
-        // { $unwind: '$hierarchy_area_id' },
+        // if the id is optional or nullable
+        // {
+        //     $unwind: {
+        //         path: "$hierarchy_area",
+        //         preserveNullAndEmptyArrays: true
+        //     }
+        // },
         {
             $lookup: {
                 from: 'companies',
-                localField: 'basic_data.company_id',
+                localField: 'basic_data.basic_data.company',
                 foreignField: '_id',
-                as: 'company_id'
+                as: 'company'
             },
         },
-        { $unwind: '$company_id' },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$company",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'currencies',
-                localField: 'basic_data.currency_id',
+                localField: 'basic_data.basic_data.currency',
                 foreignField: '_id',
-                as: 'currency_id'
+                as: 'currency'
             },
         },
-        { $unwind: '$currency_id' },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$currency",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'profit_centers',
-                localField: 'basic_data.profit_center_id',
+                localField: 'basic_data.basic_data.profit_center',
                 foreignField: '_id',
-                as: 'profit_center_id'
+                as: 'profit_center'
             },
         },
-        { $unwind: '$profit_center_id' },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$profit_center",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         { $match: filters }
     ];
 };
@@ -153,28 +195,53 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        cost_center_code: data.cost_center_code,
-        controlling_area_id: data.controlling_area_id,
-        valid_range: data.valid_range,
-        names: data.names,
-        basic_data: {
-            user_responsible: {
-                _id: data.user_responsible._id,
-                first_name: data.user_responsible.first_name,
-                last_name: data.user_responsible.last_name
+        header: {
+            cost_center_code: data.header.cost_center_code,
+            controlling_area: {
+                _id: data.controlling_area._id,
+                name: data.controlling_area.name,
+                description: data.controlling_area.desc
             },
-            person_responsible: data.person_responsible,
-            department_id: data.department_id,
-            cost_ctr_category_id: (data.cost_ctr_category_id.length > 0) ? data.cost_ctr_category_id[0] : null,
-            hierarchy_area_id: (data.hierarchy_area_id.length > 0) ? data.hierarchy_area_id[0] : null,
-            company_id: data.company_id,
-            business_area: data.basic_data.business_area,
-            functional_area: data.basic_data.functional_area,
-            currency_id: data.currency_id,
-            profit_center_id: {
-                _id: data.profit_center_id._id,
-                description: {
-                    name: data.profit_center_id.description.name
+            valid_range: data.header.valid_range,
+        },
+        basic_data: {
+            names: data.basic_data.names,
+            basic_data: {
+                // to show only some of the data if optional or nullable
+                user_responsible: (data.basic_data.basic_data.user_responsible) ? {
+                    _id: data.user_responsible._id,
+                    full_name: `${data.user_responsible.first_name} ${data.user_responsible.last_name}`
+                } : null,
+                person_responsible: data.basic_data.basic_data.person_responsible,
+                department: data.department,
+                cost_ctr_category: (data.cost_ctr_category) ? {
+                    _id: data.cost_ctr_category._id,
+                    code: data.cost_ctr_category.code,
+                    name: data.cost_ctr_category.name
+                } : null,
+                hierarchy_area: (data.hierarchy_area) ? {
+                    _id: data.hierarchy_area._id,
+                    code: data.hierarchy_area.code,
+                    name: data.hierarchy_area.name
+                } : null,
+                company: {
+                    id: data.company._id,
+                    code: data.company.code,
+                    description: data.company.desc
+                },
+                business_area: data.basic_data.basic_data.business_area,
+                functional_area: data.basic_data.basic_data.functional_area,
+                currency: {
+                    _id: data.currency._id,
+                    code: data.currency.code
+                },
+                profit_center: {
+                    _id: data.profit_center._id,
+                    basic_data: {
+                        description: {
+                            name: data.profit_center.basic_data.description.name
+                        },
+                    },
                 },
             },
         },

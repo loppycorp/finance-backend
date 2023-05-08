@@ -1,5 +1,5 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-const defaultModel = require('../models/gl_account_group.model');
+const defaultModel = require('../models/sort_key.model');
 
 exports.create = async (data) => {
     const defaultVariable = await defaultModel.create(data);
@@ -52,27 +52,19 @@ exports.getAll = async (query) => {
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
-    const Data = results.map(o => this.mapData(o));
+    const defaultVariableData = results.map(o => this.mapData(o));
 
-    const Total = await defaultModel.countDocuments(options);
+    const defaultVariableTotal = await defaultModel.countDocuments(options);
 
-    return { data: Data, total: Total };
-};
-
-exports.getByCode = async (code, existing_id) => {
-    const options = { 'header.name': code, status: defaultModel.STATUS_ACTIVE };
-
-    if (existing_id && existing_id != '')
-        options['_id'] = { $ne: existing_id };
-
-    return await defaultModel.countDocuments(options) > 0;
-
+    return { data: defaultVariableData, total: defaultVariableTotal };
 };
 
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        header: data.header,
+        code: data.code,
+        name: data.name,
+        description: data.description,
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated

@@ -12,6 +12,7 @@ const defaultSchema = new mongoose.Schema({
     reference: { type: String, trim: true, required: false },
     doc_header_text: { type: String, trim: true, required: true },
     trading_part_ba: { type: String, trim: true, required: false },
+<<<<<<< HEAD
     type: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
@@ -27,6 +28,11 @@ const defaultSchema = new mongoose.Schema({
       required: true,
       ref: "companies",
     },
+=======
+    type: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "document_types", },
+    period: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "fiscal_periods", },
+    company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "companies", },
+>>>>>>> origin/main
     currency_rate: { type: String, trim: true, required: true },
     translatn_date: { type: Date, required: true },
     cross_cc_no: { type: Number, trim: true, required: true },

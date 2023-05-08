@@ -4,7 +4,7 @@ const STATUS_ACTIVE = 'ACTIVE';
 const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
-const hierarcyAreaSchema = new mongoose.Schema({
+const defaultSchema = new mongoose.Schema({
     code: { type: Number, trim: true, required: true },
     name: { type: String, trim: true, required: true },
     description: { type: String, trim: true, required: false },
@@ -13,7 +13,7 @@ const hierarcyAreaSchema = new mongoose.Schema({
     date_updated: { type: Date, default: () => new Date(), required: true }
 });
 
-module.exports = mongoose.model('hierarcy_area', hierarcyAreaSchema);
+module.exports = mongoose.model('sort_key', defaultSchema);
 
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;

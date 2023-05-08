@@ -24,7 +24,7 @@ exports.validate = async (body) => {
     }
 
     // Validate controlling_area_id
-    const ctrlingArea = await ctrlingAreaService.get(body.controlling_area_id);
+    const ctrlingArea = await ctrlingAreaService.get(body.header.controlling_area);
     if (!ctrlingArea) {
         return {
             status: false,
@@ -33,7 +33,7 @@ exports.validate = async (body) => {
     }
 
     // Validate user_responsible_id
-    const userUserRes = await userService.get(body.basic_data.user_responsible_id);
+    const userUserRes = await userService.get(body.basic_data.basic_data.user_responsible);
     if (!userUserRes) {
         return {
             status: false,
@@ -41,19 +41,8 @@ exports.validate = async (body) => {
         };
     }
 
-    // Validate person_responsible_id
-    const userPerRes = await userService.get(body.basic_data.person_responsible_id);
-    if (body.basic_data.person_responsible_id != null) {
-        if (!userPerRes) {
-            return {
-                status: false,
-                message: lang.t('profit_center.err.not_exists_per')
-            };
-        }
-    }
-
     // Validate department_id
-    const department = await departmentService.get(body.basic_data.department_id);
+    const department = await departmentService.get(body.basic_data.department);
     if (body.basic_data.department) {
         if (!department) {
             return {
@@ -64,7 +53,7 @@ exports.validate = async (body) => {
     }
 
     // Validate cost_ctr_category_id
-    const cstCtrCat = await cstCtrCatService.get(body.basic_data.cost_ctr_category_id);
+    const cstCtrCat = await cstCtrCatService.get(body.basic_data.cost_ctr_category);
     if (body.basic_data.cost_ctr_category_id) {
         if (!cstCtrCat) {
             return {
@@ -75,7 +64,7 @@ exports.validate = async (body) => {
     }
 
     // Validate hierarchy_area_id
-    const hierarcyArea = await hierarcyAreaService.get(body.basic_data.hierarchy_area_id);
+    const hierarcyArea = await hierarcyAreaService.get(body.basic_data.hierarchy_area);
     if (body.basic_data.hierarchy_area_id) {
         if (!hierarcyArea) {
             return {
@@ -85,7 +74,7 @@ exports.validate = async (body) => {
         }
     }
     // Validate company_id
-    const company = await companyService.get(body.basic_data.company_id);
+    const company = await companyService.get(body.basic_data.basic_data.company);
     if (!company) {
         return {
             status: false,
@@ -94,7 +83,7 @@ exports.validate = async (body) => {
     }
 
     // Validate currency
-    const currency = await currencytService.get(body.basic_data.currency_id);
+    const currency = await currencytService.get(body.basic_data.basic_data.currency);
     if (!currency) {
         return {
             status: false,
@@ -122,7 +111,7 @@ exports.create = async (req, res) => {
         }
 
         // validate cost_center_code
-        const costCode = await costCenterSerrvice.getByCode(body.cost_center_code);
+        const costCode = await costCenterSerrvice.getByCode(body.header.cost_center_code);
         if (costCode) {
             return res.status(400).send({
                 status: 'error',
@@ -130,8 +119,8 @@ exports.create = async (req, res) => {
             });
         }
 
-        // Validate profit_center_id
-        const profitCenter = await profitCenterService.get(body.basic_data.profit_center_id);
+        // Validate profit_center_id    
+        const profitCenter = await profitCenterService.get(body.basic_data.basic_data.profit_center);
         if (!profitCenter) {
             return res.status(400).send({
                 status: 'error',
