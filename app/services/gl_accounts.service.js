@@ -39,40 +39,14 @@ exports.delete = async (id) => {
 
     return await this.get(gl_accounts._id, { allowed_inactive: true });
 };
-exports.mapData = (data) => {
-    return {
-        _id: data._id,
-        gl_account_id: data.gl_account_id,
-        company_code_id: data.company_code_id,
-        account_group: data.account_group,
-        statement_account: data.statement_account,
-        balance_sheet_account: data.balance_sheet_account,
-        short_text: data.short_text,
-        long_text: data.long_text,
-        trading_partner: data.trading_partner,
-        account_currency: data.account_currency,
-        local_crcy: data.local_crcy,
-        exchange_rate: data.exchange_rate,
-        valuation_group: data.valuation_group,
-        tax_category: data.tax_category,
-        posting_tax_allowed: data.posting_tax_allowed,
-        item_mgmt: data.item_mgmt,
-        line_item: data.line_item,
-        sort_key: data.sort_key,
-        field_status_group: data.field_status_group,
-        post_automatically: data.post_automatically,
-        status: data.status,
-        date_created: data.date_created,
-        date_updated: data.date_updated
-    };
-};
+
 exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
     const options = { status: Gl_accounts.STATUS_ACTIVE };
 
-    const results = await Gl_accounts.find(options)
-        .collation({'locale':'en'}).sort({ [sortBy]: sortOrderInt })
+    const results = await Gl_accounts.aggregate(this.pipeline(options))
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
@@ -83,3 +57,165 @@ exports.getAll = async (query) => {
     return { data: gl_accountsData, total: gl_accountsTotal };
 };
 
+exports.pipeline = (filters) => {
+    return [
+        {
+            $lookup: {
+                from: 'companies',
+                localField: 'header.company_code',
+                foreignField: '_id',
+                as: 'company_code'
+            },
+        },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$company_code",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'account_groups',
+                localField: 'type_description.chart_of_accounts.account_group',
+                foreignField: '_id',
+                as: 'account_group'
+            },
+        },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$account_group",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'traiding_partners',
+                localField: 'type_description.consoldation_data_in_chart_of_accounts.trading_partner',
+                foreignField: '_id',
+                as: 'traiding_partner'
+            },
+        },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$traiding_partner",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'currencies',
+                localField: 'control_data.account_control_in_company_code.account_currency',
+                foreignField: '_id',
+                as: 'account_currency'
+            },
+        },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$account_currency",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'sort_keys',
+                localField: 'control_data.account_management_in_company_code.sort_key',
+                foreignField: '_id',
+                as: 'sort_key'
+            },
+        },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$sort_key",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'field_status_groups',
+                localField: 'create_bank_interest.field_status_group',
+                foreignField: '_id',
+                as: 'field_status_group'
+            },
+        },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$field_status_group",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        { $match: filters }
+    ];
+};
+
+exports.mapData = (data) => {
+    return {
+        _id: data._id,
+        header: {
+            gl_account_code: data.header.gl_account_code,
+            company_code: {
+                _id: data.company_code._id,
+                code: data.company_code.code,
+                description: data.company_code.desc
+            },
+        },
+        type_description: {
+            chart_of_accounts: {
+                account_group: {
+                    _id: data.account_group._id,
+                    header: {
+                        name: data.account_group.header.name
+                    }
+                },
+                statement_account: data.type_description.chart_of_accounts.statement_account,
+                balance_sheet_account: data.type_description.chart_of_accounts.balance_sheet_account,
+            },
+            description: data.type_description.description,
+
+            consoldation_data_in_chart_of_accounts: {
+                trading_partner: (data.type_description.consoldation_data_in_chart_of_accounts.trading_partner) ? {
+                    _id: data.trading_partner._id,
+                    name: data.trading_partner.name
+                } : null
+            },
+        },
+        control_data: {
+            account_control_in_company_code: {
+                account_currency: {
+                    _id: data.account_currency._id,
+                    code: data.account_currency.code
+                },
+                local_crcy: data.control_data.account_control_in_company_code.local_crcy,
+                exchange_rate: data.control_data.account_control_in_company_code.exchange_rate,
+                valuation_group: data.control_data.account_control_in_company_code.valuation_group,
+                tax_category: data.control_data.account_control_in_company_code.tax_category,
+                posting_tax_allowed: data.control_data.account_control_in_company_code.posting_tax_allowed,
+            },
+            account_management_in_company_code: {
+                item_mgmt: data.control_data.account_management_in_company_code.item_mgmt,
+                line_item: data.control_data.account_management_in_company_code.line_item,
+                sort_key: (data.control_data.account_control_in_company_code.sort_key) ? {
+                    _id: data.sort_key._id,
+                    code: data.sort_key.code,
+                    name: data.sort_key.name
+                } : null,
+            },
+        },
+        create_bank_interest: {
+            field_status_group: {
+                _id: data.field_status_group._id,
+                group_name: data.field_status_group.group_name,
+                description: data.field_status_group.description
+            },
+            post_automatically: data.create_bank_interest.post_automatically,
+        },
+        status: data.status,
+        date_created: data.date_created,
+        date_updated: data.date_updated
+    };
+};

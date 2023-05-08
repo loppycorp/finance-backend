@@ -1,9 +1,9 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const fieldstatusgroupService = require('../services/fieldstatusgroup.service');
+const defaultService = require('../services/sort_key.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/fieldstatusgroup.validation');
+const { createSchema, updateSchema } = require('../helpers/validations/sort_key.validation');
 
 exports.create = async (req, res) => {
     try {
@@ -18,15 +18,14 @@ exports.create = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
 
-        const fieldstatusgroup = await fieldstatusgroupService.create(body);
+        const defaultVariable = await defaultService.create(body);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('fieldstatusgroup.suc.create'),
-            data: fieldstatusgroup
+            message: lang.t('hierarcy_area.suc.create'),
+            data: defaultVariable
         });
     } catch (err) {
         logger.error(req.path);
@@ -53,14 +52,13 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
-        const fieldstatusgroup = await fieldstatusgroupService.get(params.id);
-        if (!fieldstatusgroup) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('fieldstatusgroup.err.not_exists')
+                message: lang.t('hierarcy_area.err.not_exists')
             });
         }
 
@@ -71,14 +69,13 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
 
-        const updatedDepartment = await fieldstatusgroupService.update(fieldstatusgroup._id, body);
+        const updatedDepartment = await defaultService.update(defaultVariable._id, body);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('fieldstatusgroup.suc.update'),
+            message: lang.t('hierarcy_area.suc.update'),
             data: updatedDepartment
         });
     } catch (err) {
@@ -105,21 +102,20 @@ exports.read = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
-        const fieldstatusgroup = await fieldstatusgroupService.get(params.id);
-        if (!fieldstatusgroup) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('fieldstatusgroup.err.not_exists')
+                message: lang.t('hierarcy_area.err.not_exists')
             });
         }
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('fieldstatusgroup.suc.read'),
-            data: fieldstatusgroup
+            message: lang.t('hierarcy_area.suc.read'),
+            data: defaultVariable
         });
     } catch (err) {
         logger.error(req.path);
@@ -140,11 +136,11 @@ exports.search = async (req, res) => {
         const pagination = query.pagination;
         const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-        const { data, total } = await fieldstatusgroupService.getAll(query);
+        const { data, total } = await defaultService.getAll(query);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('fieldstatusgroup.suc.search'),
+            message: lang.t('hierarcy_area.suc.search'),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -179,22 +175,21 @@ exports.delete = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
-        const fieldstatusgroup = await fieldstatusgroupService.get(params.id);
-        if (!fieldstatusgroup) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('fieldstatusgroup.err.not_exists')
+                message: lang.t('hierarcy_area.err.not_exists')
             });
         }
 
-        const deletedDepartment = await fieldstatusgroupService.delete(fieldstatusgroup._id); 
+        const deletedDepartment = await defaultService.delete(defaultVariable._id);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('fieldstatusgroup.suc.delete'),
+            message: lang.t('hierarcy_area.suc.delete'),
             data: deletedDepartment
         });
     } catch (err) {
