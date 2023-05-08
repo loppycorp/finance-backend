@@ -75,6 +75,8 @@ require("./app/routes/gl_account_document.routes")(app);
 
 //#################### CHAPTER 5 - Major #####################################
 require("./app/routes/customer_invoice_header.routes")(app);
+require("./app/routes/bill_exchange_payment_header.routes")(app);
+require("./app/routes/check_information.routes.js")(app);
 
 //#################### codes ####################################
 require("./app/routes/posting_key.routes")(app);

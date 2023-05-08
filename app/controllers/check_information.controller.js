@@ -2,11 +2,12 @@ const { logger } = require("../middlewares/logging.middleware");
 const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaultService = require("../services/primary_cost_element.service");
+const DefaultService = require("../services/check_information.service");
+const companyService = require("../services/company.service");
 const {
   createSchema,
   updateSchema,
-} = require("../helpers/validations/primary_cost_element.validation");
+} = require("../helpers/validations/check_information.validation");
 
 exports.create = async (req, res) => {
   try {
@@ -21,13 +22,22 @@ exports.create = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-      return false;
     }
+
+    // Validate company_id
+    // const company = await companyService.get(body.basic_data.company_id);
+    // if (!company) {
+    //   return {
+    //     status: false,
+    //     message: lang.t("company.err.not_exists"),
+    //   };
+    // }
+
     const defaultService = await DefaultService.create(body);
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc.create"),
+      message: lang.t("check_information.suc.create"),
       data: defaultService,
     });
   } catch (err) {
@@ -52,7 +62,7 @@ exports.search = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc.search"),
+      message: lang.t("check_information.suc.search"),
       data: data,
       pagination: {
         page_num: pageNum,
@@ -97,7 +107,7 @@ exports.update = async (req, res) => {
     if (!defaultService) {
       return res.status(400).send({
         status: "error",
-        message: lang.t("primary_cost_element.err.not_exists"),
+        message: lang.t("check_information.err.not_exists"),
       });
     }
 
@@ -118,7 +128,7 @@ exports.update = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc.update"),
+      message: lang.t("check_information.suc.update"),
       data: updated_defaultService,
     });
   } catch (err) {
@@ -153,7 +163,7 @@ exports.delete = async (req, res) => {
     if (!defaultService) {
       return res.status(400).send({
         status: "error",
-        message: lang.t("primary_cost_element.err.not_exists"),
+        message: lang.t("check_information.err.not_exists"),
       });
     }
 
@@ -163,7 +173,7 @@ exports.delete = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc.delete"),
+      message: lang.t("check_information.suc.delete"),
       data: deleted_defaultService,
     });
   } catch (err) {
