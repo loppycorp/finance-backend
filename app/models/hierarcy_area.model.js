@@ -7,10 +7,10 @@ const STATUS_DELETED = 'DELETED';
 const hierarcyAreaSchema = new mongoose.Schema({
     code: { type: Number, trim: true, required: true },
     name: { type: String, trim: true, required: true },
-    desc: { type: String, trim: true, required: false },
-    status:  { type: String, default: STATUS_ACTIVE, required: true },
+    description: { type: String, trim: true, required: false },
+    status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
-    date_updated: { type: Date,  default: () => new Date(), required: true }
+    date_updated: { type: Date, default: () => new Date(), required: true }
 });
 
 module.exports = mongoose.model('hierarcy_area', hierarcyAreaSchema);

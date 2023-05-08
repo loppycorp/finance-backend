@@ -12,23 +12,27 @@ const STATUS_PROFIT_CTR_ACTIVE_UPDATE = 'ACTIVE_UPDATE';
 const STATUS_PROFIT_CTR_ACTIVE_DELETE = 'ACTIVE_DELETE';
 
 const profitCtrSchema = new mongoose.Schema({
-    controlling_area_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'controlling_areas' },
-    description: {
-        profit_center_code: { type: Number, required: true },
-        analysis_period: {
-            from: { type: Date, required: true },
-            to: { type: Date, required: true },
-        },
-        name: { type: String, trim: true, required: true },
-        long_text: { type: String, trim: true, required: true },
-        status: { type: String, default: STATUS_PROFIT_CTR_INACTIVE_CREATE, required: true },
+    header: {
+        controlling_area: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'controlling_areas' },
     },
     basic_data: {
-        user_responsible_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'users' },
-        person_responsible: { type: String, trim: true, required: true },
-        department_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'departments' },
-        profit_ctr_group_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'profit_center_groups' },
-        segment_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'segments' },
+        description: {
+            profit_center_code: { type: Number, required: true },
+            analysis_period: {
+                from: { type: Date, required: true },
+                to: { type: Date, required: true },
+            },
+            name: { type: String, trim: true, required: true },
+            long_text: { type: String, trim: true, required: true },
+            status: { type: String, default: STATUS_PROFIT_CTR_INACTIVE_CREATE, required: true },
+        },
+        basic_data: {
+            user_responsible: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'users' },
+            person_responsible: { type: String, trim: true, required: true },
+            department: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'departments' },
+            profit_ctr_group: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'profit_center_groups' },
+            segment: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'segments' },
+        },
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
