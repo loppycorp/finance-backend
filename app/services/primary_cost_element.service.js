@@ -17,9 +17,9 @@ exports.get = async (id, options = {}) => {
   const results = await DefaultModel.aggregate(this.pipeline(filters))
   const dftModel = results[0];
 
-  if (!dftModel) return null;
+  if (!defaultModel) return null;
 
-  return this.mapData(dftModel);
+  return this.mapData(defaultModel);
 };
 exports.update = async (id, data) => {
   data.date_updated = new Date();
@@ -64,16 +64,14 @@ exports.getAll = async (query) => {
   return { data: dftModelData, total: dftModelTotal };
 };
 
-// exports.getByCode = async (code, existing_id) => {
-//   const options = {
-//     "header.gl_account_code": code,
-//     status: DefaultModel.STATUS_ACTIVE,
-//   };
+exports.getByCode = async (code, existing_id) => {
+  const options = { "header.cost_element_code": code, status: DefaultModel.STATUS_ACTIVE, };
 
-//   if (existing_id && existing_id != "") options["_id"] = { $ne: existing_id };
+  if (existing_id && existing_id != "")
+    options["_id"] = { $ne: existing_id };
 
-//   return (await DefaultModel.countDocuments(options)) > 0;
-// };
+  return (await DefaultModel.countDocuments(options)) > 0;
+};
 
 exports.pipeline = (filters) => {
   return [
@@ -89,8 +87,13 @@ exports.pipeline = (filters) => {
     { $unwind: '$controlling_area_code', },
     {
       $lookup: {
+<<<<<<< HEAD
         from: 'cost_element_categries',
         localField: 'basic_data.basic_data.cost_element_category',
+=======
+        from: 'cost_element_categories',
+        localField: 'basic_data.basic_data.cost_elem_ctgry',
+>>>>>>> origin/main
         foreignField: '_id',
         as: 'cost_element_category',
       },
