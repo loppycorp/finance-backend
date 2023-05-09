@@ -14,13 +14,8 @@ exports.get = async (id, options = {}) => {
   if (options.allowed_inactive && options.allowed_inactive == true)
     filters.status = DefaultModel.STATUS_INACTIVE;
 
-<<<<<<< HEAD
   const results = await DefaultModel.aggregate(this.pipeline(filters))
   const defaultModel = results[0];
-=======
-  const results = await DefaultModel.aggregate(this.pipeline(filters));
-  const dftModel = results[0];
->>>>>>> origin/main
 
   if (!dftModel) return null;
 
