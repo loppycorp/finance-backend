@@ -184,7 +184,6 @@ exports.get = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-
         }
 
         const profitCenter = await profitCenterService.get(params.id);

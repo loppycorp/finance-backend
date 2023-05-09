@@ -63,7 +63,6 @@ exports.getAll = async (query) => {
 exports.getByCode = async (code, existing_id) => {
     const options = { 'basic_data.description.profit_center_code': code, status: ProfitCenter.STATUS_ACTIVE };
 
-    console.log(code);
     if (existing_id && existing_id != '')
         options['_id'] = { $ne: existing_id };
 

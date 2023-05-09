@@ -59,8 +59,8 @@ require("./app/routes/corporate_group.routes")(app);
 require("./app/routes/cost_element_category.routes")(app);
 
 //#################### CHAPTER 3 - Major #####################################
-require("./app/routes/gl_account_header.routes.js")(app);
-require("./app/routes/gl_account_item.routes.js")(app);
+// require("./app/routes/gl_account_header.routes.js")(app);
+// require("./app/routes/gl_account_item.routes.js")(app);
 require("./app/routes/accrual_deferral_document.routes")(app);
 require("./app/routes/reverse_accrual_document.routes")(app);
 require("./app/routes/reverse_document.routes")(app);
@@ -69,7 +69,9 @@ require("./app/routes/post_document_header.routes")(app);
 require("./app/routes/recurring_entry_header.routes")(app);
 require("./app/routes/recurring_entry_item.routes")(app);
 require("./app/routes/posting_document.routes")(app);
-require("./app/routes/gl_account_document.routes")(app);
+// require("./app/routes/gl_account_document.routes")(app);
+require("./app/routes/gl_account_document_header.routes")(app);
+
 
 //#################### CHAPTER 5 - Major #####################################
 require("./app/routes/customer_invoice_header.routes")(app);
