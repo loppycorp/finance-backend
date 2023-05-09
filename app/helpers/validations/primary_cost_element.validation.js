@@ -4,7 +4,7 @@ const LIMIT_DEFAULT_CHAR = 128;
 
 const defaultSchema = Joi.object({
   header: {
-    cost_element_code: Joi.number().required(),
+    cost_element_code: Joi.string().trim().required().hex().length(24),
     controlling_area_code: Joi.string().trim().required().hex().length(24),
     valid_from: Joi.date().required(),
     valid_to: Joi.date().required(),
@@ -15,7 +15,7 @@ const defaultSchema = Joi.object({
       description: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
     },
     basic_data: {
-      cost_elem_ctgry: Joi.string().trim().required().hex().length(24),
+      cost_element_category: Joi.number().required(),
       attribute: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(""),
       func_area: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(""),
     },

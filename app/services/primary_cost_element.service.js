@@ -15,7 +15,7 @@ exports.get = async (id, options = {}) => {
     filters.status = DefaultModel.STATUS_INACTIVE;
 
   const results = await DefaultModel.aggregate(this.pipeline(filters))
-  const defaultModel = results[0];
+  const dftModel = results[0];
 
   if (!dftModel) return null;
 
@@ -89,14 +89,14 @@ exports.pipeline = (filters) => {
     { $unwind: '$controlling_area_code', },
     {
       $lookup: {
-        from: 'cost_elem_categries',
-        localField: 'basic_data.basic_data.cost_elem_ctgry',
+        from: 'cost_element_categries',
+        localField: 'basic_data.basic_data.cost_element_category',
         foreignField: '_id',
-        as: 'cost_elem_ctgry',
+        as: 'cost_element_category',
       },
     },
     // if the id is optional or nullable
-    { $unwind: '$cost_elem_ctgry', },
+    { $unwind: '$cost_element_category', },
 
     { $match: filters },
   ];
@@ -120,10 +120,10 @@ exports.mapData = (data) => {
         description: data.basic_data.names.description,
       },
       basic_data: {
-        cost_elem_ctgry: {
-          _id: data.cost_elem_ctgry._id,
-          code: data.cost_elem_ctgry.code,
-          name: data.cost_elem_ctgry.name
+        cost_element_category: {
+          _id: data.cost_element_category._id,
+          code: data.cost_element_category.code,
+          name: data.cost_element_category.name
         },
         attribute: data.basic_data.basic_data.attribute,
         func_area: data.basic_data.basic_data.func_area,
