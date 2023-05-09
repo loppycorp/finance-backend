@@ -12,7 +12,10 @@ const costElementCategorySchema = new mongoose.Schema({
   date_updated: { type: Date, default: () => new Date(), required: true },
 });
 
-module.exports = mongoose.model("cost_elem_categry", costElementCategorySchema);
+module.exports = mongoose.model(
+  "cost_element_category",
+  costElementCategorySchema
+);
 
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;
