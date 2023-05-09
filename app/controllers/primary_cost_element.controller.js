@@ -3,10 +3,7 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/primary_cost_element.service");
-const {
-  createSchema,
-  updateSchema,
-} = require("../helpers/validations/primary_cost_element.validation");
+const { createSchema, updateSchema, } = require("../helpers/validations/primary_cost_element.validation");
 
 exports.create = async (req, res) => {
   try {
@@ -21,7 +18,16 @@ exports.create = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-      return false;
+
+    }
+
+    // validate profit_center_code
+    const code = await DefaulService.getByCode(body.header.cost_element_code);
+    if (code) {
+      return res.status(400).send({
+        status: 'error',
+        message: lang.t('Profit Center already exists')
+      });
     }
     const defaulService = await DefaulService.create(body);
 
