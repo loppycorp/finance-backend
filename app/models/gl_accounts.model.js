@@ -23,11 +23,11 @@ const gl_accountSchema = new mongoose.Schema({
     },
     control_data:{
         account_control_in_company_code:{
-            account_currency:{ type: String, trim: true, required: true},
-            local_crcy:{ type: Boolean, required: true},
-            exchange_rate:{ type: String, trim: true, required: true},
-            valuation_group:{ type: String, trim: true, required: true},
-            tax_category:{ type: String, trim: true, required: true},
+            account_currency:{ type: String, trim: true, required: false},
+            local_crcy:{ type: Boolean, required: false},
+            exchange_rate:{ type: String, trim: true, required: false},
+            valuation_group:{ type: String, trim: true, required: false},
+            tax_category:{ type: String, trim: true, required: false},
             posting_tax_allowed:{ type: Boolean,required: true},
         },
         account_management_in_company_code:{
