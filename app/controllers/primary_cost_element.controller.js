@@ -26,7 +26,7 @@ exports.create = async (req, res) => {
     if (code) {
       return res.status(400).send({
         status: 'error',
-        message: lang.t('Profit Center already exists')
+        message: lang.t('Primary Cost Element already exists')
       });
     }
     const defaulService = await DefaulService.create(body);
@@ -48,7 +48,6 @@ exports.create = async (req, res) => {
 };
 
 
-////////// test
 exports.search = async (req, res) => {
   try {
     logger.info(req.path);

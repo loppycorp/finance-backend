@@ -15,7 +15,7 @@ exports.get = async (id, options = {}) => {
     filters.status = DefaultModel.STATUS_INACTIVE;
 
   const results = await DefaultModel.aggregate(this.pipeline(filters))
-  const dftModel = results[0];
+  const defaultModel = results[0];
 
   if (!defaultModel) return null;
 
@@ -87,13 +87,8 @@ exports.pipeline = (filters) => {
     { $unwind: '$controlling_area_code', },
     {
       $lookup: {
-<<<<<<< HEAD
-        from: 'cost_element_categries',
-        localField: 'basic_data.basic_data.cost_element_category',
-=======
         from: 'cost_element_categories',
-        localField: 'basic_data.basic_data.cost_elem_ctgry',
->>>>>>> origin/main
+        localField: 'basic_data.basic_data.cost_element_category',
         foreignField: '_id',
         as: 'cost_element_category',
       },
@@ -108,7 +103,7 @@ exports.mapData = (data) => {
   return {
     _id: data._id,
     header: {
-      cost_element_code: data.cost_element_code,
+      cost_element_code: data.header.cost_element_code,
       controlling_area_code: {
         _id: data.controlling_area_code._id,
         code: data.controlling_area_code.code,
