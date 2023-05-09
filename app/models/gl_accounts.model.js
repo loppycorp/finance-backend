@@ -7,7 +7,7 @@ const STATUS_DELETED = 'DELETED';
 const gl_accountSchema = new mongoose.Schema({
     header: {
         gl_account_code: { type: Number, trim: true, required: true },
-        company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'company_codes' },
+        company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
     },
     type_description: {
         chart_of_accounts: {

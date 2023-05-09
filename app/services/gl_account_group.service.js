@@ -72,7 +72,11 @@ exports.getByCode = async (code, existing_id) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        header: data.header,
+        charts_of_account: data.charts_of_account,
+        account_group: data.account_group,
+        name: data.name,
+        from_account: data.from_account,
+        to_account: data.to_account,
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated

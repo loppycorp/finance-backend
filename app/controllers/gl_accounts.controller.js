@@ -18,8 +18,18 @@ exports.create = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
+
+        // validate
+        const gl_account_code = await gl_accounts_service.getByCode(body.header.gl_account_code);
+        if (gl_account_code) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('G/L Account Code is already exists'),
+            });
+
+        }
+
         const gl_accounts = await gl_accounts_service.create(body);
 
         return res.status(200).send({
@@ -148,7 +158,7 @@ exports.delete = async (req, res) => {
             });
         }
 
-        const deleted_gl_accounts = await gl_accounts_service.delete(gl_accounts._id); 
+        const deleted_gl_accounts = await gl_accounts_service.delete(gl_accounts._id);
 
         return res.status(200).send({
             status: 'success',

@@ -119,7 +119,7 @@ exports.read = async (req, res) => {
         return res.status(200).send({
             status: 'success',
             message: lang.t('accountGroup.suc.read'),
-            data: profitCtrGroup
+            data: accountGroup
         });
     } catch (err) {
         logger.error(req.path);
