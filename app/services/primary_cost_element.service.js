@@ -14,7 +14,8 @@ exports.get = async (id, options = {}) => {
   if (options.allowed_inactive && options.allowed_inactive == true)
     filters.status = DefaultModel.STATUS_INACTIVE;
 
-  const defaultModel = await DefaultModel.findOne(filters);
+  const results = await DefaultModel.aggregate(this.pipeline(filters))
+  const defaultModel = results[0];
 
   if (!defaultModel) return null;
 
@@ -67,34 +68,24 @@ exports.pipeline = (filters) => {
   return [
     {
       $lookup: {
-        from: "cost_element_categories",
-        localField: "header.cost_element_code",
-        foreignField: "_id",
-        as: "cost_element_category",
+        from: 'controlling_areas',
+        localField: 'header.controlling_area_code',
+        foreignField: '_id',
+        as: 'controlling_area_code',
       },
     },
-    // if the id is optional or nullable
-    {
-      $unwind: {
-        path: "$cost_element_category",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
+    // if the id is required
+    { $unwind: '$controlling_area_code', },
     {
       $lookup: {
-        from: "controlling_areas",
-        localField: "header.controlling_area_code",
-        foreignField: "_id",
-        as: "controlling_area",
+        from: 'cost_elem_categries',
+        localField: 'basic_data.basic_data.cost_elem_ctgry',
+        foreignField: '_id',
+        as: 'cost_elem_ctgry',
       },
     },
     // if the id is optional or nullable
-    {
-      $unwind: {
-        path: "$controlling_area",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
+    { $unwind: '$cost_elem_ctgry', },
 
     { $match: filters },
   ];
@@ -104,11 +95,7 @@ exports.mapData = (data) => {
   return {
     _id: data._id,
     header: {
-      cost_element_code: {
-        _id: data.cost_element_code._id,
-        code: data.cost_element_code.code,
-        description: data.cost_element_code.name,
-      },
+      cost_element_code: data.cost_element_code,
       controlling_area_code: {
         _id: data.controlling_area_code._id,
         code: data.controlling_area_code.code,
@@ -119,10 +106,15 @@ exports.mapData = (data) => {
     },
     basic_data: {
       names: {
+        name: data.basic_data.names.name,
         description: data.basic_data.names.description,
       },
       basic_data: {
-        cost_elem_ctgry: data.basic_data.basic_data.cost_elem_ctgry,
+        cost_elem_ctgry: {
+          _id: data.cost_elem_ctgry._id,
+          code: data.cost_elem_ctgry.code,
+          name: data.cost_elem_ctgry.name
+        },
         attribute: data.basic_data.basic_data.attribute,
         func_area: data.basic_data.basic_data.func_area,
       },

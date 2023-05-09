@@ -7,7 +7,7 @@ const STATUS_DELETED = 'DELETED';
 const vendorGeneralDataSchema = new mongoose.Schema({
     header: {
         vendor_code: { type: Number, trim: true, required: false },
-        company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+        company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
         account_group: { type: String, trim: true, required: true },
     },
     address: {
@@ -42,10 +42,10 @@ const vendorGeneralDataSchema = new mongoose.Schema({
     },
     control_data: {
         account_control: {
-            customer_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'customers' },
-            trading_partner_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
-            authorization_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'authorizations' },
-            corporate_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'corporate_groups' },
+            customer: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'customers' },
+            trading_partner: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
+            authorization: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'authorizations' },
+            corporate_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'corporate_groups' },
         },
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
