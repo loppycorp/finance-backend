@@ -5,12 +5,18 @@ const STATUS_INACTIVE = "INACTIVE";
 const STATUS_DELETED = "DELETED";
 
 const gl_accountSchema = new mongoose.Schema({
+<<<<<<< HEAD
   header: {
     gl_account_code: { type: Number, trim: true, required: true },
     company_code: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
       ref: "company_codes",
+=======
+    header: {
+        gl_account_code: { type: Number, trim: true, required: true },
+        company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+>>>>>>> origin/main
     },
   },
   type_description: {

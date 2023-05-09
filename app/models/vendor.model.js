@@ -5,9 +5,11 @@ const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
 const vendorGeneralDataSchema = new mongoose.Schema({
-    vendor_code: { type: Number, trim: true, required: false },
-    company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-    account_group: { type: String, trim: true, required: true },
+    header: {
+        vendor_code: { type: Number, trim: true, required: false },
+        company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+        account_group: { type: String, trim: true, required: true },
+    },
     address: {
         name: {
             title: { type: String, trim: true, required: true },

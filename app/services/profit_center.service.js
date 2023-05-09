@@ -77,7 +77,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'controlling_areas',
-                localField: 'controlling_area',
+                localField: 'header.controlling_area',
                 foreignField: '_id',
                 as: 'controlling_area'
             },

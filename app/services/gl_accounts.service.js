@@ -15,7 +15,8 @@ exports.get = async (id, options = {}) => {
     if (options.allowed_inactive && options.allowed_inactive == true)
         filters.status = Gl_accounts.STATUS_INACTIVE;
 
-    const gl_accounts = await Gl_accounts.findOne(filters);
+    const results = await Gl_accounts.aggregate(this.pipeline(filters))
+    const gl_accounts = results[0];
 
     if (!gl_accounts) return null;
 
@@ -57,6 +58,16 @@ exports.getAll = async (query) => {
     return { data: gl_accountsData, total: gl_accountsTotal };
 };
 
+exports.getByCode = async (code, existing_id) => {
+    const options = { 'header.gl_account_code': code, status: Gl_accounts.STATUS_ACTIVE };
+
+    if (existing_id && existing_id != '')
+        options['_id'] = { $ne: existing_id };
+
+    return await Gl_accounts.countDocuments(options) > 0;
+
+};
+
 exports.pipeline = (filters) => {
     return [
         {
@@ -67,13 +78,7 @@ exports.pipeline = (filters) => {
                 as: 'company_code'
             },
         },
-        // if the id is optional or nullable
-        {
-            $unwind: {
-                path: "$company_code",
-                preserveNullAndEmptyArrays: true
-            }
-        },
+        { $unwind: '$company_code' },
         {
             $lookup: {
                 from: 'account_groups',
@@ -85,7 +90,7 @@ exports.pipeline = (filters) => {
         // if the id is optional or nullable
         {
             $unwind: {
-                path: "$account_group",
+                path: '$account_group',
                 preserveNullAndEmptyArrays: true
             }
         },
@@ -97,13 +102,6 @@ exports.pipeline = (filters) => {
                 as: 'traiding_partner'
             },
         },
-        // if the id is optional or nullable
-        {
-            $unwind: {
-                path: "$traiding_partner",
-                preserveNullAndEmptyArrays: true
-            }
-        },
         {
             $lookup: {
                 from: 'currencies',
@@ -112,13 +110,7 @@ exports.pipeline = (filters) => {
                 as: 'account_currency'
             },
         },
-        // if the id is optional or nullable
-        {
-            $unwind: {
-                path: "$account_currency",
-                preserveNullAndEmptyArrays: true
-            }
-        },
+        { $unwind: '$account_currency', },
         {
             $lookup: {
                 from: 'sort_keys',
@@ -126,13 +118,6 @@ exports.pipeline = (filters) => {
                 foreignField: '_id',
                 as: 'sort_key'
             },
-        },
-        // if the id is optional or nullable
-        {
-            $unwind: {
-                path: "$sort_key",
-                preserveNullAndEmptyArrays: true
-            }
         },
         {
             $lookup: {
@@ -143,12 +128,7 @@ exports.pipeline = (filters) => {
             },
         },
         // if the id is optional or nullable
-        {
-            $unwind: {
-                path: "$field_status_group",
-                preserveNullAndEmptyArrays: true
-            }
-        },
+        { $unwind: '$field_status_group' },
         { $match: filters }
     ];
 };
@@ -157,7 +137,7 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            gl_account_code: data.header.gl_account_code,
+            gl_account_code: data.gl_account_code,
             company_code: {
                 _id: data.company_code._id,
                 code: data.company_code.code,
@@ -168,9 +148,7 @@ exports.mapData = (data) => {
             chart_of_accounts: {
                 account_group: {
                     _id: data.account_group._id,
-                    header: {
-                        name: data.account_group.header.name
-                    }
+                    name: data.account_group.name
                 },
                 statement_account: data.type_description.chart_of_accounts.statement_account,
                 balance_sheet_account: data.type_description.chart_of_accounts.balance_sheet_account,
