@@ -61,7 +61,7 @@ exports.getAll = async (query) => {
 };
 
 exports.getByCode = async (code, existing_id) => {
-    const options = { 'description.profit_center_code': code, status: ProfitCenter.STATUS_ACTIVE };
+    const options = { 'basic_data.description.profit_center_code': code, status: ProfitCenter.STATUS_ACTIVE };
 
     if (existing_id && existing_id != '')
         options['_id'] = { $ne: existing_id };
@@ -76,7 +76,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'controlling_areas',
-                localField: 'controlling_area_id',
+                localField: 'header.controlling_area',
                 foreignField: '_id',
                 as: 'controlling_area'
             },
@@ -85,35 +85,47 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'users',
-                localField: 'basic_data.user_responsible_id',
+                localField: 'basic_data.basic_data.user_responsible',
                 foreignField: '_id',
-                as: 'user_responsible_id'
+                as: 'user_responsible'
             },
         },
-        { $unwind: '$user_responsible_id' },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$user_responsible",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'departments',
-                localField: 'basic_data.department_id',
+                localField: 'basic_data.basic_data.department',
                 foreignField: '_id',
                 as: 'department'
             },
         },
-        { $unwind: '$department' },
+        // if the id is optional or nullable
+        {
+            $unwind: {
+                path: "$department",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'profit_center_groups',
-                localField: 'basic_data.profit_ctr_group_id',
+                localField: 'basic_data.basic_data.profit_ctr_group',
                 foreignField: '_id',
-                as: 'profit_ctr_group_id'
+                as: 'profit_ctr_group'
             },
         },
-        { $unwind: '$profit_ctr_group_id' },
+        { $unwind: '$profit_ctr_group' },
 
         {
             $lookup: {
                 from: 'segments',
-                localField: 'basic_data.segment_id',
+                localField: 'basic_data.basic_data.segment',
                 foreignField: '_id',
                 as: 'segment'
             },
@@ -126,18 +138,33 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        controlling_area: data.controlling_area,
-        description: data.description,
-        basic_data: {
-            user_responsible_id: {
-                _id: data.user_responsible_id._id,
-                first_name: data.user_responsible_id.first_name,
-                last_name: data.user_responsible_id.last_name
+        header: {
+            controlling_area: {
+                _id: data.controlling_area._id,
+                name: data.controlling_area.name,
+                description: data.controlling_area.desc
             },
-            person_responsible: data.basic_data.person_responsible,
-            department: data.department,
-            profit_ctr_group_id: data.profit_ctr_group_id,
-            segment: data.segment,
+        },
+        basic_data: {
+            description: data.basic_data.description,
+            basic_data: {
+                // to show only some of the data if optional or nullable
+                user_responsible: (data.basic_data.basic_data.user_responsible)
+                    ? {
+                        _id: data.user_responsible._id,
+                        full_name: `${data.user_responsible.first_name} ${data.user_responsible.last_name}`
+                    } : null,
+                person_responsible: data.basic_data.basic_data.person_responsible,
+
+                department: (data.basic_data.basic_data.department)
+                    ? {
+                        _id: data.department._id,
+                        name: data.department.name,
+                        description: data.department.desc
+                    } : null,
+                profit_ctr_group: data.profit_ctr_group,
+                segment: data.segment,
+            },
         },
         status: data.status,
         date_created: data.date_created,

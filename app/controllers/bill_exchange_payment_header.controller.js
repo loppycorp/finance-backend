@@ -2,8 +2,12 @@ const { logger } = require("../middlewares/logging.middleware");
 const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaulService = require("../services/primary_cost_element.service");
-const { createSchema, updateSchema, } = require("../helpers/validations/primary_cost_element.validation");
+const DefaultService = require("../services/bill_exchange_payment_header.service");
+const companyService = require("../services/company.service");
+const {
+  createSchema,
+  updateSchema,
+} = require("../helpers/validations/bill_exchange_payment_header.validation");
 
 exports.create = async (req, res) => {
   try {
@@ -18,23 +22,23 @@ exports.create = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-
     }
 
-    // validate profit_center_code
-    const code = await DefaulService.getByCode(body.header.cost_element_code);
-    if (code) {
-      return res.status(400).send({
-        status: 'error',
-        message: lang.t('Primary Cost Element already exists')
-      });
-    }
-    const defaulService = await DefaulService.create(body);
+    // Validate company_id
+    // const company = await companyService.get(body.basic_data.company_id);
+    // if (!company) {
+    //   return {
+    //     status: false,
+    //     message: lang.t("company.err.not_exists"),
+    //   };
+    // }
+
+    const defaultService = await DefaultService.create(body);
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc.create"),
-      data: defaulService,
+      message: lang.t("bill_exchange_payment_header.suc.create"),
+      data: defaultService,
     });
   } catch (err) {
     logger.error(req.path);
@@ -46,8 +50,6 @@ exports.create = async (req, res) => {
     });
   }
 };
-
-
 exports.search = async (req, res) => {
   try {
     logger.info(req.path);
@@ -56,11 +58,11 @@ exports.search = async (req, res) => {
     const pagination = query.pagination;
     const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-    const { data, total } = await DefaulService.getAll(query);
+    const { data, total } = await DefaultService.getAll(query);
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc..search"),
+      message: lang.t("bill_exchange_payment_header.suc.search"),
       data: data,
       pagination: {
         page_num: pageNum,
@@ -101,11 +103,11 @@ exports.update = async (req, res) => {
       return false;
     }
 
-    const defaulService = await DefaulService.get(params.id);
-    if (!defaulService) {
+    const defaultService = await DefaultService.get(params.id);
+    if (!defaultService) {
       return res.status(400).send({
         status: "error",
-        message: lang.t("primary_cost_element.err.not_exists"),
+        message: lang.t("bill_exchange_payment_header.err.not_exists"),
       });
     }
 
@@ -119,15 +121,15 @@ exports.update = async (req, res) => {
       return false;
     }
 
-    const updated_defaulService = await DefaulService.update(
-      defaulService._id,
+    const updated_defaultService = await DefaultService.update(
+      defaultService._id,
       body
     );
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc.update"),
-      data: updated_defaulService,
+      message: lang.t("bill_exchange_payment_header.suc.update"),
+      data: updated_defaultService,
     });
   } catch (err) {
     logger.error(req.path);
@@ -157,20 +159,22 @@ exports.delete = async (req, res) => {
       return false;
     }
 
-    const defaulService = await DefaulService.get(params.id);
-    if (!defaulService) {
+    const defaultService = await DefaultService.get(params.id);
+    if (!defaultService) {
       return res.status(400).send({
         status: "error",
-        message: lang.t("primary_cost_element.err.not_exists"),
+        message: lang.t("bill_exchange_payment_header.err.not_exists"),
       });
     }
 
-    const deleted_defaulService = await DefaulService.delete(defaulService._id);
+    const deleted_defaultService = await DefaultService.delete(
+      defaultService._id
+    );
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc.delete"),
-      data: deleted_defaulService,
+      message: lang.t("bill_exchange_payment_header.suc.delete"),
+      data: deleted_defaultService,
     });
   } catch (err) {
     logger.error(req.path);

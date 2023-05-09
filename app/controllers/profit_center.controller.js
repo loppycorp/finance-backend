@@ -21,7 +21,7 @@ exports.validate = async (body) => {
     }
 
     // validate controlling_area_id
-    const ctrlingArea = await ctrlingAreaService.get(body.controlling_area_id);
+    const ctrlingArea = await ctrlingAreaService.get(body.header.controlling_area);
     if (!ctrlingArea) {
         return {
             status: false,
@@ -30,25 +30,31 @@ exports.validate = async (body) => {
     }
 
     // validate user_responsible_id
-    const userUserRes = await userService.get(body.basic_data.user_responsible_id);
-    if (!userUserRes) {
-        return {
-            status: false,
-            message: lang.t('profit_center.err.not_exists_user')
-        };
+    const getBodyUserRes = body.basic_data.basic_data.user_responsible;
+    if (getBodyUserRes != null) {
+        const userUserRes = await userService.get(getBodyUserRes);
+        if (!userUserRes) {
+            return {
+                status: false,
+                message: lang.t('profit_center.err.not_exists_user')
+            };
+        }
     }
 
     // validate department_id
-    const department = await departmentService.get(body.basic_data.department_id);
-    if (!department) {
-        return {
-            status: false,
-            message: lang.t('department.err.not_exists')
-        };
+    const getBodyDepartment = body.basic_data.basic_data.department;
+    if (getBodyUserRes != null) {
+        const department = await departmentService.get(getBodyDepartment);
+        if (!department) {
+            return {
+                status: false,
+                message: lang.t('department.err.not_exists')
+            };
+        }
     }
 
     // validate profit_ctr_group_id
-    const profitCtrGroup = await profitCtrGroupService.get(body.basic_data.profit_ctr_group_id);
+    const profitCtrGroup = await profitCtrGroupService.get(body.basic_data.basic_data.profit_ctr_group);
     if (!profitCtrGroup) {
         return {
             status: false,
@@ -57,7 +63,7 @@ exports.validate = async (body) => {
     }
 
     // validate segment_id
-    const segment = await segmentService.get(body.basic_data.segment_id);
+    const segment = await segmentService.get(body.basic_data.basic_data.segment);
     if (!segment) {
         return {
             status: false,
@@ -84,7 +90,7 @@ exports.create = async (req, res) => {
         }
 
         // validate profit_center_code
-        const profitCode = await profitCenterService.getByCode(body.description.profit_center_code);
+        const profitCode = await profitCenterService.getByCode(body.basic_data.description.profit_center_code);
         console.log(profitCode);
         if (profitCode) {
             return res.status(400).send({

@@ -4,9 +4,11 @@ const LIMIT_DEFAULT_CHAR = 128;
 const LIMIT_DEFAULT_CHAR_LONG = 225;
 
 const defaultSchema = Joi.object({
-    vendor_code: Joi.number().integer(),
-    company_code_id: Joi.string().trim().required().hex().length(24),
-    account_group: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+    header: {
+        vendor_code: Joi.number().integer(),
+        company_code_id: Joi.string().trim().required().hex().length(24),
+        account_group: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+    },
     address: {
         name: {
             title: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR_LONG),

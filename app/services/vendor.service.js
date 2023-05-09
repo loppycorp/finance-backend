@@ -116,9 +116,11 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        vendor_code: data.vendor_code,
-        company_code_id: data.company_code_id,
-        account_group: data.account_group,
+        header: {
+            vendor_code: data.vendor_code,
+            company_code: data.company_code,
+            account_group: data.account_group,
+        },
         address: data.address,
         control_data: data.control_data,
         status: data.status,

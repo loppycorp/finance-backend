@@ -1,9 +1,9 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const accountGroupService = require('../services/gl_account_group.service');
+const fieldstatusgroupService = require('../services/field_status_group.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/gl_account_group.validation');
+const { createSchema, updateSchema } = require('../helpers/validations/field_status_group.validation');
 
 exports.create = async (req, res) => {
     try {
@@ -21,12 +21,12 @@ exports.create = async (req, res) => {
             return false;
         }
 
-        const accountGroup = await accountGroupService.create(body);
+        const fieldstatusgroup = await fieldstatusgroupService.create(body);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.create'),
-            data: accountGroup
+            message: lang.t('fieldstatusgroup.suc.create'),
+            data: fieldstatusgroup
         });
     } catch (err) {
         logger.error(req.path);
@@ -56,11 +56,11 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const accountGroup = await accountGroupService.get(params.id);
-        if (!accountGroup) {
+        const fieldstatusgroup = await fieldstatusgroupService.get(params.id);
+        if (!fieldstatusgroup) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('accountGroup.err.not_exists')
+                message: lang.t('fieldstatusgroup.err.not_exists')
             });
         }
 
@@ -74,12 +74,12 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const updatedaccountGroup = await accountGroupService.update(accountGroup._id, body);
+        const updatedDepartment = await fieldstatusgroupService.update(fieldstatusgroup._id, body);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.update'),
-            data: updatedaccountGroup
+            message: lang.t('fieldstatusgroup.suc.update'),
+            data: updatedDepartment
         });
     } catch (err) {
         logger.error(req.path);
@@ -108,18 +108,18 @@ exports.read = async (req, res) => {
             return false;
         }
 
-        const accountGroup = await accountGroupService.get(params.id);
-        if (!accountGroup) {
+        const fieldstatusgroup = await fieldstatusgroupService.get(params.id);
+        if (!fieldstatusgroup) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('accountGroup.err.not_exists')
+                message: lang.t('fieldstatusgroup.err.not_exists')
             });
         }
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.read'),
-            data: accountGroup
+            message: lang.t('fieldstatusgroup.suc.read'),
+            data: fieldstatusgroup
         });
     } catch (err) {
         logger.error(req.path);
@@ -140,11 +140,11 @@ exports.search = async (req, res) => {
         const pagination = query.pagination;
         const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-        const { data, total } = await accountGroupService.getAll(query);
+        const { data, total } = await fieldstatusgroupService.getAll(query);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.search'),
+            message: lang.t('fieldstatusgroup.suc.search'),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -179,23 +179,23 @@ exports.delete = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-
+            return false;
         }
 
-        const accountGroup = await accountGroupService.get(params.id);
-        if (!accountGroup) {
+        const fieldstatusgroup = await fieldstatusgroupService.get(params.id);
+        if (!fieldstatusgroup) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('accountGroup.err.not_exists')
+                message: lang.t('fieldstatusgroup.err.not_exists')
             });
         }
 
-        const deletedaccountGroup = await accountGroupService.delete(accountGroup._id);
+        const deletedDepartment = await fieldstatusgroupService.delete(fieldstatusgroup._id);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('accountGroup.suc.delete'),
-            data: deletedaccountGroup
+            message: lang.t('fieldstatusgroup.suc.delete'),
+            data: deletedDepartment
         });
     } catch (err) {
         logger.error(req.path);
