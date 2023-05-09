@@ -2,11 +2,11 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/primary_cost_element.model");
 
 exports.create = async (data) => {
-  const defaultModel = await DefaultModel.create(data);
+  const dftModel = await DefaultModel.create(data);
 
-  if (!defaultModel) return false;
+  if (!dftModel) return false;
 
-  return await this.get(defaultModel._id);
+  return await this.get(dftModel._id);
 };
 exports.get = async (id, options = {}) => {
   const filters = { _id: ObjectId(id), status: DefaultModel.STATUS_ACTIVE };
@@ -14,35 +14,36 @@ exports.get = async (id, options = {}) => {
   if (options.allowed_inactive && options.allowed_inactive == true)
     filters.status = DefaultModel.STATUS_INACTIVE;
 
-  const defaultModel = await DefaultModel.findOne(filters);
+  const results = await DefaultModel.aggregate(this.pipeline(filters));
+  const dftModel = results[0];
 
-  if (!defaultModel) return null;
+  if (!dftModel) return null;
 
-  return this.mapData(defaultModel);
+  return this.mapData(dftModel);
 };
 exports.update = async (id, data) => {
   data.date_updated = new Date();
 
-  const defaultModel = await DefaultModel.findByIdAndUpdate(
+  const dftModel = await DefaultModel.findByIdAndUpdate(
     { _id: ObjectId(id) },
     data
   );
 
-  if (!defaultModel) return false;
+  if (!dftModel) return false;
 
-  return await this.get(defaultModel._id);
+  return await this.get(dftModel._id);
 };
 exports.delete = async (id) => {
-  const defaultModel = await DefaultModel.findByIdAndUpdate(
+  const dftModel = await DefaultModel.findByIdAndUpdate(
     { _id: ObjectId(id) },
     {
       $set: { status: DefaultModel.STATUS_INACTIVE },
     }
   );
 
-  if (!defaultModel) return false;
+  if (!dftModel) return false;
 
-  return await this.get(defaultModel._id, { allowed_inactive: true });
+  return await this.get(dftModel._id, { allowed_inactive: true });
 };
 
 exports.getAll = async (query) => {
@@ -56,12 +57,23 @@ exports.getAll = async (query) => {
     .skip(pageNum > 0 ? (pageNum - 1) * pageLimit : 0)
     .limit(pageLimit);
 
-  const defaultModelData = results.map((o) => this.mapData(o));
+  const dftModelData = results.map((o) => this.mapData(o));
 
-  const defaultModelTotal = await DefaultModel.countDocuments(options);
+  const dftModelTotal = await DefaultModel.countDocuments(options);
 
-  return { data: defaultModelData, total: defaultModelTotal };
+  return { data: dftModelData, total: dftModelTotal };
 };
+
+// exports.getByCode = async (code, existing_id) => {
+//   const options = {
+//     "header.gl_account_code": code,
+//     status: DefaultModel.STATUS_ACTIVE,
+//   };
+
+//   if (existing_id && existing_id != "") options["_id"] = { $ne: existing_id };
+
+//   return (await DefaultModel.countDocuments(options)) > 0;
+// };
 
 exports.pipeline = (filters) => {
   return [
@@ -99,7 +111,6 @@ exports.pipeline = (filters) => {
     { $match: filters },
   ];
 };
-
 exports.mapData = (data) => {
   return {
     _id: data._id,
