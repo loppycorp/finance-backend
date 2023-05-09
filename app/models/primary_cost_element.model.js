@@ -5,26 +5,27 @@ const STATUS_INACTIVE = "INACTIVE";
 const STATUS_DELETED = "DELETED";
 
 const primaryCstElmtSchema = new mongoose.Schema({
-  cost_element: { type: Number, required: true },
-  controlling_area_id: {
-    type: mongoose.SchemaTypes.ObjectId,
-    required: true,
-    ref: "controlling_areas",
+  header: {
+    cost_element_code: {
+      type: mongoose.SchemaTypes.ObjectId,
+      required: true,
+      ref: "cost_element_categories",
+    },
+    controlling_area_code: {
+      type: mongoose.SchemaTypes.ObjectId,
+      required: true,
+      ref: "controlling_areas",
+    },
+    valid_from: { type: Date, required: true },
+    valid_to: { type: Date, required: true },
   },
-  valid_from: { type: Date, required: true },
-  valid_to: { type: Date, required: true },
   basic_data: {
     names: {
       name: { type: String, trim: true, required: true },
       description: { type: String, trim: true, required: true },
     },
-
     basic_data: {
-      cost_elem_ctgry: {
-        type: mongoose.SchemaTypes.ObjectId,
-        required: true,
-        ref: "cost_elem_categries",
-      },
+      cost_elem_ctgry: { type: Number, required: true },
       attribute: { type: String, trim: true, required: false },
       func_area: { type: String, trim: true, required: false },
     },

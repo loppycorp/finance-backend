@@ -2,7 +2,7 @@ const { logger } = require("../middlewares/logging.middleware");
 const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaultService = require("../services/primary_cost_element.service");
+const DefaulService = require("../services/primary_cost_element.service");
 const {
   createSchema,
   updateSchema,
@@ -23,12 +23,12 @@ exports.create = async (req, res) => {
       });
       return false;
     }
-    const defaultService = await DefaultService.create(body);
+    const defaulService = await DefaulService.create(body);
 
     return res.status(200).send({
       status: "success",
       message: lang.t("primary_cost_element.suc.create"),
-      data: defaultService,
+      data: defaulService,
     });
   } catch (err) {
     logger.error(req.path);
@@ -48,11 +48,11 @@ exports.search = async (req, res) => {
     const pagination = query.pagination;
     const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-    const { data, total } = await DefaultService.getAll(query);
+    const { data, total } = await DefaulService.getAll(query);
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("primary_cost_element.suc.search"),
+      message: lang.t("primary_cost_element.suc..search"),
       data: data,
       pagination: {
         page_num: pageNum,
@@ -93,8 +93,8 @@ exports.update = async (req, res) => {
       return false;
     }
 
-    const defaultService = await DefaultService.get(params.id);
-    if (!defaultService) {
+    const defaulService = await DefaulService.get(params.id);
+    if (!defaulService) {
       return res.status(400).send({
         status: "error",
         message: lang.t("primary_cost_element.err.not_exists"),
@@ -111,15 +111,15 @@ exports.update = async (req, res) => {
       return false;
     }
 
-    const updated_defaultService = await DefaultService.update(
-      defaultService._id,
+    const updated_defaulService = await DefaulService.update(
+      defaulService._id,
       body
     );
 
     return res.status(200).send({
       status: "success",
       message: lang.t("primary_cost_element.suc.update"),
-      data: updated_defaultService,
+      data: updated_defaulService,
     });
   } catch (err) {
     logger.error(req.path);
@@ -149,22 +149,20 @@ exports.delete = async (req, res) => {
       return false;
     }
 
-    const defaultService = await DefaultService.get(params.id);
-    if (!defaultService) {
+    const defaulService = await DefaulService.get(params.id);
+    if (!defaulService) {
       return res.status(400).send({
         status: "error",
         message: lang.t("primary_cost_element.err.not_exists"),
       });
     }
 
-    const deleted_defaultService = await DefaultService.delete(
-      defaultService._id
-    );
+    const deleted_defaulService = await DefaulService.delete(defaulService._id);
 
     return res.status(200).send({
       status: "success",
       message: lang.t("primary_cost_element.suc.delete"),
-      data: deleted_defaultService,
+      data: deleted_defaulService,
     });
   } catch (err) {
     logger.error(req.path);
