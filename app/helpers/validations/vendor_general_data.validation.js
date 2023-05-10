@@ -5,16 +5,10 @@ const LIMIT_DEFAULT_CHAR_LONG = 225;
 
 const defaultSchema = Joi.object({
     header: {
-<<<<<<< HEAD:app/helpers/validations/vendor.validation.js
-        vendor_code: Joi.number().integer().allow(''),
-        company_code: Joi.string().trim().required().hex().length(24),
-        account_group: Joi.string().trim().required().hex().length(24),
-=======
         vendor_code: Joi.number().integer(),
         company_code: Joi.string().trim().required().hex().length(24),
         account_group: Joi.string().trim().required().hex().length(24).allow(null),
 
->>>>>>> 4cf72324528aafa6dd9a20e47d7c6587ab534ed8:app/helpers/validations/vendor_general_data.validation.js
     },
     address: {
         name: {

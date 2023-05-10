@@ -46,7 +46,7 @@ require("./app/routes/vendor_withholding_tax.routes")(app);
 require("./app/routes/customer.routes")(app);
 require("./app/routes/customer_pymnt_transc.routes")(app);
 require("./app/routes/customer_company_code_data.routes")(app);
-require("./app/routes/customer_withholding_tax.routes")(app);
+// require("./app/routes/customer_withholding_tax.routes")(app);
 require("./app/routes/internal_order.routes")(app);
 require("./app/routes/assets.routes")(app);
 require("./app/routes/sub_assets.routes")(app);

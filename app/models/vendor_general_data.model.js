@@ -8,11 +8,7 @@ const vendorGeneralDataSchema = new mongoose.Schema({
     header: {
         vendor_code: { type: Number, trim: true, required: false },
         company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-<<<<<<< HEAD:app/models/vendor.model.js
-        account_group: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendor_account_groups' },
-=======
         account_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'vendor_account_groups' },
->>>>>>> 4cf72324528aafa6dd9a20e47d7c6587ab534ed8:app/models/vendor_general_data.model.js
     },
     address: {
         name: {

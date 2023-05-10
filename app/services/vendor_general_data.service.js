@@ -1,10 +1,5 @@
-<<<<<<< HEAD:app/services/vendor.service.js
-const ObjectId = require("mongoose").Types.ObjectId;
-const DefaultModel = require("../models/vendor.model");
-=======
 const ObjectId = require('mongoose').Types.ObjectId;
 const Vendor = require('../models/vendor_general_data.model');
->>>>>>> 4cf72324528aafa6dd9a20e47d7c6587ab534ed8:app/services/vendor_general_data.service.js
 
 exports.create = async (data) => {
     const dftModel = await DefaultModel.create(data);
@@ -89,20 +84,6 @@ exports.pipeline = (filters) => {
             },
         },
         { $unwind: '$company_code' },
-<<<<<<< HEAD:app/services/vendor.service.js
-        {
-            $lookup: {
-                from: 'vendor_account_groups',
-                localField: 'header.account_group',
-                foreignField: '_id',
-                as: 'account_group'
-            },
-        },
-        { $unwind: '$account_group' },
-        {
-            $lookup: {
-                from: 'customer_general_datas',
-=======
         {
             $lookup: {
                 from: 'vendor_account_groups',
@@ -115,7 +96,6 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'customers',
->>>>>>> 4cf72324528aafa6dd9a20e47d7c6587ab534ed8:app/services/vendor_general_data.service.js
                 localField: 'control_data.account_control.customer',
                 foreignField: '_id',
                 as: 'customer'
@@ -159,76 +139,6 @@ exports.mapData = (data) => {
         header: {
             vendor_code: data.header.vendor_code,
             company_code: {
-<<<<<<< HEAD:app/services/vendor.service.js
-                _id: data.company_code._id,
-                code: data.company_code.code,
-                description: data.company_code.desc
-            },
-            account_group: {
-                _id: data.account_group._id,
-                code: data.account_group.header.account_group,
-                description: data.account_group.general_data.meaning
-            },
-        },
-        address: {
-            name: {
-                title: data.address.name.title,
-                name: data.address.name.name,
-            },
-            search_terms: {
-                search_term_1: data.address.search_terms.search_term_1,
-                search_term_2: data.address.search_terms.search_term_2,
-            },
-            street_address: {
-                street: data.address.street_address.street,
-                house_number: data.address.street_address.house_number,
-                postal_code: data.address.street_address.postal_code,
-                city: data.address.street_address.city,
-                country: data.address.street_address.country,
-                region: data.address.street_address.region,
-            },
-            po_box_address: {
-                po_box: data.address.po_box_address.po_box,
-                postal_code: data.address.po_box_address.postal_code,
-                company_postal_code: data.address.po_box_address.company_postal_code,
-            },
-            communication: {
-                language: data.address.communication.language,
-                telephone: data.address.communication.telephone,
-                mobile_phone: data.address.communication.mobile_phone,
-                fax: data.address.communication.fax,
-                email: data.address.communication.email,
-            },
-        },
-        control_data: {
-            account_control: {
-                customer: {
-                    customer: (data.control_data.account_control.customer) ? {
-                        _id: data.customer._id,
-                        name: data.customer.name
-                    } : null
-                },
-                trading_partner: {
-                    trading_partner: (data.control_data.account_control.trading_partner) ? {
-                        _id: data.trading_partner._id,
-                        name: data.trading_partner.name
-                    } : null
-                },
-                authorization: {
-                    authorization: (data.control_data.account_control.authorization) ? {
-                        _id: data.authorization._id,
-                        name: data.authorization.name
-                    } : null
-                },
-                corporate_group: {
-                    corporate_group: (data.control_data.account_control.corporate_group) ? {
-                        _id: data.corporate_group._id,
-                        name: data.corporate_group.name
-                    } : null
-                },
-            },
-        },
-=======
                 _id: data.company_code._id
             },
             account_group: {
@@ -257,7 +167,6 @@ exports.mapData = (data) => {
             payment_transactions: data.payment_transactions.payment_transactions,
             alternative_payee: data.payment_transactions.alternative_payee,
         },
->>>>>>> 4cf72324528aafa6dd9a20e47d7c6587ab534ed8:app/services/vendor_general_data.service.js
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated

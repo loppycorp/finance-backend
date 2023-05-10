@@ -1,21 +1,11 @@
-<<<<<<< HEAD:app/controllers/vendor.controller.js
 const { logger } = require("../middlewares/logging.middleware");
 const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
+const vendorService = require("../services/vendor_general_data.service");
+const companyCodeService = require("../services/company.service");
 const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaulService = require("../services/vendor.service");
-const CompanyService = require("../services/company.service");
-const { createSchema, updateSchema, } = require("../helpers/validations/vendor.validation");
-=======
-const { logger } = require('../middlewares/logging.middleware');
-const lang = require('../helpers/lang.helper');
-const utilities = require('../helpers/utilities.helper');
-const vendorService = require('../services/vendor_general_data.service');
-const companyCodeService = require('../services/company.service');
-const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/vendor_general_data.validation');
+const { createSchema, updateSchema } = require("../helpers/validations/vendor_general_data.validation");
 
->>>>>>> 4cf72324528aafa6dd9a20e47d7c6587ab534ed8:app/controllers/vendor_general_data.controller.js
 
 exports.create = async (req, res) => {
   try {
@@ -30,37 +20,14 @@ exports.create = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-
-<<<<<<< HEAD:app/controllers/vendor.controller.js
-=======
-        // validate company_code_id
-        const companyCode = await companyCodeService.get(body.header.company_code);
-        if (!companyCode) {
-            return {
-                status: false,
-                message: lang.t('company_code.err.not_exists')
-            };
-        }
-
-
-        // console.log(vendorCode);
-        const vendor = await vendorService.create(body);
-
-
-        return res.status(200).send({
-            status: 'success',
-            message: lang.t('user.suc.create'),
-            data: vendor
-        });
-    } catch (err) {
-        logger.error(req.path);
-        logger.error(err);
-
-        return res.status(500).send({
-            status: 'error',
-            message: utilities.getMessage(err)
-        });
->>>>>>> 4cf72324528aafa6dd9a20e47d7c6587ab534ed8:app/controllers/vendor_general_data.controller.js
+    }
+    // validate company_code_id
+    const companyCode = await companyCodeService.get(body.header.company_code);
+    if (!companyCode) {
+      return {
+        status: false,
+        message: lang.t('company_code.err.not_exists')
+      };
     }
 
     // validate 

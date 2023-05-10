@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-const { logger } = require("../middlewares/logging.middleware");
-const lang = require("../helpers/lang.helper");
-const utilities = require("../helpers/utilities.helper");
-const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaulService = require("../services/vendor_withholding_tax.service");
-const CompanyService = require("../services/company.service");
-const VendorService = require("../services/vendor.service");
-const { createSchema, updateSchema, } = require("../helpers/validations/vendor_withholding_tax.validation");
-=======
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
@@ -15,7 +5,6 @@ const defaultService = require('../services/_vendor_withholding_tax.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
 const { createSchema, updateSchema } = require('../helpers/validations/vendor_withholding_tax.validation');
 
->>>>>>> 4cf72324528aafa6dd9a20e47d7c6587ab534ed8
 
 exports.create = async (req, res) => {
   try {
