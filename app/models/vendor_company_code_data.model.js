@@ -5,9 +5,10 @@ const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
 const vendorCompanyCodeData = new mongoose.Schema({
-    vendor_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendor_general_datas' },
-    vendor_code: { type: Number, trim: true, required: false },
-    company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+    header: {
+        vendor_code: { type: Number, trim: true, required: false },
+        company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+    },
     account_management: {
         accounting_information: {
             recon_account: { type: Number, trim: true, required: true },
@@ -15,7 +16,7 @@ const vendorCompanyCodeData = new mongoose.Schema({
             authorization: { type: Number, trim: true, required: false },
             minority_indic: { type: Number, trim: true, required: false },
             sort_key: { type: Number, trim: true, required: true },
-            cash_mgmnt_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'cash_mgmnt_grooups' },
+            cash_mgmnt_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'cash_mgmnt_groups' },
             release_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'release_groups' },
             certification_date: { type: Date, required: false },
 
@@ -35,7 +36,7 @@ const vendorCompanyCodeData = new mongoose.Schema({
         payment_data: {
             payment_terms: { type: Number, trim: true, required: false },
             chk_cashing_time: { type: Date, required: false },
-            tolerance_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
+            tolerance_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
             chk_double_inv: { type: Boolean, required: false },
         },
         auto_payment_transactions: {
@@ -49,7 +50,7 @@ const vendorCompanyCodeData = new mongoose.Schema({
             grouping_key: { type: Number, trim: true, required: false },
         },
         invoice_verification: {
-            tolerance_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
+            tolerance_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
         },
     },
     correspondence: {
@@ -73,6 +74,21 @@ const vendorCompanyCodeData = new mongoose.Schema({
             clerks_internet: { type: String, trim: true, required: false },
             acct_memo: { type: String, trim: true, required: false },
         },
+    },
+    with_tax_information: {
+        with_tax_information: [{
+            wth_t_ty: { type: String, required: false, trim: true },
+            w_tax_c: { type: String, required: false, trim: true },
+            liable: { type: Boolean, required: false },
+            rec_ty: { type: String, required: false, trim: true },
+            w_tax_id: { type: Number, trim: true, required: false },
+            exemption_number: { type: Number, trim: true, required: false },
+            exem: { type: String, required: false, trim: true },
+            exmpt_r: { type: String, required: false, trim: true },
+            exempt_form: { type: Date, required: false },
+            exempt_to: { type: Date, required: false },
+            description: { type: String, required: false, trim: true },
+        }],
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
