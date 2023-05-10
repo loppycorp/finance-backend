@@ -137,7 +137,7 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            gl_account_code: data.gl_account_code,
+            gl_account_code: data.header.gl_account_code,
             company_code: {
                 _id: data.company_code._id,
                 code: data.company_code.code,
@@ -145,7 +145,7 @@ exports.mapData = (data) => {
             },
         },
         type_description: {
-            chart_of_accounts: {
+            control_in_chart_of_accounts: {
                 account_group: {
                     _id: data.account_group._id,
                     name: data.account_group.name
@@ -185,12 +185,14 @@ exports.mapData = (data) => {
             },
         },
         create_bank_interest: {
-            field_status_group: {
-                _id: data.field_status_group._id,
-                group_name: data.field_status_group.group_name,
-                description: data.field_status_group.description
+            control_of_document_creation_in_company_code: {
+                field_status_group: {
+                    _id: data.field_status_group._id,
+                    group_name: data.field_status_group.group_name,
+                    description: data.field_status_group.description
+                },
+                post_automatically: data.create_bank_interest.post_automatically,
             },
-            post_automatically: data.create_bank_interest.post_automatically,
         },
         status: data.status,
         date_created: data.date_created,
