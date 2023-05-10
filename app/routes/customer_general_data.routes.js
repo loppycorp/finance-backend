@@ -1,5 +1,5 @@
 require('dotenv').config();
-const defaultController = require('../controllers/customer.controller');
+const defaultController = require('../controllers/customer_general_data.controller');
 const auth = require('../middlewares/authorization.middleware');
 const pagination = require('../middlewares/pagination.middleware');
 

@@ -2,7 +2,7 @@ const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
 const defaultService = require('../services/customer_company_code_data.service');
-const customerService = require('../services/customer.service');
+const CompanyService = require('../services/company.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
 const { createSchema, updateSchema } = require('../helpers/validations/customer_company_code_data.validation');
 
@@ -24,18 +24,18 @@ exports.create = async (req, res) => {
         }
 
         // validate customer_id
-        const customer = await customerService.get(body.customer_id);
-        if (!customer) {
+        const comp = await CompanyService.get(body.header.company_code);
+        if (!comp) {
             return {
                 status: false,
-                message: lang.t('customer.err.not_exists')
+                message: lang.t('company.err.not_exists')
             };
         }
 
         // validate customer_code
-        const customerCode = await defaultService.getByCode(body.customer_code);
+        const customerCode = await defaultService.getByCode(body.header.customer_code);
         console.log(customerCode);
-        if (!customerCode) {
+        if (customerCode) {
             return {
                 status: false,
                 message: lang.t('customer.err.already_exists')

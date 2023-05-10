@@ -5,16 +5,17 @@ const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
 const customerCompanyCodeData = new mongoose.Schema({
-    customer_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'customer_general_datas' },
-    customer_code: { type: Number, trim: true, required: false },
-    company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+    header: {
+        customer_code: { type: Number, trim: true, required: true },
+        company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+    },
     account_management: {
         accounting_information: {
             recon_account: { type: Number, trim: true, required: true },
             head_office: { type: String, trim: true, required: true },
             authorization: { type: Number, trim: true, required: false },
             sort_key: { type: Number, trim: true, required: false },
-            cash_mgmnt_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'cash_mgmnt_groups' },
+            cash_mgmnt_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'cash_mgmnt_groups' },
             value_adjustment: { type: Number, trim: true, required: false },
 
         },
@@ -27,7 +28,7 @@ const customerCompanyCodeData = new mongoose.Schema({
         reference_data: {
             prev_account_no: { type: Number, trim: true, required: false },
             personnel_number: { type: Number, trim: true, required: false },
-            buying_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'buying_groups' },
+            buying_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'buying_groups' },
 
         },
     },
@@ -36,7 +37,7 @@ const customerCompanyCodeData = new mongoose.Schema({
             payment_terms: { type: Number, trim: true, required: false },
             charges_payment_terms: { type: Number, trim: true, required: false },
             check_paid_time: { type: Date, required: false },
-            tolerance_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
+            tolerance_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
             leave: { type: Number, trim: true, required: false },
             pleding_ind: { type: Number, trim: true, required: false },
             payment_history: { type: Boolean, required: false },
@@ -89,6 +90,17 @@ const customerCompanyCodeData = new mongoose.Schema({
             accounting: { type: Boolean, required: false },
             legal_department: { type: Boolean, required: false },
         },
+    },
+    with_holding_tax: {
+        with_tax_information: [{
+            wth_t_ty: { type: String, required: false, trim: true },
+            w_tax_c: { type: String, required: false, trim: true },
+            w_tax: { type: Boolean, required: false },
+            oblig_form: { type: Date, required: false },
+            oblig_to: { type: Date, required: false },
+            w_tax_number: { type: Number, trim: true, required: false },
+            name: { type: String, required: false, trim: true },
+        }],
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },

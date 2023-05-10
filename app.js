@@ -43,7 +43,7 @@ require("./app/routes/vendor_general_data.routes")(app);
 // require("./app/routes/vendor_pymnt_transc.routes")(app);
 require("./app/routes/vendor_company_code_data.routes")(app);
 require("./app/routes/vendor_withholding_tax.routes")(app);
-require("./app/routes/customer.routes")(app);
+require("./app/routes/customer_general_data.routes")(app);
 require("./app/routes/customer_pymnt_transc.routes")(app);
 require("./app/routes/customer_company_code_data.routes")(app);
 // require("./app/routes/customer_withholding_tax.routes")(app);

@@ -2,9 +2,9 @@ const { logger } = require("../middlewares/logging.middleware");
 const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaulService = require("../services/customer.service");
+const DefaulService = require("../services/customer_general_data.service");
 const CompanyService = require("../services/company.service");
-const { createSchema, updateSchema, } = require("../helpers/validations/customer.validation");
+const { createSchema, updateSchema, } = require("../helpers/validations/customer_general_data.validation");
 
 exports.create = async (req, res) => {
     try {

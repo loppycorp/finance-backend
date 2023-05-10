@@ -1,5 +1,5 @@
 const ObjectId = require("mongoose").Types.ObjectId;
-const DefaultModel = require("../models/customer.model");
+const DefaultModel = require("../models/customer_general_data.model");
 
 exports.create = async (data) => {
     const dftModel = await DefaultModel.create(data);
@@ -218,6 +218,11 @@ exports.mapData = (data) => {
                 check_digit: data.control_data.reference_data.check_digit,
                 industry: data.control_data.reference_data.industry,
             },
+        },
+        payment_transactions: {
+            bank_details: data.payment_transactions.bank_details,
+            payment_transactions: data.payment_transactions.payment_transactions,
+            alternative_payer: data.payment_transactions.alternative_payer,
         },
         status: data.status,
         date_created: data.date_created,

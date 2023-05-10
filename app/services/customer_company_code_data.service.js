@@ -1,122 +1,122 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-const defaultModel = require('../models/customer_company_code_data.model');
+const DefaultModel = require('../models/customer_company_code_data.model');
 
 exports.create = async (data) => {
-    const customer = await defaultModel.create(data);
+    const defaultVariable = await DefaultModel.create(data);
 
-    if (!customer) return false;
+    if (!defaultVariable) return false;
 
-    return await this.get(customer._id)
+    return await this.get(defaultVariable._id);
 };
-
 exports.get = async (id, options = {}) => {
-    const filters = { _id: ObjectId(id), status: defaultModel.STATUS_ACTIVE };
+    const filters = { _id: ObjectId(id), status: DefaultModel.STATUS_ACTIVE };
 
     if (options.allowed_inactive && options.allowed_inactive == true)
-        filters.status = defaultModel.STATUS_INACTIVE;
+        filters.status = DefaultModel.STATUS_INACTIVE;
 
-    const results = await defaultModel.aggregate(this.pipeline(filters))
-    const customer = results[0];
+    const results = await DefaultModel.aggregate(this.pipeline(filters))
+    const defaultModel = results[0];
 
-    if (!customer) return null;
+    if (!defaultModel) return null;
 
-    return this.mapData(customer);
+    return this.mapData(defaultModel);
 };
-
 exports.update = async (id, data) => {
     data.date_updated = new Date();
 
-    const customer = await defaultModel.findByIdAndUpdate({ _id: ObjectId(id) }, data);
+    const defaultVariable = await DefaultModel.findByIdAndUpdate(
+        { _id: ObjectId(id) },
+        data
+    );
 
-    if (!customer) return false;
+    if (!defaultVariable) return false;
 
-    return await this.get(customer._id);
+    return await this.get(defaultVariable._id);
 };
-
 exports.delete = async (id) => {
-    const customer = await defaultModel.findByIdAndUpdate({ _id: ObjectId(id) }, {
-        $set: { status: defaultModel.STATUS_INACTIVE }
-    });
+    const defaultVariable = await DefaultModel.findByIdAndUpdate(
+        { _id: ObjectId(id) },
+        {
+            $set: { status: DefaultModel.STATUS_INACTIVE },
+        }
+    );
 
-    if (!customer) return false;
+    if (!defaultVariable) return false;
 
-    return await this.get(customer._id, { allowed_inactive: true });
+    return await this.get(defaultVariable._id, { allowed_inactive: true });
 };
 
 exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
-    const filters = { status: defaultModel.STATUS_ACTIVE };
+    const options = { status: DefaultModel.STATUS_ACTIVE };
 
-    const results = await defaultModel.aggregate(this.pipeline(filters))
-        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
-        .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
+    const results = await DefaultModel.aggregate(this.pipeline(options))
+        .collation({ locale: "en" })
+        .sort({ [sortBy]: sortOrderInt })
+        .skip(pageNum > 0 ? (pageNum - 1) * pageLimit : 0)
         .limit(pageLimit);
 
-    const customerData = results.map(o => this.mapData(o));
+    const defaultVariableData = results.map((o) => this.mapData(o));
 
-    const customerTotal = await defaultModel.countDocuments(filters);
+    const defaultVariableTotal = await DefaultModel.countDocuments(options);
 
-    return { data: customerData, total: customerTotal };
+    return { data: defaultVariableData, total: defaultVariableTotal };
 };
 
-exports.getByCode = async (company_code) => {
-    const isCodeExists = async (company_code, existing_id) => {
-        const options = { company_code: company_code, status: defaultModel.STATUS_ACTIVE };
+exports.getByCode = async (code, existing_id) => {
+    const options = { 'header.customer_code': code, status: DefaultModel.STATUS_ACTIVE, };
 
-        if (existing_id && existing_id != '')
-            options['_id'] = { $ne: existing_id };
+    if (existing_id && existing_id != "")
+        options["_id"] = { $ne: existing_id };
 
-        return defaultModel.countDocuments(options) > 0;
-    }
+    return (await DefaultModel.countDocuments(options)) > 0;
 };
 
 exports.pipeline = (filters) => {
     return [
         {
             $lookup: {
-                from: 'customer_general_datas',
-                localField: 'customer_id',
+                from: 'companies',
+                localField: 'header.company_code',
                 foreignField: '_id',
-                as: 'customer_id'
+                as: 'company_code'
             },
         },
-        { $unwind: '$customer_id' },
+        { $unwind: '$company_code' },
+        ////
         {
             $lookup: {
-                from: 'companies',
-                localField: 'company_code_id',
+                from: 'cash_mgmnt_groups',
+                localField: 'account_management.accounting_information.cash_mgmnt_group',
                 foreignField: '_id',
-                as: 'company_code_id'
+                as: 'cash_mgmnt_group'
             },
         },
-        { $unwind: '$company_code_id' },
-        // {
-        //     $lookup: {
-        //         from: 'trading_partners',
-        //         localField: 'account_control.trading_partner_id',
-        //         foreignField: '_id',
-        //         as: 'trading_partner'
-        //     },
-        // },
-        // { $unwind: '$trading_partner' },
-        // {
-        //     $lookup: {
-        //         from: 'authorizations',
-        //         localField: 'account_control.authorization_id',
-        //         foreignField: '_id',
-        //         as: 'authorization'
-        //     },
-        // },
-        // { $unwind: '$authorization' },
-        // {
-        //     $lookup: {
-        //         from: 'corporate_groups',
-        //         localField: 'account_control.corporate_group_id',
-        //         foreignField: '_id',
-        //         as: 'corporate_group'
-        //     },
-        // },
+        {
+            $lookup: {
+                from: 'buying_groups',
+                localField: 'account_management.reference_data.buying_group',
+                foreignField: '_id',
+                as: 'buying_group'
+            },
+        },
+        {
+            $lookup: {
+                from: 'tolerance_groups',
+                localField: 'control_data.account_control.tolerance_group',
+                foreignField: '_id',
+                as: 'corporate_group'
+            },
+        },
+        {
+            $lookup: {
+                from: 'house_banks',
+                localField: 'payment_transactions.auto_payment_transactions.house_bank',
+                foreignField: '_id',
+                as: 'house_bank'
+            },
+        },
         // { $unwind: '$corporate_group' },
         { $match: filters }
     ];
@@ -125,12 +125,71 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        customer_id: data.customer_id,
-        customer_code: data.customer_code,
-        company_code_id: data.company_code_id,
-        account_management: data.account_management,
-        payment_transactions: data.payment_transactions,
-        correspondence: data.correspondence,
+        header: {
+            customer_code: data.header.customer_code,
+            company_code: {
+                _id: data.company_code._id
+            },
+        },
+        account_management: {
+            accounting_information: {
+                recon_account: data.account_management.accounting_information.recon_account,
+                head_office: data.account_management.accounting_information.head_office,
+                authorization: data.account_management.accounting_information.authorization,
+                sort_key: data.account_management.accounting_information.sort_key,
+                cash_mgmnt_group: (data.account_management.accounting_information.cash_mgmnt_group) ? {
+                    _id: data.cash_mgmnt_group._id
+                } : null,
+                value_adjustment: data.account_management.accounting_information.value_adjustment,
+
+            },
+            interest_calculation: data.account_management.interest_calculation,
+            reference_data: {
+                prev_account_no: data.account_management.reference_data.prev_account_no,
+                personnel_number: data.account_management.reference_data.personnel_number,
+                buying_group: (data.account_management.reference_data.buying_group) ? {
+                    _id: data.account_group._id
+                } : null,
+
+            },
+        },
+        payment_transactions: {
+            payment_data: {
+                payment_terms: data.payment_transactions.payment_data.payment_terms,
+                charges_payment_terms: data.payment_transactions.payment_data.charges_payment_terms,
+                check_paid_time: data.payment_transactions.payment_data.check_paid_time,
+                tolerance_group: (data.payment_transactions.payment_data.tolerance_group) ? {
+                    _id: data.tolerance_group._id
+                } : null,
+                leave: data.payment_transactions.payment_data.leave,
+                pleding_ind: data.payment_transactions.payment_data.pleding_ind,
+                payment_history: data.payment_transactions.payment_data.payment_history,
+            },
+            auto_payment_transactions: {
+                payment_methods: data.payment_transactions.auto_payment_transactions.payment_methods,
+                alternate_payee: data.payment_transactions.auto_payment_transactions.alternate_payee,
+                exch_limit: data.payment_transactions.auto_payment_transactions.exch_limit,
+                single_payment: data.payment_transactions.auto_payment_transactions.single_payment,
+                pmnt_adv: data.payment_transactions.auto_payment_transactions.pmnt_adv,
+                payment_block: data.payment_transactions.auto_payment_transactions.payment_block,
+                house_bank: (data.payment_transactions.auto_payment_transactions.house_bank) ? {
+                    _id: data.house_bank._id
+                } : null,
+                grouping_key: data.payment_transactions.auto_payment_transactions.grouping_key,
+                next_payee: data.payment_transactions.auto_payment_transactions.next_payee,
+                lockbox: data.payment_transactions.auto_payment_transactions.lockbox,
+
+            },
+            payment_advice: data.payment_transactions.payment_advice,
+        },
+        correspondence: {
+            dunning_data: data.correspondence.dunning_data,
+            correspondences: data.correspondence.correspondences,
+            payment_notices: data.correspondence.payment_notices,
+        },
+        with_holding_tax: {
+            with_tax_information: data.with_holding_tax.with_tax_information,
+        },
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated

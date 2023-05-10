@@ -54,6 +54,26 @@ const customerGeneralDataSchema = new mongoose.Schema({
             industry: { type: String, trim: true, required: false },
         },
     },
+    payment_transactions: {
+        bank_details: [{
+            country: { type: String, trim: true, required: false },
+            bank_key: { type: Number, trim: true, required: false },
+            bank_account: { type: Number, trim: true, required: false },
+            account_holder: { type: Number, trim: true, required: false },
+            ck: { type: String, trim: true, required: false },
+            iban_value: { type: Number, trim: true, required: false },
+            bnkt: { type: String, trim: true, required: false },
+            reference: { type: String, trim: true, required: false },
+        }],
+        payment_transactions: {
+            alternative_payer: { type: String, trim: true, required: false },
+        },
+        alternative_payer: {
+            individual_spec: { type: Boolean, required: false },
+            spec_reference: { type: Boolean, required: false },
+        },
+
+    },
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
     date_updated: { type: Date, default: () => new Date(), required: true }

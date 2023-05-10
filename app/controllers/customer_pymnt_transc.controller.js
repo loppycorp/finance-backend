@@ -1,7 +1,7 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const customerService = require('../services/customer.service');
+const customerService = require('../services/customer_general_data.service');
 const defaultService = require('../services/customer_pymnt_transc.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
 const { createSchema, updateSchema } = require('../helpers/validations/customer_pymnt_transc.validation');
