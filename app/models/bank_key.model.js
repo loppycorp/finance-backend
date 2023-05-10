@@ -5,8 +5,10 @@ const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
 const bankSchema = new mongoose.Schema({
-    bank_country: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'countries' },
-    bank_key_code: { type: String, trim: true, required: true },
+    header: {
+        bank_country: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'countries' },
+        bank_key_code: { type: String, trim: true, required: true },
+    },
     address: {
         name: { type: String, trim: true, required: true },
         region: { type: Number, required: false },
@@ -16,7 +18,7 @@ const bankSchema = new mongoose.Schema({
     },
     control_data: {
         swift_code: { type: String, trim: true, required: true },
-        bank_group_id: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'bank_groups' },
+        bank_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'bank_groups' },
         postbank_account: { type: Boolean, required: false },
         bank_number: { type: Number, required: true },
     },

@@ -1,5 +1,5 @@
 const ObjectId = require("mongoose").Types.ObjectId;
-const DefaultModel = require("../models/cheque_lot.model");
+const DefaultModel = require("../models/customer_withholding_tax.model");
 
 exports.create = async (data) => {
     const dftModel = await DefaultModel.create(data);
@@ -65,7 +65,7 @@ exports.getAll = async (query) => {
 };
 
 // exports.getByCode = async (code, existing_id) => {
-//     const options = { "header.customer_code": code, status: DefaultModel.STATUS_ACTIVE, };
+//     const options = { "header.cost_element_code": code, status: DefaultModel.STATUS_ACTIVE, };
 
 //     if (existing_id && existing_id != "")
 //         options["_id"] = { $ne: existing_id };
@@ -77,75 +77,52 @@ exports.pipeline = (filters) => {
     return [
         {
             $lookup: {
+                from: 'vendor_general_datas',
+                localField: 'header.vendor',
+                foreignField: '_id',
+                as: 'vendor',
+            },
+        },
+        // if the id is optional or nullable
+        { $unwind: '$vendor' },
+        {
+            $lookup: {
                 from: 'companies',
-                localField: 'header.paying_company_code',
+                localField: 'header.company_code',
                 foreignField: '_id',
-                as: 'paying_company_code'
+                as: 'company_code',
             },
         },
-        { $unwind: '$paying_company_code' },
+        { $unwind: '$company_code' },
 
-        {
-            $lookup: {
-                from: 'house_banks',
-                localField: 'header.house_bank',
-                foreignField: '_id',
-                as: 'house_bank'
-            },
-        },
-        { $unwind: '$house_bank' },
 
-        {
-            $lookup: {
-                from: 'gl_accounts',
-                localField: 'header.gl_account',
-                foreignField: '_id',
-                as: 'gl_account'
-            },
-        },
-        {
-            $unwind: {
-                path: '$gl_account',
-                preserveNullAndEmptyArrays: true
-            }
-        },
-
-        { $match: filters }
+        { $match: filters },
     ];
 };
 exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            paying_company_code: {
-                _id: data.paying_company_code._id,
-                code: data.paying_company_code.code,
-                description: data.paying_company_code.desc
+            vendor: {
+                _id: data.vendor._id,
+                code: data.vendor.header.vendor_code,
+                description: data.vendor.header.account_group
             },
-            house_bank: {
-                _id: data.house_bank._id,
-                code: data.house_bank.header.house_bank_code,
-                description: data.house_bank.address.name
+            company_code: {
+                _id: data.company_code._id,
+                code: data.company_code.code,
+                description: data.company_code.desc
             },
-            // gl_account: {
-            //     _id: data.gl_account._id,
-            //     code: data.gl_account.header.gl_account_code,
-            //     description: data.gl_account.type_description.description.short_text
-            // },
+            wh_tax_country: data.header.wh_tax_country,
         },
-        lot: {
-            lot_number: data.lot.lot_number,
-            cheque_number_from: data.lot.cheque_number_from,
-            cheque_number_to: data.lot.cheque_number_to,
-        },
-        control_data: {
-            next_lot_number: data.control_data.next_lot_number,
-            pmnt_meths_list: data.control_data.pmnt_meths_list,
-            non_sequential: data.control_data.non_sequential,
-        },
-        additional_information: {
-            short_info: data.additional_information.short_info,
-            purchase_date: data.additional_information.purchase_date,
+        with_tax_information: {
+            wth_t_ty: data.with_tax_information.wth_t_ty,
+            w_tax_c: data.with_tax_information.w_tax_c,
+            w_tax: data.with_tax_information.w_tax,
+            oblig_form: data.with_tax_information.oblig_form,
+            oblig_to: data.with_tax_information.oblig_to,
+            w_tax_number: data.with_tax_information.w_tax_number,
+            name: data.with_tax_information.name,
         },
         status: data.status,
         date_created: data.date_created,

@@ -190,7 +190,7 @@ exports.delete = async (req, res) => {
             });
         }
 
-        const deletedDepartment = await companyService.delete(company._id); 
+        const deletedDepartment = await companyService.delete(company._id);
 
         return res.status(200).send({
             status: 'success',

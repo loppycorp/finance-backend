@@ -10,7 +10,7 @@ module.exports = (app) => {
     app.get(process.env.BASE_URL + '/vendors', pagination.setAttributes, vendor.search);
 
     // View account record
-    app.get(process.env.BASE_URL + '/vendors/:id', vendor.read);
+    app.get(process.env.BASE_URL + '/vendors/:id', vendor.get);
 
     // Edit account record
     app.put(process.env.BASE_URL + '/vendors/:id', vendor.update);

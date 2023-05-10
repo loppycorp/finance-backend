@@ -8,7 +8,7 @@ const vendorGeneralDataSchema = new mongoose.Schema({
     header: {
         vendor_code: { type: Number, trim: true, required: false },
         company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-        account_group: { type: String, trim: true, required: true },
+        account_group: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendor_account_groups' },
     },
     address: {
         name: {
@@ -42,7 +42,7 @@ const vendorGeneralDataSchema = new mongoose.Schema({
     },
     control_data: {
         account_control: {
-            customer: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'customers' },
+            customer: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'customer_general_datas' },
             trading_partner: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
             authorization: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'authorizations' },
             corporate_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'corporate_groups' },

@@ -5,9 +5,9 @@ const LIMIT_DEFAULT_CHAR_LONG = 225;
 
 const defaultSchema = Joi.object({
     header: {
-        vendor_code: Joi.number().integer(),
-        company_code_id: Joi.string().trim().required().hex().length(24),
-        account_group: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+        vendor_code: Joi.number().integer().allow(''),
+        company_code: Joi.string().trim().required().hex().length(24),
+        account_group: Joi.string().trim().required().hex().length(24),
     },
     address: {
         name: {
@@ -41,10 +41,10 @@ const defaultSchema = Joi.object({
     },
     control_data: {
         account_control: {
-            customer_id: Joi.string().trim().hex().length(24).allow('', null),
-            trading_partner_id: Joi.string().trim().hex().length(24).allow('', null),
-            authorization_id: Joi.string().trim().hex().length(24).allow('', null),
-            corporate_group_id: Joi.string().trim().hex().length(24).allow('', null),
+            customer: Joi.string().trim().hex().length(24).allow('', null),
+            trading_partner: Joi.string().trim().hex().length(24).allow('', null),
+            authorization: Joi.string().trim().hex().length(24).allow('', null),
+            corporate_group: Joi.string().trim().hex().length(24).allow('', null),
         },
     }
 });

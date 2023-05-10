@@ -2,9 +2,10 @@ const { logger } = require("../middlewares/logging.middleware");
 const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaulService = require("../services/customer.service");
-const CompanyService = require("../services/company.service");
-const { createSchema, updateSchema, } = require("../helpers/validations/customer.validation");
+const DefaulService = require("../services/customer_withholding_tax.service");
+const companyService = require("../services/company.service");
+const VendorService = require("../services/vendor.service");
+const { createSchema, updateSchema, } = require("../helpers/validations/customer_withholding_tax.validation");
 
 exports.create = async (req, res) => {
     try {
@@ -23,26 +24,27 @@ exports.create = async (req, res) => {
         }
 
         // validate profit_center_code
-        const code = await DefaulService.getByCode(body.header.customer_code);
-        if (code) {
+        const code = await companyService.get(body.header.company_code);
+        if (!code) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('customer already exists')
+                message: lang.t('company_code does not exists')
             });
         }
-        // validation company code
-        const companyCode = await CompanyService.get(body.header.company_code);
-        if (!companyCode) {
-            return {
-                status: false,
-                message: lang.t('company.err.not_exists')
-            };
+        // validate vendor code
+        const vendorcode = await VendorService.get(body.header.vendor);
+        if (!vendorcode) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('vendor does not exists')
+            });
         }
+
         const defaulService = await DefaulService.create(body);
 
         return res.status(200).send({
             status: "success",
-            message: lang.t("customer.suc.create"),
+            message: lang.t("customer_withholding_tax.suc.create"),
             data: defaulService,
         });
     } catch (err) {
@@ -74,13 +76,13 @@ exports.get = async (req, res) => {
         if (!defaultService) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('customer.err.not_exists')
+                message: lang.t('customer_withholding_tax.err.not_exists')
             });
         }
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('customer.suc.read'),
+            message: lang.t('customer_withholding_tax.suc.read'),
             data: defaultService
         });
     } catch (err) {
@@ -106,7 +108,7 @@ exports.search = async (req, res) => {
 
         return res.status(200).send({
             status: "success",
-            message: lang.t("customer.suc..search"),
+            message: lang.t("customer_withholding_tax.suc..search"),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -151,7 +153,7 @@ exports.update = async (req, res) => {
         if (!defaulService) {
             return res.status(400).send({
                 status: "error",
-                message: lang.t("customer.err.not_exists"),
+                message: lang.t("customer_withholding_tax.err.not_exists"),
             });
         }
 
@@ -172,7 +174,7 @@ exports.update = async (req, res) => {
 
         return res.status(200).send({
             status: "success",
-            message: lang.t("customer.suc.update"),
+            message: lang.t("customer_withholding_tax.suc.update"),
             data: updated_defaulService,
         });
     } catch (err) {
@@ -207,7 +209,7 @@ exports.delete = async (req, res) => {
         if (!defaulService) {
             return res.status(400).send({
                 status: "error",
-                message: lang.t("customer.err.not_exists"),
+                message: lang.t("customer_withholding_tax.err.not_exists"),
             });
         }
 
@@ -215,7 +217,7 @@ exports.delete = async (req, res) => {
 
         return res.status(200).send({
             status: "success",
-            message: lang.t("customer.suc.delete"),
+            message: lang.t("customer_withholding_tax.suc.delete"),
             data: deleted_defaulService,
         });
     } catch (err) {

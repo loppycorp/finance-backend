@@ -5,9 +5,11 @@ const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
 const chequeLotSchema = new mongoose.Schema({
-    paying_company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-    house_bank: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'house_banks' },
-    gl_account: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'gl_accounts' },
+    header: {
+        paying_company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+        house_bank: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'house_banks' },
+        gl_account: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'gl_accounts' },
+    },
     lot: {
         lot_number: { type: Number, required: true },
         cheque_number_from: { type: Number, required: true },

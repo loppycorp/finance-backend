@@ -5,9 +5,11 @@ const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
 const vendorWithholdingTaxSchema = new mongoose.Schema({
-    vendor_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendor_general_datas' },
-    company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-    wh_tax_country: { type: String, required: true, trim: true },
+    header: {
+        vendor: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendor_general_datas' },
+        company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+        wh_tax_country: { type: String, required: true, trim: true },
+    },
     with_tax_information: {
         wth_t_ty: { type: String, required: false, trim: true },
         w_tax_c: { type: String, required: false, trim: true },

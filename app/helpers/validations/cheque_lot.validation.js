@@ -4,9 +4,11 @@ const Joi = require('joi');
 const LIMIT_DEFAULT_CHAR = 128;
 
 const defaultSchema = Joi.object({
-    paying_company_code: Joi.string().trim().required().hex().length(24),
-    house_bank: Joi.string().trim().required().hex().length(24),
-    gl_account: Joi.string().trim().required().hex().length(24),
+    header: {
+        paying_company_code: Joi.string().trim().required().hex().length(24),
+        house_bank: Joi.string().trim().required().hex().length(24),
+        gl_account: Joi.string().trim().required().hex().length(24).allow(null),
+    },
     lot: {
         lot_number: Joi.number().integer(),
         cheque_number_from: Joi.number().integer(),

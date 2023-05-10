@@ -1,65 +1,76 @@
-const ObjectId = require('mongoose').Types.ObjectId;
-const Vendor = require('../models/vendor.model');
+const ObjectId = require("mongoose").Types.ObjectId;
+const DefaultModel = require("../models/vendor.model");
 
 exports.create = async (data) => {
+    const dftModel = await DefaultModel.create(data);
 
-    const vendor = await Vendor.create(data);
+    if (!dftModel) return false;
 
-    if (!vendor) return false;
-
-    return await this.get(vendor._id)
-
+    return await this.get(dftModel._id);
 };
-
 exports.get = async (id, options = {}) => {
-    const filters = { _id: ObjectId(id), status: Vendor.STATUS_ACTIVE };
+    const filters = { _id: ObjectId(id), status: DefaultModel.STATUS_ACTIVE };
 
     if (options.allowed_inactive && options.allowed_inactive == true)
-        filters.status = Vendor.STATUS_INACTIVE;
+        filters.status = DefaultModel.STATUS_INACTIVE;
 
-    const results = await Vendor.aggregate(this.pipeline(filters))
-    const vendor = results[0];
+    const results = await DefaultModel.aggregate(this.pipeline(filters))
+    const defaultModel = results[0];
 
-    if (!vendor) return null;
+    if (!defaultModel) return null;
 
-    return this.mapData(vendor);
+    return this.mapData(defaultModel);
 };
-
 exports.update = async (id, data) => {
     data.date_updated = new Date();
 
-    const vendor = await Vendor.findByIdAndUpdate({ _id: ObjectId(id) }, data);
+    const dftModel = await DefaultModel.findByIdAndUpdate(
+        { _id: ObjectId(id) },
+        data
+    );
 
-    if (!vendor) return false;
+    if (!dftModel) return false;
 
-    return await this.get(vendor._id);
+    return await this.get(dftModel._id);
 };
-
 exports.delete = async (id) => {
-    const vendor = await Vendor.findByIdAndUpdate({ _id: ObjectId(id) }, {
-        $set: { status: Vendor.STATUS_INACTIVE }
-    });
+    const dftModel = await DefaultModel.findByIdAndUpdate(
+        { _id: ObjectId(id) },
+        {
+            $set: { status: DefaultModel.STATUS_INACTIVE },
+        }
+    );
 
-    if (!vendor) return false;
+    if (!dftModel) return false;
 
-    return await this.get(vendor._id, { allowed_inactive: true });
+    return await this.get(dftModel._id, { allowed_inactive: true });
 };
 
 exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
-    const filters = { status: Vendor.STATUS_ACTIVE };
+    const options = { status: DefaultModel.STATUS_ACTIVE };
 
-    const results = await Vendor.aggregate(this.pipeline(filters))
-        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
-        .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
+    const results = await DefaultModel.aggregate(this.pipeline(options))
+        .collation({ locale: "en" })
+        .sort({ [sortBy]: sortOrderInt })
+        .skip(pageNum > 0 ? (pageNum - 1) * pageLimit : 0)
         .limit(pageLimit);
 
-    const vendorData = results.map(o => this.mapData(o));
+    const dftModelData = results.map((o) => this.mapData(o));
 
-    const vendorTotal = await Vendor.countDocuments(filters);
+    const dftModelTotal = await DefaultModel.countDocuments(options);
 
-    return { data: vendorData, total: vendorTotal };
+    return { data: dftModelData, total: dftModelTotal };
+};
+
+exports.getByCode = async (code, existing_id) => {
+    const options = { "header.vendor_code": code, status: DefaultModel.STATUS_ACTIVE, };
+
+    if (existing_id && existing_id != "")
+        options["_id"] = { $ne: existing_id };
+
+    return (await DefaultModel.countDocuments(options)) > 0;
 };
 
 exports.pipeline = (filters) => {
@@ -67,16 +78,25 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'companies',
-                localField: 'company_code_id',
+                localField: 'header.company_code',
                 foreignField: '_id',
-                as: 'company'
+                as: 'company_code'
             },
         },
-        { $unwind: '$company' },
+        { $unwind: '$company_code' },
         {
             $lookup: {
-                from: 'customers',
-                localField: 'account_control.customer_id',
+                from: 'vendor_account_groups',
+                localField: 'header.account_group',
+                foreignField: '_id',
+                as: 'account_group'
+            },
+        },
+        { $unwind: '$account_group' },
+        {
+            $lookup: {
+                from: 'customer_general_datas',
+                localField: 'control_data.account_control.customer',
                 foreignField: '_id',
                 as: 'customer'
             },
@@ -85,7 +105,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'trading_partners',
-                localField: 'account_control.trading_partner_id',
+                localField: 'control_data.account_control.trading_partner',
                 foreignField: '_id',
                 as: 'trading_partner'
             },
@@ -94,7 +114,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'authorizations',
-                localField: 'account_control.authorization_id',
+                localField: 'control_data.account_control.authorization',
                 foreignField: '_id',
                 as: 'authorization'
             },
@@ -103,7 +123,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'corporate_groups',
-                localField: 'account_control.corporate_group_id',
+                localField: 'control_data.account_control.corporate_group',
                 foreignField: '_id',
                 as: 'corporate_group'
             },
@@ -117,12 +137,76 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            vendor_code: data.vendor_code,
-            company_code: data.company_code,
-            account_group: data.account_group,
+            vendor_code: data.header.vendor_code,
+            company_code: {
+                _id: data.company_code._id,
+                code: data.company_code.code,
+                description: data.company_code.desc
+            },
+            account_group: {
+                _id: data.account_group._id,
+                code: data.account_group.header.account_group,
+                description: data.account_group.general_data.meaning
+            },
         },
-        address: data.address,
-        control_data: data.control_data,
+        address: {
+            name: {
+                title: data.address.name.title,
+                name: data.address.name.name,
+            },
+            search_terms: {
+                search_term_1: data.address.search_terms.search_term_1,
+                search_term_2: data.address.search_terms.search_term_2,
+            },
+            street_address: {
+                street: data.address.street_address.street,
+                house_number: data.address.street_address.house_number,
+                postal_code: data.address.street_address.postal_code,
+                city: data.address.street_address.city,
+                country: data.address.street_address.country,
+                region: data.address.street_address.region,
+            },
+            po_box_address: {
+                po_box: data.address.po_box_address.po_box,
+                postal_code: data.address.po_box_address.postal_code,
+                company_postal_code: data.address.po_box_address.company_postal_code,
+            },
+            communication: {
+                language: data.address.communication.language,
+                telephone: data.address.communication.telephone,
+                mobile_phone: data.address.communication.mobile_phone,
+                fax: data.address.communication.fax,
+                email: data.address.communication.email,
+            },
+        },
+        control_data: {
+            account_control: {
+                customer: {
+                    customer: (data.control_data.account_control.customer) ? {
+                        _id: data.customer._id,
+                        name: data.customer.name
+                    } : null
+                },
+                trading_partner: {
+                    trading_partner: (data.control_data.account_control.trading_partner) ? {
+                        _id: data.trading_partner._id,
+                        name: data.trading_partner.name
+                    } : null
+                },
+                authorization: {
+                    authorization: (data.control_data.account_control.authorization) ? {
+                        _id: data.authorization._id,
+                        name: data.authorization.name
+                    } : null
+                },
+                corporate_group: {
+                    corporate_group: (data.control_data.account_control.corporate_group) ? {
+                        _id: data.corporate_group._id,
+                        name: data.corporate_group.name
+                    } : null
+                },
+            },
+        },
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated

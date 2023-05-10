@@ -1,12 +1,13 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const DefaultModel = require('../models/vendor_withholding_tax.model');
+const vendorModel = require('../models/vendor_withholding_tax.model');
 
 exports.create = async (data) => {
-    const DefaultModel = await DefaultModel.create(data);
+    const DefaultModel = await vendorModel.create(data);
 
     if (!DefaultModel) return false;
 
-    return await this.get(vendorWithholdingTax._id)
+    return await this.get(DefaultModel._id)
 };
 
 exports.get = async (id, options = {}) => {
@@ -64,13 +65,23 @@ exports.pipeline = (filters) => {
     return [
         {
             $lookup: {
-                from: 'vendors',
-                localField: 'vendor_id',
+                from: 'companies',
+                localField: 'header.company_code',
                 foreignField: '_id',
-                as: 'vendor_id'
+                as: 'company_code'
             },
         },
-        { $unwind: '$vendor_id' },
+        { $unwind: '$company_code' },
+
+        {
+            $lookup: {
+                from: 'vendor_general_datas',
+                localField: 'header.vendor',
+                foreignField: '_id',
+                as: 'vendor'
+            },
+        },
+        { $unwind: '$vendor' },
         { $match: filters }
     ];
 };
@@ -78,12 +89,35 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
-        vendor_id: data.vendor_id,
-        company_code_id: data.company_code_id,
-        wh_tax_country: data.wh_tax_country,
-        with_tax_information: data.with_tax_information,
-        status: data.status,
-        date_created: data.date_created,
-        date_updated: data.date_updated
+        header:{
+            vendor: { 
+                _id: data.vendor._id,
+                vendor_code: data.vendor.vendor_code,
+                account_code: data.vendor.account_code
+            },
+            company_code: { 
+                _id: data.company_code._id,
+                code: data.company_code.code,
+                description: data.company_code.desc
+            },
+        
+            wh_tax_country: data.header.wh_tax_country,
+        },
+            with_tax_information: {
+                wth_t_ty: data.with_tax_information.wth_t_ty,
+                w_tax_c: data.with_tax_information.w_tax_c,
+                liable: data.with_tax_information.liable,
+                rec_ty: data.with_tax_information.rec_ty,
+                w_tax_id: data.with_tax_information.w_tax_id,
+                exemption_number: data.with_tax_information.exemption_number,
+                exem: data.with_tax_information.exem,
+                exmpt_r: data.with_tax_information.exmpt_r,
+                exempt_form: data.with_tax_information.exempt_form,
+                exempt_to: data.with_tax_information.exempt_to,
+                description: data.with_tax_information.description,
+            },
+            status: data.status,
+            date_created: data.date_created,
+            date_updated: data.date_updated
     }
 };

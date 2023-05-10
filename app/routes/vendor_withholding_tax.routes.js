@@ -11,7 +11,7 @@ module.exports = (app) => {
     app.get(process.env.BASE_URL + '/vendor-withholding-tax', auth.validateToken, pagination.setAttributes, defaultController.search);
 
     // View account record
-    app.get(process.env.BASE_URL + '/vendor-withholding-tax/:id', auth.validateToken, defaultController.read);
+    app.get(process.env.BASE_URL + '/vendor-withholding-tax/:id', auth.validateToken, defaultController.get);
 
     // Edit account record
     app.put(process.env.BASE_URL + '/vendor-withholding-tax/:id', auth.validateToken, defaultController.update);

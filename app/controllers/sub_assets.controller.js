@@ -2,11 +2,8 @@ const { logger } = require("../middlewares/logging.middleware");
 const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
-const DefaulService = require("../services/bank_key.service");
-const {
-  createSchema,
-  updateSchema,
-} = require("../helpers/validations/bank_key.validation");
+const DefaulService = require("../services/sub_assets.service");
+const { createSchema, updateSchema, } = require("../helpers/validations/sub_assets.validation");
 
 exports.create = async (req, res) => {
   try {
@@ -21,21 +18,21 @@ exports.create = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-    }
 
-    // validate profit_center_code
-    // const code = await DefaulService.getByCode(body.header.bank_key_code);
-    // if (code) {
-    //   return res.status(400).send({
-    //     status: 'error',
-    //     message: lang.t('bank_key code Element already exists')
-    //   });
-    // }
+    }
+    // validate asset_class
+    const code = await DefaulService.getByCode(body.header.asset_class);
+    if (code) {
+      return res.status(400).send({
+        status: 'error',
+        message: lang.t('sub assets already exists')
+      });
+    }
     const defaulService = await DefaulService.create(body);
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("bank_key.suc.create"),
+      message: lang.t("sub_assets.suc.create"),
       data: defaulService,
     });
   } catch (err) {
@@ -48,46 +45,7 @@ exports.create = async (req, res) => {
     });
   }
 };
-exports.get = async (req, res) => {
-  try {
-    logger.info(req.path);
 
-    const params = req.params;
-
-    const validationParams = paramsSchema.validate(params, {
-      abortEarly: false,
-    });
-    if (validationParams.error) {
-      return res.status(400).send({
-        status: "error",
-        message: lang.t("global.err.validation_failed"),
-        error: validationParams.error.details,
-      });
-    }
-
-    const defaultService = await DefaulService.get(params.id);
-    if (!defaultService) {
-      return res.status(400).send({
-        status: "error",
-        message: lang.t("bank_key.err.not_exists"),
-      });
-    }
-
-    return res.status(200).send({
-      status: "success",
-      message: lang.t("bank_key.suc.read"),
-      data: defaultService,
-    });
-  } catch (err) {
-    logger.error(req.path);
-    logger.error(err);
-
-    return res.status(500).send({
-      status: "error",
-      message: utilities.getMessage(err),
-    });
-  }
-};
 
 exports.search = async (req, res) => {
   try {
@@ -101,7 +59,7 @@ exports.search = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("bank_key.suc.search"),
+      message: lang.t("sub_assets.suc..search"),
       data: data,
       pagination: {
         page_num: pageNum,
@@ -146,7 +104,7 @@ exports.update = async (req, res) => {
     if (!defaulService) {
       return res.status(400).send({
         status: "error",
-        message: lang.t("bank_key.err.not_exists"),
+        message: lang.t("sub_assets.err.not_exists"),
       });
     }
 
@@ -167,7 +125,7 @@ exports.update = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("bank_key.suc.update"),
+      message: lang.t("sub_assets.suc.update"),
       data: updated_defaulService,
     });
   } catch (err) {
@@ -202,7 +160,7 @@ exports.delete = async (req, res) => {
     if (!defaulService) {
       return res.status(400).send({
         status: "error",
-        message: lang.t("bank_key.err.not_exists"),
+        message: lang.t("sub_assets.err.not_exists"),
       });
     }
 
@@ -210,7 +168,7 @@ exports.delete = async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      message: lang.t("bank_key.suc.delete"),
+      message: lang.t("sub_assets.suc.delete"),
       data: deleted_defaulService,
     });
   } catch (err) {
