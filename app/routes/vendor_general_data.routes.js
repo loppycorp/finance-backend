@@ -1,5 +1,5 @@
 require('dotenv').config();
-const vendor = require('../controllers/vendor.controller');
+const vendor = require('../controllers/vendor_general_data.controller');
 const pagination = require('../middlewares/pagination.middleware');
 
 module.exports = (app) => {

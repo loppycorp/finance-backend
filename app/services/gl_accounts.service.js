@@ -82,7 +82,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'account_groups',
-                localField: 'type_description.chart_of_accounts.account_group',
+                localField: 'type_description.control_in_chart_of_accounts.account_group',
                 foreignField: '_id',
                 as: 'account_group'
             },
@@ -122,7 +122,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'field_status_groups',
-                localField: 'create_bank_interest.field_status_group',
+                localField: 'create_bank_interest.control_of_document_creation_in_company_code.field_status_group',
                 foreignField: '_id',
                 as: 'field_status_group'
             },
@@ -137,7 +137,7 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            gl_account_code: data.gl_account_code,
+            gl_account_code: data.header.gl_account_code,
             company_code: {
                 _id: data.company_code._id,
                 code: data.company_code.code,
@@ -145,18 +145,18 @@ exports.mapData = (data) => {
             },
         },
         type_description: {
-            chart_of_accounts: {
+            control_in_chart_of_accounts: {
                 account_group: {
                     _id: data.account_group._id,
                     name: data.account_group.name
                 },
-                statement_account: data.type_description.chart_of_accounts.statement_account,
-                balance_sheet_account: data.type_description.chart_of_accounts.balance_sheet_account,
+                statement_account: data.type_description.control_in_chart_of_accounts.statement_account,
+                balance_sheet_account: data.type_description.control_in_chart_of_accounts.balance_sheet_account,
             },
             description: data.type_description.description,
 
-            consoldation_data_in_chart_of_accounts: {
-                trading_partner: (data.type_description.consoldation_data_in_chart_of_accounts.trading_partner) ? {
+            consolidation_data_in_chart_of_accounts: {
+                trading_partner: (data.type_description.consolidation_data_in_chart_of_accounts.trading_partner) ? {
                     _id: data.trading_partner._id,
                     name: data.trading_partner.name
                 } : null
@@ -185,12 +185,14 @@ exports.mapData = (data) => {
             },
         },
         create_bank_interest: {
-            field_status_group: {
-                _id: data.field_status_group._id,
-                group_name: data.field_status_group.group_name,
-                description: data.field_status_group.description
+            control_of_document_creation_in_company_code: {
+                field_status_group: {
+                    _id: data.field_status_group._id,
+                    group_name: data.field_status_group.group_name,
+                    description: data.field_status_group.description
+                },
+                post_automatically: data.create_bank_interest.control_of_document_creation_in_company_code.post_automatically,
             },
-            post_automatically: data.create_bank_interest.post_automatically,
         },
         status: data.status,
         date_created: data.date_created,

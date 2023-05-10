@@ -105,12 +105,12 @@ exports.mapData = (data) => {
     header: {
       cost_element_code: data.header.cost_element_code,
       controlling_area_code: {
-        _id: data.controlling_area_code._id,
-        code: data.controlling_area_code.code,
-        description: data.controlling_area_code.desc,
+        _id: data.controlling_area_code._id
       },
-      valid_from: data.header.valid_from,
-      valid_to: data.header.valid_to,
+      validity: {
+        from: data.header.validity.from,
+        to: data.header.validity.to
+      },
     },
     basic_data: {
       names: {
@@ -119,9 +119,7 @@ exports.mapData = (data) => {
       },
       basic_data: {
         cost_element_category: {
-          _id: data.cost_element_category._id,
-          code: data.cost_element_category.code,
-          name: data.cost_element_category.name
+          _id: data.cost_element_category._id
         },
         attribute: data.basic_data.basic_data.attribute,
         func_area: data.basic_data.basic_data.func_area,

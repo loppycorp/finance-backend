@@ -10,7 +10,7 @@ const gl_accountSchema = new mongoose.Schema({
     company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
   },
   type_description: {
-    chart_of_accounts: {
+    control_in_chart_of_accounts: {
       account_group: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "account_groups", },
       statement_account: { type: Boolean, required: true },
       balance_sheet_account: { type: Boolean, required: true },
@@ -19,8 +19,8 @@ const gl_accountSchema = new mongoose.Schema({
       short_text: { type: String, trim: true, required: true },
       long_text: { type: String, trim: true, required: false },
     },
-    consoldation_data_in_chart_of_accounts: {
-      trading_partner: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "traiding_partners", },
+    consolidation_data_in_chart_of_accounts: {
+      trading_partner: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "trading_partners", },
     },
   },
   control_data: {
@@ -39,8 +39,10 @@ const gl_accountSchema = new mongoose.Schema({
     },
   },
   create_bank_interest: {
-    field_status_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "field_status_groups" },
-    post_automatically: { type: Boolean, required: true },
+    control_of_document_creation_in_company_code: {
+      field_status_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "field_status_groups" },
+      post_automatically: { type: Boolean, required: true },
+    },
   },
   status: { type: String, default: STATUS_ACTIVE, required: true },
   date_created: { type: Date, default: () => new Date(), required: true },

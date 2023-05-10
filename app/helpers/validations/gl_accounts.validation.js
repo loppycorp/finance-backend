@@ -8,7 +8,7 @@ const defaultSchema = Joi.object({
         company_code: Joi.string().trim().required().hex().length(24),
     },
     type_description: {
-        chart_of_accounts: {
+        control_in_chart_of_accounts: {
             account_group: Joi.string().trim().required().hex().length(24),
             statement_account: Joi.boolean().required(),
             balance_sheet_account: Joi.boolean().required(),
@@ -17,7 +17,7 @@ const defaultSchema = Joi.object({
             short_text: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
             long_text: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
         },
-        consoldation_data_in_chart_of_accounts: {
+        consolidation_data_in_chart_of_accounts: {
             trading_partner: Joi.string().trim().required().hex().length(24).allow(null),
         }
     },
@@ -37,8 +37,10 @@ const defaultSchema = Joi.object({
         }
     },
     create_bank_interest: {
-        field_status_group: Joi.string().trim().required().hex().length(24),
-        post_automatically: Joi.boolean().required(),
+        control_of_document_creation_in_company_code: {
+            field_status_group: Joi.string().trim().required().hex().length(24),
+            post_automatically: Joi.boolean().required(),
+        },
     },
 });
 module.exports = {
