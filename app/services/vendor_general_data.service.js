@@ -1,12 +1,12 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-const Vendor = require('../models/vendor_general_data.model');
+const DefaultModel = require('../models/vendor_general_data.model');
 
 exports.create = async (data) => {
-    const dftModel = await DefaultModel.create(data);
+    const defaultVariable = await DefaultModel.create(data);
 
-    if (!dftModel) return false;
+    if (!defaultVariable) return false;
 
-    return await this.get(dftModel._id);
+    return await this.get(defaultVariable._id);
 };
 exports.get = async (id, options = {}) => {
     const filters = { _id: ObjectId(id), status: DefaultModel.STATUS_ACTIVE };
@@ -24,26 +24,26 @@ exports.get = async (id, options = {}) => {
 exports.update = async (id, data) => {
     data.date_updated = new Date();
 
-    const dftModel = await DefaultModel.findByIdAndUpdate(
+    const defaultVariable = await DefaultModel.findByIdAndUpdate(
         { _id: ObjectId(id) },
         data
     );
 
-    if (!dftModel) return false;
+    if (!defaultVariable) return false;
 
-    return await this.get(dftModel._id);
+    return await this.get(defaultVariable._id);
 };
 exports.delete = async (id) => {
-    const dftModel = await DefaultModel.findByIdAndUpdate(
+    const defaultVariable = await DefaultModel.findByIdAndUpdate(
         { _id: ObjectId(id) },
         {
             $set: { status: DefaultModel.STATUS_INACTIVE },
         }
     );
 
-    if (!dftModel) return false;
+    if (!defaultVariable) return false;
 
-    return await this.get(dftModel._id, { allowed_inactive: true });
+    return await this.get(defaultVariable._id, { allowed_inactive: true });
 };
 
 exports.getAll = async (query) => {
@@ -57,11 +57,11 @@ exports.getAll = async (query) => {
         .skip(pageNum > 0 ? (pageNum - 1) * pageLimit : 0)
         .limit(pageLimit);
 
-    const dftModelData = results.map((o) => this.mapData(o));
+    const defaultVariableData = results.map((o) => this.mapData(o));
 
-    const dftModelTotal = await DefaultModel.countDocuments(options);
+    const defaultVariableTotal = await DefaultModel.countDocuments(options);
 
-    return { data: dftModelData, total: dftModelTotal };
+    return { data: defaultVariableData, total: defaultVariableTotal };
 };
 
 exports.getByCode = async (code, existing_id) => {
@@ -141,25 +141,25 @@ exports.mapData = (data) => {
             company_code: {
                 _id: data.company_code._id
             },
-            account_group: {
+            account_group: (data.header.account_group) ? {
                 _id: data.account_group._id
-            },
+            } : null,
         },
         address: data.address,
         control_data: {
             account_control: {
-                customer: {
+                customer: (data.control_data.account_control.customer) ? {
                     _id: data.customer._id
-                },
-                trading_partner: {
+                } : null,
+                trading_partner: (data.control_data.account_control.trading_partner) ? {
                     _id: data.trading_partner._id
-                },
-                authorization: {
+                } : null,
+                authorization: (data.control_data.account_control.authorization) ? {
                     _id: data.authorization._id
-                },
-                corporate_group: {
+                } : null,
+                corporate_group: (data.control_data.account_control.corporate_group) ? {
                     _id: data.corporate_group._id
-                },
+                } : null
             }
         },
         payment_transactions: {
