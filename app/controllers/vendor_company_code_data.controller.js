@@ -2,7 +2,7 @@ const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
 const vendorService = require('../services/vendor_company_code_data.service');
-const vendorsService = require('../services/vendor.service');
+// const vendorsService = require('../services/vendor.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
 const { createSchema, updateSchema } = require('../helpers/validations/vendor_company_code_data.validation');
 

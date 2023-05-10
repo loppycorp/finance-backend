@@ -1,10 +1,10 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const vendorService = require('../services/vendor.service');
+const vendorService = require('../services/vendor_general_data.service');
 const companyCodeService = require('../services/company.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/vendor.validation');
+const { createSchema, updateSchema } = require('../helpers/validations/vendor_general_data.validation');
 
 
 exports.create = async (req, res) => {
@@ -24,7 +24,7 @@ exports.create = async (req, res) => {
         }
 
         // validate company_code_id
-        const companyCode = await companyCodeService.get(body.company_code_id);
+        const companyCode = await companyCodeService.get(body.header.company_code);
         if (!companyCode) {
             return {
                 status: false,
@@ -32,15 +32,6 @@ exports.create = async (req, res) => {
             };
         }
 
-        // const querys = req.query;
-        // // validate vendor_code
-        // const vendorCode = await vendorService.getAll(querys);
-        // if (vendorCode.vendor_code == body.vendor_code) {
-        //     return {
-        //         status: false,
-        //         message: lang.t('vendor_code.err.already_exists')
-        //     };
-        // }
 
         // console.log(vendorCode);
         const vendor = await vendorService.create(body);

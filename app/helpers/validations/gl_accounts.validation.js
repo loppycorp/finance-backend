@@ -17,7 +17,7 @@ const defaultSchema = Joi.object({
             short_text: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
             long_text: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
         },
-        consoldation_data_in_chart_of_accounts: {
+        consolidation_data_in_chart_of_accounts: {
             trading_partner: Joi.string().trim().required().hex().length(24).allow(null),
         }
     },

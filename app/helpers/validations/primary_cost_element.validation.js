@@ -6,8 +6,10 @@ const defaultSchema = Joi.object({
   header: {
     cost_element_code: Joi.number().required(),
     controlling_area_code: Joi.string().trim().required().hex().length(24),
-    valid_from: Joi.date().required(),
-    valid_to: Joi.date().required(),
+    validity: {
+      from: Joi.date().required(),
+      to: Joi.date().required(),
+    },
   },
   basic_data: {
     names: {

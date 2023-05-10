@@ -8,8 +8,10 @@ const primaryCstElmtSchema = new mongoose.Schema({
   header: {
     cost_element_code: { type: Number, required: true },
     controlling_area_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "controlling_areas" },
-    valid_from: { type: Date, required: true },
-    valid_to: { type: Date, required: true },
+    validity: {
+      from: { type: Date, required: true },
+      to: { type: Date, required: true },
+    },
   },
   basic_data: {
     names: {

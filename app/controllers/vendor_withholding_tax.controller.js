@@ -1,7 +1,7 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const defaultService = require('../services/vendor_withholding_tax.service');
+const defaultService = require('../services/_vendor_withholding_tax.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
 const { createSchema, updateSchema } = require('../helpers/validations/vendor_withholding_tax.validation');
 

@@ -19,8 +19,8 @@ const gl_accountSchema = new mongoose.Schema({
       short_text: { type: String, trim: true, required: true },
       long_text: { type: String, trim: true, required: false },
     },
-    consoldation_data_in_chart_of_accounts: {
-      trading_partner: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "traiding_partners", },
+    consolidation_data_in_chart_of_accounts: {
+      trading_partner: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "trading_partners", },
     },
   },
   control_data: {

@@ -5,8 +5,10 @@ const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
 const vendorPaymentTransactionsSchema = new mongoose.Schema({
-    vendor_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendors' },
-    vendor_code: { type: Number, trim: true, required: true },
+    header: {
+        vendor_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendors' },
+        vendor_code: { type: Number, trim: true, required: true },
+    },
     bank_details: {
         country: { type: String, trim: true, required: false },
         bank_key: { type: Number, trim: true, required: false },

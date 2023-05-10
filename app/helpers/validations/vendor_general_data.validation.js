@@ -6,8 +6,9 @@ const LIMIT_DEFAULT_CHAR_LONG = 225;
 const defaultSchema = Joi.object({
     header: {
         vendor_code: Joi.number().integer(),
-        company_code_id: Joi.string().trim().required().hex().length(24),
-        account_group: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+        company_code: Joi.string().trim().required().hex().length(24),
+        account_group: Joi.string().trim().required().hex().length(24).allow(null),
+
     },
     address: {
         name: {
@@ -41,12 +42,35 @@ const defaultSchema = Joi.object({
     },
     control_data: {
         account_control: {
-            customer_id: Joi.string().trim().hex().length(24).allow('', null),
-            trading_partner_id: Joi.string().trim().hex().length(24).allow('', null),
-            authorization_id: Joi.string().trim().hex().length(24).allow('', null),
-            corporate_group_id: Joi.string().trim().hex().length(24).allow('', null),
+            customer: Joi.string().trim().hex().length(24).allow('', null),
+            trading_partner: Joi.string().trim().hex().length(24).allow('', null),
+            authorization: Joi.string().trim().hex().length(24).allow('', null),
+            corporate_group: Joi.string().trim().hex().length(24).allow('', null),
         },
-    }
+    },
+    payment_transactions: {
+        bank_details: Joi.array().items(Joi.object({
+            country: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
+            bank_key: Joi.number().integer().allow(''),
+            bank_account: Joi.number().integer().allow(''),
+            account_holder: Joi.number().integer().allow(''),
+            ck: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
+            iban_value: Joi.number().integer().allow(''),
+            bnkt: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
+            reference: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
+        })),
+        payment_transactions: {
+            alternative_payee: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
+            dme_indicator: Joi.number().integer().allow(''),
+            instruction_key: Joi.number().integer().allow(''),
+            isr_number: Joi.number().integer().allow(''),
+
+        },
+        alternative_payee: {
+            individual_spec: Joi.boolean().required(),
+            spec_reference: Joi.boolean().required(),
+        },
+    },
 });
 module.exports = {
     createSchema: defaultSchema,

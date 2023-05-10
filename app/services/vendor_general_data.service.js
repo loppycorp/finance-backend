@@ -1,5 +1,5 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-const Vendor = require('../models/vendor.model');
+const Vendor = require('../models/vendor_general_data.model');
 
 exports.create = async (data) => {
 
@@ -67,16 +67,25 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'companies',
-                localField: 'company_code_id',
+                localField: 'header.company_code',
                 foreignField: '_id',
-                as: 'company'
+                as: 'company_code'
             },
         },
-        { $unwind: '$company' },
+        { $unwind: '$company_code' },
+        {
+            $lookup: {
+                from: 'vendor_account_groups',
+                localField: 'header.account_group',
+                foreignField: '_id',
+                as: 'account_group'
+            },
+        },
+        // { $unwind: '$account_group' },
         {
             $lookup: {
                 from: 'customers',
-                localField: 'account_control.customer_id',
+                localField: 'control_data.account_control.customer',
                 foreignField: '_id',
                 as: 'customer'
             },
@@ -85,7 +94,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'trading_partners',
-                localField: 'account_control.trading_partner_id',
+                localField: 'control_data.account_control.trading_partner',
                 foreignField: '_id',
                 as: 'trading_partner'
             },
@@ -94,7 +103,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'authorizations',
-                localField: 'account_control.authorization_id',
+                localField: 'control_data.account_control.authorization',
                 foreignField: '_id',
                 as: 'authorization'
             },
@@ -103,7 +112,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'corporate_groups',
-                localField: 'account_control.corporate_group_id',
+                localField: 'control_data.account_control.corporate_group',
                 foreignField: '_id',
                 as: 'corporate_group'
             },
@@ -117,12 +126,36 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            vendor_code: data.vendor_code,
-            company_code: data.company_code,
-            account_group: data.account_group,
+            vendor_code: data.header.vendor_code,
+            company_code: {
+                _id: data.company_code._id
+            },
+            account_group: {
+                _id: data.account_group._id
+            },
         },
         address: data.address,
-        control_data: data.control_data,
+        control_data: {
+            account_control: {
+                customer: {
+                    _id: data.customer._id
+                },
+                trading_partner: {
+                    _id: data.trading_partner._id
+                },
+                authorization: {
+                    _id: data.authorization._id
+                },
+                corporate_group: {
+                    _id: data.corporate_group._id
+                },
+            }
+        },
+        payment_transactions: {
+            bank_details: data.payment_transactions.bank_details,
+            payment_transactions: data.payment_transactions.payment_transactions,
+            alternative_payee: data.payment_transactions.alternative_payee,
+        },
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated
