@@ -137,12 +137,12 @@ exports.pipeline = (filters) => {
             },
         },
         // if the id is optional or nullable
-        // {
-        //     $unwind: {
-        //         path: "$hierarchy_area",
-        //         preserveNullAndEmptyArrays: true
-        //     }
-        // },
+        {
+            $unwind: {
+                path: "$hierarchy_area",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'companies',
@@ -225,7 +225,7 @@ exports.mapData = (data) => {
                     name: data.hierarchy_area.name
                 } : null,
                 company: {
-                    id: data.company._id,
+                    _id: data.company._id,
                     code: data.company.code,
                     description: data.company.desc
                 },
