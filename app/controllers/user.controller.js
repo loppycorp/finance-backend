@@ -54,7 +54,8 @@ exports.authenticate = async (req, res) => {
         return res.status(200).send({
             status: 'success',
             message: lang.t('user.suc.auth'),
-            token: jwtToken
+            token: jwtToken,
+            data: jwtPayload
         });
     } catch (err) {
         logger.error(req.path);
