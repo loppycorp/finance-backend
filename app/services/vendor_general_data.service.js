@@ -139,7 +139,8 @@ exports.mapData = (data) => {
         header: {
             vendor_code: data.header.vendor_code,
             company_code: {
-                _id: data.company_code._id
+                _id: data.company_code._id,
+                description: data.description.desc
             },
             account_group: (data.header.account_group) ? {
                 _id: data.account_group._id
