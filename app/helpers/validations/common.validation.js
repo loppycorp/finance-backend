@@ -6,5 +6,6 @@ const paramsSchema = Joi.object({
 });
 
 module.exports = {
-    paramsSchema
+    paramsSchema,
+    validateParamsSchema: paramsSchema
 };
