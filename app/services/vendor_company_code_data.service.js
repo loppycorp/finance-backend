@@ -74,7 +74,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'tolerance_groups',
-                localField: 'data.payment_transactions.payment_data.tolerance_group',
+                localField: 'payment_transactions.payment_data.tolerance_group',
                 foreignField: '_id',
                 as: 'tolerance_group'
             },
@@ -88,7 +88,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'tolerance_groups',
-                localField: 'data.payment_transactions.invoice_verification.tolerance_group',
+                localField: 'payment_transactions.invoice_verification.tolerance_group',
                 foreignField: '_id',
                 as: 'tolerance_group'
             },
@@ -101,19 +101,45 @@ exports.pipeline = (filters) => {
         },
         {
             $lookup: {
-                from: 'cash_management_groups',
-                localField: 'data.account_management.accounting_information.cash_mgmnt_group',
+                from: 'house_banks',
+                localField: 'payment_transactions.auto_payment_transactions.house_bank',
+                foreignField: '_id',
+                as: 'house_bank'
+            },
+        },
+        {
+            $unwind: {
+                path: "$house_bank",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'cash_mgmnt_groups',
+                localField: 'account_management.accounting_information.cash_mgmnt_group',
                 foreignField: '_id',
                 as: 'cash_mgmnt_group'
             },
         },
         {
+            $unwind: {
+                path: "$cash_mgmnt_group",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
             $lookup: {
                 from: 'release_groups',
-                localField: 'data.account_management.accounting_information.release_group',
+                localField: 'account_management.accounting_information.release_group',
                 foreignField: '_id',
                 as: 'release_group'
             },
+        },
+        {
+            $unwind: {
+                path: "$release_group",
+                preserveNullAndEmptyArrays: true
+            }
         },
         { $match: filters }
     ];
