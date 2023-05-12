@@ -21,6 +21,8 @@ app.get("/", (req, res) => {
     message: "Welcome to Asia Fi-Co api",
   });
 });
+//#################### CODES ####################################
+require("./app/routes/codes.routes")(app);
 
 //#################### CHAPTER 1 - Major ####################################
 require("./app/routes/user.routes")(app);

@@ -35,7 +35,7 @@ const defaultSchema = Joi.object({
         payment_data: {
             payment_terms: Joi.number().integer().allow(''),
             chk_cashing_time: Joi.date().required().allow(''),
-            tolerance_group: Joi.string().trim().hex().length(24).allow('', null),
+            tolerance_group: Joi.string().trim().required().hex().length(24).allow('', null),
             chk_double_inv: Joi.boolean().required().allow(''),
         },
         auto_payment_transactions: {
@@ -49,7 +49,7 @@ const defaultSchema = Joi.object({
             grouping_key: Joi.number().integer().allow(''),
         },
         invoice_verification: {
-            tolerance_group: Joi.string().trim().required().hex().length(24).allow('', null),
+            tolerance_group: Joi.string().trim().required().hex().length(24).allow('',),
         },
     },
     correspondence: {

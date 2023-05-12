@@ -17,7 +17,7 @@ const secondaryCstElmtSchema = new mongoose.Schema({
       description: { type: String, trim: true, required: true },
     },
     basic_data: {
-      cost_element_category: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "category_element_categories" },
+      cost_element_category: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "cost_element_categories" },
       attribute: { type: String, trim: true, required: false },
       func_area: { type: String, trim: true, required: false },
     },

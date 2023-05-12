@@ -16,9 +16,7 @@ const DefaulSchema = new mongoose.Schema({
     period: { type: Number, required: true },
     fiscal_year: { type: Date, default: () => new Date(), required: true },
     company_code_id: {
-      type: mongoose.SchemaTypes.ObjectId,
-      required: false,
-      ref: "companies",
+      type: mongoose.SchemaTypes.ObjectId, required: false, ref: "companies",
     },
     currency: { type: Number, required: true },
     translatn_date: { type: Date, default: () => new Date(), required: true },
@@ -27,9 +25,7 @@ const DefaulSchema = new mongoose.Schema({
   item: {
     pstky: { type: Number, required: true },
     gl_account_id: {
-      type: mongoose.SchemaTypes.ObjectId,
-      required: false,
-      ref: "gl_accounts",
+      type: mongoose.SchemaTypes.ObjectId, required: false, ref: "gl_accounts",
     },
     sgl_ind: { type: String, trim: true, required: true },
     ttype: { type: String, trim: true, required: true },

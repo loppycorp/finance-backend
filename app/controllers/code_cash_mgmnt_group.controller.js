@@ -1,9 +1,9 @@
 const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
-const tradingPartnerService = require('../services/trading_partner.service');
+const defaultService = require('../services/code_cash_mgmnt_group.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/trading_partner.validation');
+const { createSchema, updateSchema } = require('../helpers/validations/codes.validation');
 
 exports.create = async (req, res) => {
     try {
@@ -18,15 +18,14 @@ exports.create = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
 
-        const tradingPartner = await tradingPartnerService.create(body);
+        const defaultVariable = await defaultService.create(body);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('trading_partner.suc.create'),
-            data: tradingPartner
+            message: lang.t('code.suc.create'),
+            data: defaultVariable
         });
     } catch (err) {
         logger.error(req.path);
@@ -53,14 +52,13 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
-        const tradingPartner = await tradingPartnerService.get(params.id);
-        if (!tradingPartner) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('trading_partner.err.not_exists')
+                message: lang.t('code.err.not_exists')
             });
         }
 
@@ -71,15 +69,14 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
 
-        const updateTradingPartner = await tradingPartnerService.update(tradingPartner._id, body);
+        const updatedDepartment = await defaultService.update(defaultVariable._id, body);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('profit_ctr_group.suc.update'),
-            data: updateTradingPartner
+            message: lang.t('code.suc.update'),
+            data: updatedDepartment
         });
     } catch (err) {
         logger.error(req.path);
@@ -105,21 +102,20 @@ exports.read = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
-        const tradingPartner = await tradingPartnerService.get(params.id);
-        if (!tradingPartner) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('trading_partner.err.not_exists')
+                message: lang.t('code.err.not_exists')
             });
         }
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('trading_partner.suc.read'),
-            data: profitCtrGroup
+            message: lang.t('code.suc.read'),
+            data: defaultVariable
         });
     } catch (err) {
         logger.error(req.path);
@@ -140,11 +136,11 @@ exports.search = async (req, res) => {
         const pagination = query.pagination;
         const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-        const { data, total } = await tradingPartnerService.getAll(query);
+        const { data, total } = await defaultService.getAll(query);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('trading_partner.suc.search'),
+            message: lang.t('code.suc.search'),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -179,23 +175,22 @@ exports.delete = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
-        const tradingPartner = await tradingPartnerService.get(params.id);
-        if (!tradingPartner) {
+        const defaultVariable = await defaultService.get(params.id);
+        if (!defaultVariable) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('profit_ctr_group.err.not_exists')
+                message: lang.t('hierarcy_area.err.not_exists')
             });
         }
 
-        const deleteTradingPartner = await tradingPartnerService.delete(profitCtrGroup._id); 
+        const deletedDepartment = await defaultService.delete(defaultVariable._id);
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('profit_ctr_group.suc.delete'),
-            data: deleteTradingPartnerq
+            message: lang.t('hierarcy_area.suc.delete'),
+            data: deletedDepartment
         });
     } catch (err) {
         logger.error(req.path);

@@ -80,12 +80,24 @@ exports.pipeline = (filters) => {
             },
         },
         {
+            $unwind: {
+                path: "$tolerance_group",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
             $lookup: {
                 from: 'tolerance_groups',
                 localField: 'data.payment_transactions.invoice_verification.tolerance_group',
                 foreignField: '_id',
                 as: 'tolerance_group'
             },
+        },
+        {
+            $unwind: {
+                path: "$tolerance_group",
+                preserveNullAndEmptyArrays: true
+            }
         },
         {
             $lookup: {
@@ -137,9 +149,12 @@ exports.mapData = (data) => {
             payment_data: {
                 payment_terms: data.payment_transactions.payment_data.payment_terms,
                 chk_cashing_time: data.payment_transactions.payment_data.chk_cashing_time,
-                tolerance_group: (data.payment_transactions.payment_data.tolerance_group) ? {
-                    _id: data.tolerance_group._id
-                } : null,
+                tolerance_group: (data.payment_transactions.payment_data.tolerance_group)
+                    ? {
+                        _id: data.tolerance_group._id,
+                        code: data.tolerance_group.code,
+                        desc: data.tolerance_group.desc
+                    } : null,
                 chk_double_inv: data.payment_transactions.payment_data.chk_double_inv,
             },
             auto_payment_transactions: {
