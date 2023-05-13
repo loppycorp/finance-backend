@@ -69,6 +69,7 @@ require("./app/routes/recurring_entry_header.routes")(app);
 require("./app/routes/recurring_entry_item.routes")(app);
 require("./app/routes/posting_document.routes")(app);
 require("./app/routes/document_data.routes")(app);
+require("./app/routes/vendor_invoice.routes")(app);
 
 //#################### CHAPTER 5 - Major #####################################
 require("./app/routes/customer_invoice_header.routes")(app);
