@@ -56,7 +56,6 @@ require("./app/routes/cheque_lot.routes")(app);
 //#################### CHAPTER 2 - Minor ####################################
 require("./app/routes/gl_account_group.routes")(app);
 require("./app/routes/valuation_group.routes")(app);
-require("./app/routes/corporate_group.routes")(app);
 require("./app/routes/cost_element_category.routes")(app);
 
 //#################### CHAPTER 3 - Major #####################################
@@ -70,6 +69,9 @@ require("./app/routes/recurring_entry_item.routes")(app);
 require("./app/routes/posting_document.routes")(app);
 require("./app/routes/document_data.routes")(app);
 require("./app/routes/vendor_invoice.routes")(app);
+
+//#################### CHAPTER 4 - Major #####################################
+require("./app/routes/incoming_payment.routes")(app);
 
 //#################### CHAPTER 5 - Major #####################################
 require("./app/routes/customer_invoice_header.routes")(app);

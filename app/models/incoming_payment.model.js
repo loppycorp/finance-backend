@@ -15,7 +15,7 @@ const DefaulSchema = new mongoose.Schema({
         trading_part_ba: { type: String, trim: true, required: false },
         type: { type: String, trim: true, required: true },
         period: { type: Number, required: true },
-        company_code_id: {
+        company_code: {
             type: mongoose.SchemaTypes.ObjectId, required: false, ref: "companies",
         },
         currency_rate: { type: Number, required: true },
@@ -56,7 +56,7 @@ const DefaulSchema = new mongoose.Schema({
     date_updated: { type: Date, default: () => new Date(), required: true },
 });
 
-module.exports = mongoose.model("post_document_header", DefaulSchema);
+module.exports = mongoose.model("incoming_payment", DefaulSchema);
 
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;

@@ -127,11 +127,11 @@ exports.mapData = (data) => {
                 code: data.house_bank.header.house_bank_code,
                 description: data.house_bank.address.name
             },
-            // gl_account: {
-            //     _id: data.gl_account._id,
-            //     code: data.gl_account.header.gl_account_code,
-            //     description: data.gl_account.type_description.description.short_text
-            // },
+            gl_account: {
+                _id: data.gl_account._id,
+                code: data.gl_account.header.gl_account_code,
+                description: data.gl_account.type_description.description.short_text
+            },
         },
         lot: {
             lot_number: data.lot.lot_number,

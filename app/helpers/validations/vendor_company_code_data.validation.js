@@ -49,7 +49,7 @@ const defaultSchema = Joi.object({
             grouping_key: Joi.number().integer().allow(''),
         },
         invoice_verification: {
-            tolerance_group: Joi.string().trim().required().hex().length(24).allow('',),
+            tolerance_group: Joi.string().trim().required().hex().length(24).allow('', null),
         },
     },
     correspondence: {

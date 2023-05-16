@@ -93,7 +93,6 @@ exports.pipeline = (filters) => {
         as: 'cost_element_category',
       },
     },
-    // if the id is optional or nullable
     { $unwind: '$cost_element_category', },
 
     { $match: filters },

@@ -3,6 +3,8 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/primary_cost_element.service");
+const controllingAreaService = require("../services/controlling_area.service");
+const CstElmtCtgyService = require("../services/cost_element_category.service");
 const { createSchema, updateSchema, } = require("../helpers/validations/primary_cost_element.validation");
 
 exports.create = async (req, res) => {
@@ -21,13 +23,29 @@ exports.create = async (req, res) => {
 
     }
 
-    // validate profit_center_code
+    // validate 
     const code = await DefaulService.getByCode(body.header.cost_element_code);
     if (code) {
       return res.status(400).send({
         status: 'error',
         message: lang.t('Primary Cost Element already exists')
       });
+    }
+    // validate controlling area
+    const ca = await controllingAreaService.get(body.header.controlling_area_code);
+    if (!ca) {
+      return {
+        status: false,
+        message: lang.t('Controlling_Area.err.not_exists')
+      };
+    }
+    // validate cost element category
+    const cc = await CstElmtCtgyService.get(body.basic_data.basic_data.cost_element_category);
+    if (!cc) {
+      return {
+        status: false,
+        message: lang.t('cost_category.err.not_exists')
+      };
     }
     const defaulService = await DefaulService.create(body);
 

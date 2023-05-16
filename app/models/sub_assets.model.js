@@ -5,17 +5,17 @@ const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
 const assetsSchema = new mongoose.Schema({
-  header:{
-  asset_class: { type: String, trim: true, required: true },
-  company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-  number_of_similar_assets: { type: Number, trim: true, required: true },
-  class: { type: Number, trim: true, required: true },
-  post_capitalization: { type: Boolean, trim: false},
+  header: {
+    asset_class: { type: String, trim: true, required: true },
+    company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+    number_of_similar_assets: { type: Number, trim: true, required: true },
+    class: { type: Number, trim: true, required: true },
+    post_capitalization: { type: Boolean, trim: false },
   },
   general: {
     general_data: {
       description: { type: String, trim: true, required: true },
-      asset_main_no: { type: String, trim: true, required: false},
+      asset_main_no: { type: String, trim: true, required: false },
       acct_determination: { type: Number, required: true },
       serial_number: { type: Number, trim: true, required: true },
       inventory_number: { type: Number, trim: true, required: false },
@@ -26,11 +26,11 @@ const assetsSchema = new mongoose.Schema({
       last_inventory_on: { type: Date, default: () => new Date(), required: false },
       inventory_note: { type: String, trim: true, required: false },
       include_asset_in_inventory_list: { type: Boolean, required: true },
-    },  
+    },
     posting_information: {
       capitalized_on: { type: String, trim: true, required: false },
       first_acquisition_on: { type: Date, default: () => new Date(), required: false },
-      acquisition_year: { type: Date, default: () => new Date(), required: false},
+      acquisition_year: { type: Date, default: () => new Date(), required: false },
       deactivation_on: { type: Date, default: () => new Date(), required: false },
     },
   },

@@ -190,7 +190,7 @@ exports.delete = async (req, res) => {
             });
         }
 
-        const deleteTradingPartner = await tradingPartnerService.delete(profitCtrGroup._id); 
+        const deleteTradingPartner = await tradingPartnerService.delete(profitCtrGroup._id);
 
         return res.status(200).send({
             status: 'success',

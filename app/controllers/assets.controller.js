@@ -3,6 +3,8 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/assets.service");
+const company_code_service = require("../services/company.service");
+const cost_center_service = require("../services/cost_center.service");
 const { createSchema, updateSchema, } = require("../helpers/validations/assets.validation");
 
 exports.create = async (req, res) => {
@@ -20,15 +22,22 @@ exports.create = async (req, res) => {
       });
 
     }
-
-    // validate profit_center_code
-    // const code = await DefaulService.getByCode(body.header.cost_element_code);
-    // if (code) {
-    //   return res.status(400).send({
-    //     status: 'error',
-    //     message: lang.t('assets already exists')
-    //   });
-    // }
+    // validate company_code
+    const company_code = await company_code_service.get(body.header.company_code_id);
+    if (!company_code) {
+      return {
+        status: false,
+        message: lang.t('company_code.err.not_exists')
+      };
+    }
+    // validate cost_center
+    const cost_center = await cost_center_service.get(body.time_dependent.interval.cost_center_id);
+    if (!cost_center) {
+      return {
+        status: false,
+        message: lang.t('cost_center.err.not_exists')
+      };
+    }
     const defaulService = await DefaulService.create(body);
 
     return res.status(200).send({

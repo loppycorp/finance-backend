@@ -3,13 +3,13 @@ const Joi = require('joi');
 const LIMIT_DEFAULT_CHAR = 128;
 
 const defaultSchema = Joi.object({
-  header:{
-  asset_class: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
-  company_code_id: Joi.string().trim().required().hex().max(24),
-  number_of_similar_assets: Joi.number().required(),
-  class: Joi.number().required(),
-  post_capitalization: Joi.boolean().required().allow(''),
-},
+  header: {
+    asset_class: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+    company_code: Joi.string().trim().required().hex().max(24),
+    number_of_similar_assets: Joi.number().required(),
+    class: Joi.number().required(),
+    post_capitalization: Joi.boolean().required().allow(''),
+  },
   general: {
     general_data: {
       description: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),

@@ -3,6 +3,11 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/internal_order.service");
+const order_typeService = require("../services/order_type.service");
+const controlling_areaService = require("../services/controlling_area.service");
+const company_codeService = require("../services/company.service");
+const profit_centerService = require("../services/profit_center.service");
+const currencyService = require("../services/currency.service");
 const { createSchema, updateSchema, } = require("../helpers/validations/internal_order.validation");
 
 exports.create = async (req, res) => {
@@ -21,14 +26,55 @@ exports.create = async (req, res) => {
 
     }
 
-    // validate profit_center_code
-    // const code = await DefaulService.getByCode(body.header.cost_element_code);
-    // if (code) {
-    //   return res.status(400).send({
-    //     status: 'error',
-    //     message: lang.t('internal_order already exists')
-    //   });
-    // }
+    // validate order
+    const ordercode = await DefaulService.getByCode(body.header.order);
+    if (ordercode) {
+      return res.status(400).send({
+        status: 'error',
+        message: lang.t('order already exists')
+      });
+    }
+    // validate order_type
+    const order_typecode = await order_typeService.get(body.header.order_type);
+    if (!order_typecode) {
+      return {
+        status: false,
+        message: lang.t('order_type.err.not_exists')
+      };
+    }
+    // validate controlling_area
+    const controlling_areacode = await controlling_areaService.get(body.header.controlling_area);
+    if (!controlling_areacode) {
+      return {
+        status: false,
+        message: lang.t('controlling_area.err.not_exists')
+      };
+    }
+    // validate company_code
+    const company_code = await company_codeService.get(body.assignments.company_code);
+    if (!company_code) {
+      return {
+        status: false,
+        message: lang.t('company_code.err.not_exists')
+      };
+    }
+    // validate profit_center
+    const profit_centercode = await profit_centerService.get(body.assignments.profit_center);
+    if (!profit_centercode) {
+      return {
+        status: false,
+        message: lang.t('profit_center.err.not_exists')
+      };
+    }
+    // validate currency
+    const currencycode = await currencyService.get(body.control_data.control_data.currency);
+    if (!currencycode) {
+      return {
+        status: false,
+        message: lang.t('currency.err.not_exists')
+      };
+    }
+
     const defaulService = await DefaulService.create(body);
 
     return res.status(200).send({

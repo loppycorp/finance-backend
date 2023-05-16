@@ -11,7 +11,7 @@ const internalOrderSchema = new mongoose.Schema({
     header: {
         order_type: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'order_types' },
         order: { type: String, trim: true, required: false },
-        controlling_area: { type: String, trim: true, required: true },
+        controlling_area: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'controlling_areas' },
         description: { type: String, trim: true, required: true },
     },
     assignments: {

@@ -178,8 +178,6 @@ exports.mapData = (data) => {
                 tolerance_group: (data.payment_transactions.payment_data.tolerance_group)
                     ? {
                         _id: data.tolerance_group._id,
-                        code: data.tolerance_group.code,
-                        desc: data.tolerance_group.desc
                     } : null,
                 chk_double_inv: data.payment_transactions.payment_data.chk_double_inv,
             },
