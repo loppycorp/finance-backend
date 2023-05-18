@@ -8,6 +8,8 @@ const code_authorization = require('../controllers/code_authorization.controller
 const code_corporate_group = require('../controllers/code_corporate_group.controller');
 const code_buying_group = require('../controllers/code_buying_group.controller');
 const code_ledger_group = require('../controllers/code_ledger_group.controller');
+const bank_group = require('../controllers/bank_group.controller');
+
 const auth = require('../middlewares/authorization.middleware');
 const pagination = require('../middlewares/pagination.middleware');
 
@@ -66,5 +68,12 @@ module.exports = (app) => {
     app.get(process.env.BASE_URL + '/code-ledger-group/:id', auth.validateToken, code_ledger_group.read);
     app.put(process.env.BASE_URL + '/code-ledger-group/:id', auth.validateToken, code_ledger_group.update);
     app.delete(process.env.BASE_URL + '/code-ledger-group/:id', auth.validateToken, code_ledger_group.delete);
+
+    //bank group
+    app.post(process.env.BASE_URL + '/bank-groups', auth.validateToken, bank_group.create);
+    app.get(process.env.BASE_URL + '/bank-groups', auth.validateToken, pagination.setAttributes, bank_group.search);
+    app.get(process.env.BASE_URL + '/bank-groups/:id', auth.validateToken, bank_group.read);
+    app.put(process.env.BASE_URL + '/bank-groups/:id', auth.validateToken, bank_group.update);
+    app.delete(process.env.BASE_URL + '/bank-groups/:id', auth.validateToken, bank_group.delete);
 
 }
