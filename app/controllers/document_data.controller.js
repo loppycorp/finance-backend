@@ -58,7 +58,7 @@ exports.validate = async (body) => {
                 }
             };
         }
-    
+
         // Validate item trading part ba record
         const itemTrading = await serviceTrading.get(item.trading_part_ba);
         if (!itemTrading) {
@@ -97,6 +97,7 @@ exports.create = async (req, res) => {
         logger.info(req.path);
 
         const body = req.body;
+        const query = req.query;
 
         const validate = await this.validate(body);
         if (!validate.status) {
@@ -107,7 +108,7 @@ exports.create = async (req, res) => {
             });
         }
 
-        const data = await serviceDocumentdata.create(body);
+        const data = await serviceDocumentdata.create(body, query);
 
         return res.status(200).send({
             status: "success",
@@ -128,7 +129,7 @@ exports.create = async (req, res) => {
 exports.read = async (req, res) => {
     try {
         logger.info(req.path);
-        
+
         const { params } = req;
 
         const validateParams = validateParamsSchema.validate(params, { abortEarly: false });
@@ -167,7 +168,7 @@ exports.read = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         logger.info(req.path);
-        
+
         const { params, body } = req;
 
         const validateParams = validateParamsSchema.validate(params, { abortEarly: false });
@@ -238,11 +239,95 @@ exports.delete = async (req, res) => {
         }
 
         const deleted = await serviceDocumentdata.delete(params.id);
-        
+
         return res.status(200).send({
             status: "success",
             message: lang.t("document_data.suc.deleted"),
             data: deleted
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+
+        return res.status(500).send({
+            status: "error",
+            message: utilities.getMessage(err),
+        });
+    }
+};
+
+exports.simulate = async (req, res) => {
+    try {
+        logger.info(req.path);
+
+        const { params, body } = req;
+
+        const validateParams = validateParamsSchema.validate(params, { abortEarly: false });
+        if (validateParams.error) {
+            return {
+                status: false,
+                message: lang.t('global.err.validation_failed'),
+                error: validateParams.error.details
+            };
+        }
+
+        const data = await serviceDocumentdata.get(params.id);
+        if (!data) {
+            return res.status(200).send({
+                status: "error",
+                message: lang.t("document_data.error.not_exists"),
+            });
+        }
+
+        console.log(data);
+        const post = await serviceDocumentdata.posting(params.id);
+
+        return res.status(200).send({
+            status: "success",
+            message: lang.t("document_data.suc.posted"),
+            data: post
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+
+        return res.status(500).send({
+            status: "error",
+            message: utilities.getMessage(err),
+        });
+    }
+};
+
+exports.status = async (req, res) => {
+    try {
+        logger.info(req.path);
+
+        const { params, body } = req;
+
+        const validateParams = validateParamsSchema.validate(params, { abortEarly: false });
+        if (validateParams.error) {
+            return {
+                status: false,
+                message: lang.t('global.err.validation_failed'),
+                error: validateParams.error.details
+            };
+        }
+
+        const data = await serviceDocumentdata.get(params.id);
+        if (!data) {
+            return res.status(200).send({
+                status: "error",
+                message: lang.t("document_data.error.not_exists"),
+            });
+        }
+
+        console.log(data);
+        const post = await serviceDocumentdata.updateStatus(params.id);
+
+        return res.status(200).send({
+            status: "success",
+            message: lang.t("document_data.suc.updated"),
+            data: post
         });
     } catch (err) {
         logger.error(req.path);

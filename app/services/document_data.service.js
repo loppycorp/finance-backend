@@ -1,7 +1,20 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/document_data.model");
 
-exports.create = async (data) => {
+
+exports.create = async (data, req) => {
+
+    const balanceStatus = data.balanceStatus;
+
+    if (balanceStatus == DefaultModel.DOC_BALANCED) {
+        data['type.document_status'] = DefaultModel.DOC_STATUS_SIMULATE;
+    }
+
+    const doc_type = req.type;
+    if (doc_type && doc_type != '') {
+        data['type.document_code'] = doc_type;
+    }
+
     const result = await DefaultModel.create(data);
 
     if (!result) return false;
@@ -9,11 +22,12 @@ exports.create = async (data) => {
     return await this.get(result._id);
 };
 
+
 exports.get = async (id, options = {}) => {
-    const record = await DefaultModel.aggregate(this.pipeline({ 
-        _id: ObjectId(id), 
-        status: (options.display_inactive === true) 
-            ? DefaultModel.STATUS_INACTIVE 
+    const record = await DefaultModel.aggregate(this.pipeline({
+        _id: ObjectId(id),
+        status: (options.display_inactive === true)
+            ? DefaultModel.STATUS_INACTIVE
             : DefaultModel.STATUS_ACTIVE
     }));
 
@@ -27,6 +41,21 @@ exports.getAll = async (query) => {
 
     const filters = { status: DefaultModel.STATUS_ACTIVE };
 
+    if (query.status && query.status != '') {
+        const statuses = query.status.split(',');
+        if (statuses.length > 0) {
+            filters['type.document_status'] = { $in: statuses };
+        }
+    }
+
+    if (query.type && query.type != '') {
+        const statuses = query.type.split(',');
+        if (statuses.length > 0) {
+            filters['type.document_code'] = { $in: statuses };
+        }
+    }
+
+    console.log(filters);
     const results = await DefaultModel.aggregate(this.pipeline(filters))
         .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
@@ -47,14 +76,50 @@ exports.update = async (id, data) => {
     return await this.get(result._id);
 };
 
+exports.posting = async (id) => {
+    const document = await DefaultModel.findOne({ _id: ObjectId(id) });
+
+    if (!document) return false;
+
+    // Generate the document number here
+    const documentNumber = await generateDocumentNumber();
+
+    document.header.document_number = documentNumber;
+    document.type.document_status = DefaultModel.DOC_STATUS_COMPLETED;
+
+    const result = await document.save();
+
+    if (!result) return false;
+
+    return await this.get(result._id);
+};
+
+
 exports.delete = async (id) => {
-    const result = await DefaultModel.findOneAndUpdate({ _id: ObjectId(id) }, { $set: { 
-        status: DefaultModel.STATUS_INACTIVE 
-    } });
+    const result = await DefaultModel.findOneAndUpdate({ _id: ObjectId(id) }, {
+        $set: {
+            status: DefaultModel.STATUS_INACTIVE
+        }
+    });
 
     if (!result) return false;
 
     return await this.get(result._id, { display_inactive: true });
+};
+
+exports.updateStatus = async (id, query) => {
+
+    const doc_status = query.status
+
+    const result = await DefaultModel.findOneAndUpdate({ _id: ObjectId(id) }, {
+        $set: {
+            'type.document_status': doc_status
+        }
+    });
+
+    if (!result) return false;
+
+    return await this.get(result._id);
 };
 
 exports.pipeline = (filters) => {
@@ -123,6 +188,7 @@ exports.mapData = (data) => {
         _id: data._id,
         header: {
             document_date: header.document_date,
+            document_number: header.document_number,
             posting_date: header.posting_date,
             reference: (header.reference) ? header.reference : '',
             doc_header_text: (header.doc_header_text) ? header.doc_header_text : '',
@@ -150,11 +216,19 @@ exports.mapData = (data) => {
             if (o.transaction_type == DefaultModel.TRANS_TYPE_DEBIT)
                 totalDeb += parseFloat(o.amount_in_doc_curr);
 
+            let totalBalance = totalDeb - totalCred;
+
+            if (totalBalance == 0)
+                balanceStatus = DefaultModel.DOC_BALANCED;
+
+            if (totalBalance != 0)
+                balanceStatus = DefaultModel.DOC_UNBALANCED;
+
             return {
                 _id: o._id,
                 gl_account: {
                     _id: itemGLAcct._id,
-                    company_code: itemGLAcct.header.company_code, 
+                    company_code: itemGLAcct.header.company_code,
                 },
                 short_text: o.short_text,
                 transaction_type: o.transaction_type,
@@ -178,12 +252,29 @@ exports.mapData = (data) => {
 
             };
         }),
-        amount_info: {
+        amount_information: {
             total_deb: totalDeb,
-            total_cred: totalCred
+            total_cred: totalCred,
+            balance_status: balanceStatus
         },
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated
     };
 };
+
+
+// Helper function to generate the document number
+async function generateDocumentNumber() {
+    // Find the highest existing document number
+    const highestNumberDoc = await DefaultModel.findOne(
+        { 'header.document_number': { $ne: null } },
+        {},
+        { sort: { 'header.document_number': -1 } }
+    );
+
+    const highestNumber = highestNumberDoc ? highestNumberDoc.header.document_number : 0;
+    const newNumber = highestNumber + 1;
+
+    return newNumber;
+}

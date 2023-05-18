@@ -33,7 +33,7 @@ const defaultSchema = Joi.object({
         account_management_in_company_code: {
             item_mgmt: Joi.boolean().required(),
             line_item: Joi.boolean().required(),
-            sort_key: Joi.string().trim().required().hex().length(24).allow(null),
+            sort_key: Joi.string().trim().hex().length(24).allow(null),
         }
     },
     create_bank_interest: {

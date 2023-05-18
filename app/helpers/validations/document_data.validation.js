@@ -3,7 +3,6 @@ const Joi = require('joi');
 const DefaultModel = require('../../models/document_data.model');
 
 const defaultSchema = Joi.object({
-    code: Joi.string().trim().required().valid(DefaultModel.DOC_TYPE_GL_ACCOUNT, DefaultModel.DOC_TYPE_SAMPLE_DOCUMENT, DefaultModel.DOC_TYPE_POST_DOCUMENT),
     header: Joi.object().keys({
         document_date: Joi.date().required(),
         posting_date: Joi.date().required(),
@@ -23,6 +22,15 @@ const defaultSchema = Joi.object({
         bussiness_place: Joi.string().trim().required().allow(''),
         partner: Joi.string().trim().required().allow(''),
         cost_center: Joi.string().trim().required().hex().max(24)
-    }))
+    })),
+    type: {
+        document_code: Joi.string().trim()
+            .valid(DefaultModel.DOC_TYPE_GL_ACCOUNT, DefaultModel.DOC_TYPE_SAMPLE_DOCUMENT, DefaultModel.DOC_TYPE_POST_DOCUMENT),
+        document_status: Joi.string().trim()
+            .valid(DefaultModel.DOC_STATUS_HOLD, DefaultModel.DOC_STATUS_COMPLETED, DefaultModel.DOC_STATUS_PARKED),
+
+
+    },
+
 });
 module.exports = { validateBodySchema: defaultSchema };

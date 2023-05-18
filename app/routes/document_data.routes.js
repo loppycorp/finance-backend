@@ -35,4 +35,16 @@ module.exports = (app) => {
         pagination.setAttributes,
         defaultController.search
     );
+
+    app.put(
+        process.env.BASE_URL + '/document-data/:id/posting',
+        auth.validateToken,
+        defaultController.simulate
+    );
+
+    app.put(
+        process.env.BASE_URL + '/document-data/:id/status',
+        auth.validateToken,
+        defaultController.status
+    );
 };
