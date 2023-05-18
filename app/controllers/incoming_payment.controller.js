@@ -1,12 +1,12 @@
-const { logger } = require('../middlewares/logging.middleware');
-const lang = require('../helpers/lang.helper');
-const utilities = require('../helpers/utilities.helper');
-const DefaultService = require('../services/cheque_lot.service');
-const companyService = require('../services/company.service');
-const glAccountService = require('../services/gl_accounts.service');
-const houseBankService = require('../services/house_bank.service');
-const { paramsSchema } = require('../helpers/validations/common.validation');
-const { createSchema, updateSchema } = require('../helpers/validations/cheque_lot.validation');
+const { logger } = require("../middlewares/logging.middleware");
+const lang = require("../helpers/lang.helper");
+const utilities = require("../helpers/utilities.helper");
+const DefaultService = require("../services/incoming_payment.service");
+const CompanyService = require("../services/company.service");
+const profitService = require("../services/profit_center.service");
+const { paramsSchema } = require("../helpers/validations/common.validation");
+const { createSchema, updateSchema } = require("../helpers/validations/incoming_payment.validation");
+
 
 exports.create = async (req, res) => {
     try {
@@ -21,50 +21,28 @@ exports.create = async (req, res) => {
                 message: lang.t("global.err.validation_failed"),
                 error: validationBody.error.details,
             });
-
         }
-
-        // validate company_code
-        const company = await companyService.get(body.header.paying_company_code);
-        if (!company) {
-            return {
-                status: false,
-                message: lang.t('company.err.not_exists')
-            };
-        }
-
-        // validate gl_account_id
-        const glAccount = await glAccountService.get(body.header.gl_account);
-        if (!glAccount) {
-            return {
-                status: false,
-                message: lang.t('gl_account.err.not_exists')
-            };
-        }
-
-        // validate house_bank_id
-        const houseBank = await houseBankService.get(body.header.house_bank);
-        if (!houseBank) {
-            return {
-                status: false,
-                message: lang.t('houseBank.err.not_exists')
-            };
-        }
-
-        // validate bank_key_code
-        const lotNumber = await DefaultService.get(body.lot.lot_number);
-        if (lotNumber) {
-            return {
-                status: false,
-                message: lang.t('lot_number.err.already_exists')
-            };
-
-        }
+        // validate company
+        // const companyCode = await CompanyService.get(body.header.company_code);
+        // if (!companyCode) {
+        //     return {
+        //         status: false,
+        //         message: lang.t('company_code.err.not_exists')
+        //     };
+        // }
+        // validate profit account
+        // const profitCode = await profitService.get(body.bank_data.profit_center);
+        // if (!profitCode) {
+        //     return {
+        //         status: false,
+        //         message: lang.t('profit_center.err.not_exists')
+        //     };
+        // }
         const defaulService = await DefaultService.create(body);
 
         return res.status(200).send({
             status: "success",
-            message: lang.t("cheque_lot.suc.create"),
+            message: lang.t("incoming_payment.suc.create"),
             data: defaulService,
         });
     } catch (err) {
@@ -92,17 +70,17 @@ exports.get = async (req, res) => {
             });
         }
 
-        const defaultService = await DefaulService.get(params.id);
+        const defaultService = await DefaultService.get(params.id);
         if (!defaultService) {
             return res.status(400).send({
                 status: 'error',
-                message: lang.t('customer_withholding_tax.err.not_exists')
+                message: lang.t('incoming_payment.err.not_exists')
             });
         }
 
         return res.status(200).send({
             status: 'success',
-            message: lang.t('customer_withholding_tax.suc.read'),
+            message: lang.t('incoming_payment.suc.read'),
             data: defaultService
         });
     } catch (err) {
@@ -128,7 +106,7 @@ exports.search = async (req, res) => {
 
         return res.status(200).send({
             status: "success",
-            message: lang.t("customer_withholding_tax.suc..search"),
+            message: lang.t("incoming_payment.suc..search"),
             data: data,
             pagination: {
                 page_num: pageNum,
@@ -169,11 +147,11 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const defaulService = await DefaulService.get(params.id);
+        const defaulService = await DefaultService.get(params.id);
         if (!defaulService) {
             return res.status(400).send({
                 status: "error",
-                message: lang.t("customer_withholding_tax.err.not_exists"),
+                message: lang.t("incoming_payment.err.not_exists"),
             });
         }
 
@@ -187,14 +165,14 @@ exports.update = async (req, res) => {
             return false;
         }
 
-        const updated_defaulService = await DefaulService.update(
+        const updated_defaulService = await DefaultService.update(
             defaulService._id,
             body
         );
 
         return res.status(200).send({
             status: "success",
-            message: lang.t("customer_withholding_tax.suc.update"),
+            message: lang.t("incoming_payment.suc.update"),
             data: updated_defaulService,
         });
     } catch (err) {
@@ -225,19 +203,19 @@ exports.delete = async (req, res) => {
             return false;
         }
 
-        const defaulService = await DefaulService.get(params.id);
+        const defaulService = await DefaultService.get(params.id);
         if (!defaulService) {
             return res.status(400).send({
                 status: "error",
-                message: lang.t("customer_withholding_tax.err.not_exists"),
+                message: lang.t("incoming_payment.err.not_exists"),
             });
         }
 
-        const deleted_defaulService = await DefaulService.delete(defaulService._id);
+        const deleted_defaulService = await DefaultService.delete(defaulService._id);
 
         return res.status(200).send({
             status: "success",
-            message: lang.t("customer_withholding_tax.suc.delete"),
+            message: lang.t("incoming_payment.suc.delete"),
             data: deleted_defaulService,
         });
     } catch (err) {

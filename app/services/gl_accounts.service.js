@@ -96,12 +96,19 @@ exports.pipeline = (filters) => {
         },
         {
             $lookup: {
-                from: 'traiding_partners',
+                from: 'trading_partners',
                 localField: 'type_description.consoldation_data_in_chart_of_accounts.trading_partner',
                 foreignField: '_id',
-                as: 'traiding_partner'
+                as: 'trading_partner'
             },
         },
+        {
+            $unwind: {
+                path: '$trading_partner',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+
         {
             $lookup: {
                 from: 'currencies',

@@ -3,6 +3,8 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/bank_key.service");
+const bankCountry_service = require("../services/code_country.service");
+// const bank_group_service = require("../services/bank_group.service");
 const {
   createSchema,
   updateSchema,
@@ -24,11 +26,29 @@ exports.create = async (req, res) => {
     }
 
     // validate profit_center_code
-    // const code = await DefaulService.getByCode(body.header.bank_key_code);
-    // if (code) {
+    const code = await DefaulService.getByCode(body.header.bank_key_code);
+    if (code) {
+      return res.status(400).send({
+        status: 'error',
+        message: lang.t('bank_key code Element already exists')
+      });
+    }
+    // validate bankCountry
+    const bankCountry = await bankCountry_service.
+      get(body.header.bank_country);
+    if (!bankCountry && bankCountry_service != null) {
+      return res.status(400).send({
+        'status': 'error',
+        'message': lang.t('bankCountry is not exists'),
+      });
+    }
+    // validate bank_group
+    // const bank_group = await bank_group_service.
+    //   get(body.control_data.bank_group);
+    // if (!bank_group && bank_group != null) {
     //   return res.status(400).send({
-    //     status: 'error',
-    //     message: lang.t('bank_key code Element already exists')
+    //     'status': 'error',
+    //     'message': lang.t('bank_group is not exists'),
     //   });
     // }
     const defaulService = await DefaulService.create(body);

@@ -96,6 +96,12 @@ exports.pipeline = (filters) => {
       },
     },
     {
+      $unwind: {
+        path: '$bank_country',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
       $lookup: {
         from: "bank_groups",
         localField: "control_data.bank_group",
@@ -121,9 +127,9 @@ exports.mapData = (data) => {
       bank_country: {
         bank_country: data.header.bank_country
           ? {
-              _id: data.bank_country._id,
-              name: data.bank_country.name,
-            }
+            _id: data.bank_country._id,
+            name: data.bank_country.name,
+          }
           : null,
       },
       bank_key_code: data.header.bank_key_code,
@@ -140,9 +146,9 @@ exports.mapData = (data) => {
       bank_group: {
         bank_group: data.control_data.bank_group
           ? {
-              _id: data.bank_group._id,
-              name: data.bank_group.name,
-            }
+            _id: data.bank_group._id,
+            name: data.bank_group.name,
+          }
           : null,
       },
       postbank_account: data.control_data.postbank_account,

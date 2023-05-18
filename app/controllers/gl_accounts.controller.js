@@ -3,7 +3,13 @@ const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
 const { paramsSchema } = require('../helpers/validations/common.validation');
 const gl_accounts_service = require('../services/gl_accounts.service');
+const company_code_service = require('../services/company.service');
+const account_group_service = require('../services/gl_account_group.service');
+const trading_partner_service = require('../services/trading_partner.service');
+const account_currency_service = require('../services/currency.service');
+const field_status_group_service = require('../services/field_status_group.service');
 const { createSchema, updateSchema } = require('../helpers/validations/gl_accounts.validation');
+
 
 exports.create = async (req, res) => {
     try {
@@ -28,6 +34,55 @@ exports.create = async (req, res) => {
                 'message': lang.t('G/L Account Code is already exists'),
             });
 
+        }
+        // validate company_code
+        const company_code = await company_code_service.
+            get(body.header.company_code);
+        if (!company_code && body.header.company_code != null) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('company_code is not exists'),
+            });
+        }
+        // validate account_group
+        const account_group = await account_group_service.
+            get(body.type_description.control_in_chart_of_accounts.account_group);
+        if (!account_group && body.type_description.control_in_chart_of_accounts.account_group != null) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('account_group is not exists'),
+            });
+        }
+        // validate trading_partner
+        const trading_partner = await trading_partner_service.
+            get(body.type_description.consolidation_data_in_chart_of_accounts.trading_partner);
+        if (!trading_partner &&
+            body.type_description.consolidation_data_in_chart_of_accounts.trading_partner != null
+        ) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('trading_partner is not exists'),
+            });
+        }
+        // validate account_currency
+        const account_currency = await account_currency_service.
+            get(body.control_data.account_control_in_company_code.account_currency);
+        if (!account_currency && body.type_description.consolidation_data_in_chart_of_accounts.trading_partner != null
+        ) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('account_currency is not exists'),
+            });
+        }
+        // validate field_status_group
+        const field_status_group = await field_status_group_service
+            .get(body.create_bank_interest.control_of_document_creation_in_company_code.field_status_group);
+        if (!field_status_group && body.type_description.consolidation_data_in_chart_of_accounts.trading_partner != null
+        ) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('field_status_group is not exists'),
+            });
         }
 
         const gl_accounts = await gl_accounts_service.create(body);

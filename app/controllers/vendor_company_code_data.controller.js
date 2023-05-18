@@ -2,6 +2,11 @@ const { logger } = require('../middlewares/logging.middleware');
 const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
 const vendorService = require('../services/vendor_company_code_data.service');
+const CompanyService = require('../services/company.service');
+const tolerance_group_service = require('../services/code_tolerance_group.service');
+const house_bank_service = require('../services/house_bank.service');
+const cash_mgmnt_group_service = require('../services/code_cash_mgmnt_group.service');
+const release_group_service = require('../services/code_release_group.service');
 // const vendorsService = require('../services/vendor.service');
 const { paramsSchema } = require('../helpers/validations/common.validation');
 const { createSchema, updateSchema } = require('../helpers/validations/vendor_company_code_data.validation');
@@ -22,15 +27,60 @@ exports.create = async (req, res) => {
             });
             return false;
         }
-
-        // validate vendor_id
-        //       const vendors = await vendorsService.get(body.company_code_id);
-        //       if (!vendors) {
-        //              return {
-        //                status: false,
-        //                message: lang.t('vendor.err.not_exists')
-        //    };
-        // }
+        // validate profit_center_code
+        const company_code = await CompanyService.
+            get(body.header.company_code);
+        if (!company_code && body.header.company_code != null) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('company_code.err.not_exists'),
+            });
+        }
+        // validate tolerance_group
+        const tolerance_group = await tolerance_group_service.
+            get(body.payment_transactions.payment_data.tolerance_group);
+        if (!tolerance_group && body.payment_transactions.payment_data.tolerance_group != null) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('tolerance_group.err.not_exists'),
+            });
+        }
+        // validate tolerance_group
+        const tolerance = await tolerance_group_service.
+            get(body.payment_transactions.invoice_verification.tolerance_group);
+        if (!tolerance && body.payment_transactions.invoice_verification.tolerance_group != null) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('tolerance_group.err.not_exists'),
+            });
+        }
+        // validate house_bank
+        const house_bank = await house_bank_service.
+            get(body.payment_transactions.auto_payment_transactions.house_bank);
+        if (!house_bank && body.payment_transactions.auto_payment_transactions.house_bank != null) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('house_bank.err.not_exists'),
+            });
+        }
+        // validate cash_mgmnt_group
+        const cash_mgmnt_group = await cash_mgmnt_group_service.
+            get(body.account_management.accounting_information.cash_mgmnt_group);
+        if (!cash_mgmnt_group && body.account_management.accounting_information.cash_mgmnt_group != null) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('cash_mgmnt_group.err.not_exists'),
+            });
+        }
+        // validate release_group
+        const release_group = await release_group_service.
+            get(body.account_management.accounting_information.release_group);
+        if (!release_group && body.account_management.accounting_information.release_group != null) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('release_group.err.not_exists'),
+            });
+        }
         const vendor = await vendorService.create(body);
 
         return res.status(200).send({

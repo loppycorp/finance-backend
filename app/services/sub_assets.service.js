@@ -78,52 +78,52 @@ exports.pipeline = (filters) => {
     {
       $lookup: {
         from: 'companies',
-        localField: 'header.company_code_id',
+        localField: 'header.company_code',
         foreignField: '_id',
-        as: 'company_code_id',
+        as: 'company_code',
       },
     },
     // if the id is required
-    { $unwind: '$company_code_id', },
+    { $unwind: '$company_code', },
     { $match: filters },
   ];
 };
 exports.mapData = (data) => {
   return {
     _id: data._id,
-    header:{
-        asset_class: data.header.asset_class,
-        company_code_id: { 
-            _id: data.company_code_id._id,
-            code: data.company_code_id.code,
-            description: data.company_code_id.desc
-        },
-        number_of_similar_assets: data.header.number_of_similar_assets,
-        class: data.header.class,
-        post_capitalization: data.header.post_capitalization,
+    header: {
+      asset_class: data.header.asset_class,
+      company_code: {
+        _id: data.company_code._id,
+        code: data.company_code.code,
+        description: data.company_code.desc
       },
-        general: {
-          general_data: {
-            description: data.general.general_data.description,
-            asset_main_no: data.general.general_data.asset_main_no,
-            acct_determination: data.general.general_data.acct_determination,
-            serial_number: data.general.general_data.serial_number,
-            inventory_number: data.general.general_data.inventory_number,
-            quantity: data.general.general_data.quantity,
-            manage_historically: data.general.general_data.manage_historically,
-          },
-          inventory: {
-            last_inventory_on: data.general.inventory.last_inventory_on,
-            inventory_note: data.general.inventory.inventory_note,
-            include_asset_in_inventory_list: data.general.inventory.include_asset_in_inventory_list,
-          },
-          posting_information: {
-            capitalized_on: data.general.posting_information.capitalized_on,
-            first_acquisition_on: data.general.posting_information.first_acquisition_on,
-            acquisition_year: data.general.posting_information.acquisition_year,
-            deactivation_on: data.general.posting_information.deactivation_on,
-          },
-        },
+      number_of_similar_assets: data.header.number_of_similar_assets,
+      class: data.header.class,
+      post_capitalization: data.header.post_capitalization,
+    },
+    general: {
+      general_data: {
+        description: data.general.general_data.description,
+        asset_main_no: data.general.general_data.asset_main_no,
+        acct_determination: data.general.general_data.acct_determination,
+        serial_number: data.general.general_data.serial_number,
+        inventory_number: data.general.general_data.inventory_number,
+        quantity: data.general.general_data.quantity,
+        manage_historically: data.general.general_data.manage_historically,
+      },
+      inventory: {
+        last_inventory_on: data.general.inventory.last_inventory_on,
+        inventory_note: data.general.inventory.inventory_note,
+        include_asset_in_inventory_list: data.general.inventory.include_asset_in_inventory_list,
+      },
+      posting_information: {
+        capitalized_on: data.general.posting_information.capitalized_on,
+        first_acquisition_on: data.general.posting_information.first_acquisition_on,
+        acquisition_year: data.general.posting_information.acquisition_year,
+        deactivation_on: data.general.posting_information.deactivation_on,
+      },
+    },
     status: data.status,
     date_created: data.date_created,
     date_updated: data.date_updated,

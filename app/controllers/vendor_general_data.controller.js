@@ -3,6 +3,11 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const DefaultService = require("../services/vendor_general_data.service");
 const CompanyService = require("../services/company.service");
+// const VendorAccService = require("../services/vendor_account_group.service");
+const CustomerService = require("../services/customer_general_data.service");
+const TradingService = require("../services/trading_partner.service");
+const AuthorizationService = require("../services/code_authorization.service");
+const CorporateService = require("../services/code_corporate_group.service");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const { createSchema, updateSchema } = require("../helpers/validations/vendor_general_data.validation");
 
@@ -21,15 +26,6 @@ exports.create = async (req, res) => {
         error: validationBody.error.details,
       });
     }
-    // validate company_code_id
-    const companyCode = await CompanyService.get(body.header.company_code);
-    if (!companyCode) {
-      return {
-        status: false,
-        message: lang.t('company_code.err.not_exists')
-      };
-    }
-
     // validate 
     const code = await DefaultService.getByCode(body.header.vendor_code);
     if (code) {
@@ -38,6 +34,61 @@ exports.create = async (req, res) => {
         message: lang.t('vendor code already exists')
       });
     }
+    // validate company_code
+    const company_code = await CompanyService.
+      get(body.header.company_code);
+    if (!company_code && body.header.company_code != null) {
+      return res.status(400).send({
+        'status': 'error',
+        'message': lang.t('company_code.err.not_exists'),
+      });
+    }
+    // validate account_group
+    // const account_group = await VendorAccService.
+    //   get(body.header.account_group);
+    // if (!account_group && body.header.account_group != null) {
+    //   return res.status(400).send({
+    //     'status': 'error',
+    //     'message': lang.t('account_group.err.not_exists'),
+    //   });
+    // }
+    // validate profit_center_code
+    const customer = await CustomerService.
+      get(body.control_data.account_control.customer);
+    if (!customer && body.control_data.account_control.customer != null) {
+      return res.status(400).send({
+        'status': 'error',
+        'message': lang.t('customer.err.not_exists'),
+      });
+    }
+    // validate trading_partner
+    const trading_partner = await TradingService.
+      get(body.control_data.account_control.trading_partner);
+    if (!trading_partner && body.control_data.account_control.trading_partner != null) {
+      return res.status(400).send({
+        'status': 'error',
+        'message': lang.t('trading_partner.err.not_exists'),
+      });
+    }
+    // validate authorization
+    const authorization = await AuthorizationService.
+      get(body.control_data.account_control.authorization);
+    if (!authorization && body.control_data.account_control.authorization != null) {
+      return res.status(400).send({
+        'status': 'error',
+        'message': lang.t('authorization.err.not_exists'),
+      });
+    }
+    // validate profit_center_code
+    const corporate_group = await CorporateService.
+      get(body.control_data.account_control.corporate_group);
+    if (!corporate_group && body.control_data.account_control.corporate_group != null) {
+      return res.status(400).send({
+        'status': 'error',
+        'message': lang.t('corporate_group.err.not_exists'),
+      });
+    }
+
 
     const defaulService = await DefaultService.create(body);
 

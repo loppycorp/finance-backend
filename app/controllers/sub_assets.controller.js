@@ -3,6 +3,7 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/sub_assets.service");
+const company_code_service = require("../services/sub_assets.service");
 const { createSchema, updateSchema, } = require("../helpers/validations/sub_assets.validation");
 
 exports.create = async (req, res) => {
@@ -28,6 +29,17 @@ exports.create = async (req, res) => {
         message: lang.t('sub assets already exists')
       });
     }
+    // validate pcompany_code
+    const company_code = await company_code_service.
+      get(body.header.company_code);
+    if (!company_code && company_code != null) {
+      return res.status(400).send({
+        'status': 'error',
+        'message': lang.t('company_code is not exists'),
+      });
+    }
+
+
     const defaulService = await DefaulService.create(body);
 
     return res.status(200).send({

@@ -3,8 +3,8 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/house_bank.service");
-// const BankCountryService = require("../services/country.service");
-const CompanyCodeService = require("../services/house_bank.service");
+const bankCountryCodeService = require("../services/code_country.service");
+const CompanyCodeService = require("../services/company.service");
 const { createSchema, updateSchema, } = require("../helpers/validations/house_bank.validation");
 
 exports.create = async (req, res) => {
@@ -31,20 +31,20 @@ exports.create = async (req, res) => {
         message: lang.t('house bank code already exists')
       });
     }
-    // validate bank country
-    // const bankCountryService = await BankCountryService.get(body.header.bank_country);
-    // if (!bankCountryService) {
-    //   return {
-    //     status: false,
-    //     message: lang.t('bankCountry.err.not_exists')
-    //   };
-    // }
     // validate company code
     const companyCode = await CompanyCodeService.get(body.header.company_code);
     if (!companyCode) {
       return {
         status: false,
         message: lang.t('companyCode.err.not_exists')
+      };
+    }
+    // validate bank country
+    const bankCountry = await bankCountryCodeService.get(body.header.bank_country);
+    if (!bankCountry && body.header.bank_country != null) {
+      return {
+        status: false,
+        message: lang.t('bank_country.err.not_exists')
       };
     }
     const defaulService = await DefaulService.create(body);

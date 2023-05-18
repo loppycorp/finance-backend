@@ -64,14 +64,14 @@ exports.getAll = async (query) => {
   return { data: dftModelData, total: dftModelTotal };
 };
 
-// exports.getByCode = async (code, existing_id) => {
-//   const options = { "header.asset_class": code, status: DefaultModel.STATUS_ACTIVE, };
+exports.getByCode = async (code, existing_id) => {
+  const options = { "header.bank_key_code": code, status: DefaultModel.STATUS_ACTIVE, };
 
-//   if (existing_id && existing_id != "")
-//     options["_id"] = { $ne: existing_id };
+  if (existing_id && existing_id != "")
+    options["_id"] = { $ne: existing_id };
 
-//   return (await DefaultModel.countDocuments(options)) > 0;
-// };
+  return (await DefaultModel.countDocuments(options)) > 0;
+};
 
 exports.pipeline = (filters) => {
   return [
