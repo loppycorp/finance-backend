@@ -163,9 +163,8 @@ exports.mapData = (data) => {
             description: data.type_description.description,
 
             consolidation_data_in_chart_of_accounts: {
-                trading_partner: (data.type_description.consolidation_data_in_chart_of_accounts.trading_partner) ? {
-                    _id: data.trading_partner._id,
-                } : null
+                trading_partner: (data.type_description.consolidation_data_in_chart_of_accounts.trading_partner) ?
+                    data.type_description.consolidation_data_in_chart_of_accounts.trading_partner : null
             },
         },
         control_data: {

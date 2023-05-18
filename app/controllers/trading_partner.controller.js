@@ -18,7 +18,6 @@ exports.create = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
 
         const tradingPartner = await tradingPartnerService.create(body);
@@ -53,7 +52,6 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
         const tradingPartner = await tradingPartnerService.get(params.id);
@@ -71,7 +69,6 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
 
         const updateTradingPartner = await tradingPartnerService.update(tradingPartner._id, body);
@@ -105,7 +102,6 @@ exports.read = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
         const tradingPartner = await tradingPartnerService.get(params.id);
@@ -119,7 +115,7 @@ exports.read = async (req, res) => {
         return res.status(200).send({
             status: 'success',
             message: lang.t('trading_partner.suc.read'),
-            data: profitCtrGroup
+            data: tradingPartner
         });
     } catch (err) {
         logger.error(req.path);
@@ -179,7 +175,6 @@ exports.delete = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
 
         const tradingPartner = await tradingPartnerService.get(params.id);
@@ -195,7 +190,7 @@ exports.delete = async (req, res) => {
         return res.status(200).send({
             status: 'success',
             message: lang.t('profit_ctr_group.suc.delete'),
-            data: deleteTradingPartnerq
+            data: deleteTradingPartner
         });
     } catch (err) {
         logger.error(req.path);
