@@ -68,32 +68,29 @@ exports.getAll = async (query) => {
 
 exports.pipeline = (filters) => {
   return [
-    // {
-    //     $lookup: {
-    //         from: 'companies',
-    //         localField: 'company_code_id',
-    //         foreignField: '_id',
-    //         as: 'company'
-    //     },
-    // },
-    // { $unwind: '$company' },
-    // {
-    //     $lookup: {
-    //         from: 'cost_centers',
-    //         localField: 'time_dependent.interval.cost_center_id',
-    //         foreignField: '_id',
-    //         as: 'cost_center'
-    //     },
-    // },
-    // { $unwind: '$cost_center' },
-    // { $match: filters }
+    {
+      $lookup: {
+        from: 'companies',
+        localField: 'document_details.company_code',
+        foreignField: '_id',
+        as: 'company_code'
+      },
+    },
+    { $unwind: '$company_code' },
+    { $match: filters }
   ];
 };
 
 exports.mapData = (data) => {
   return {
     _id: data._id,
-    document_details: data.document_details,
+    document_details: {
+      document_number: data.document_details.document_number,
+      company_code: {
+        _id: data.company_code._id
+      },
+      fiscal_year: data.document_details.fiscal_year,
+    },
     specifications: data.specifications,
     check_management_spec: data.check_management_spec,
     status: data.status,

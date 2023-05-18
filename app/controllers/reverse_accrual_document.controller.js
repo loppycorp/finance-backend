@@ -3,6 +3,7 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const ReverseService = require("../services/reverse_accrual_document.service");
+const CompanyService = require("../services/company.service");
 const {
   createSchema,
   updateSchema,
@@ -22,6 +23,14 @@ exports.create = async (req, res) => {
         error: validationBody.error.details,
       });
       return false;
+    }
+    // validate company_code_id
+    const companyCode = await CompanyService.get(body.header.company_code);
+    if (!companyCode) {
+      return {
+        status: false,
+        message: lang.t('company_code.err.not_exists')
+      };
     }
     const reverse = await ReverseService.create(body);
 

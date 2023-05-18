@@ -8,35 +8,39 @@ const DefaulSchema = new mongoose.Schema({
   header: {
     document_date: { type: Date, default: () => new Date(), required: true },
     posting_date: { type: Date, default: () => new Date(), required: true },
-    document_number: { type: Number, required: true },
-    reference: { type: String, trim: true, required: true },
-    doc_header_text: { type: String, trim: true, required: true },
-    trading_part_ba: { type: String, trim: true, required: true },
+    document_number: { type: Number, required: false },
+    reference: { type: String, trim: true, required: false },
+    doc_header_text: { type: String, trim: true, required: false },
+    trading_part_ba: { type: String, trim: true, required: false },
     type: { type: String, trim: true, required: true },
     period: { type: Number, required: true },
-    ledger_grp_id: {
+    ledger_group: {
       type: mongoose.SchemaTypes.ObjectId,
       required: false,
       ref: "ledger_groups",
     },
-    company_code_id: {
+    company_code: {
       type: mongoose.SchemaTypes.ObjectId,
-      required: false,
+      required: true,
       ref: "companies",
     },
     currency_rate: { type: Number, required: true },
-    translatn_date: { type: Date, default: () => new Date(), required: true },
-    cross_cc_no: { type: Number, required: true },
+    translatn_date: { type: Date, default: () => new Date(), required: false },
+    cross_cc_no: { type: Number, required: false },
   },
   inverse_posting: {
     reversal_reason: { type: String, trim: true, required: true },
     reversal_date: { type: Date, default: () => new Date(), required: true },
   },
   item: {
-    pstky: { type: Number, required: true },
-    gl_account_id: {
+    pstky: {
       type: mongoose.SchemaTypes.ObjectId,
-      required: false,
+      required: true,
+      ref: "posting_keys",
+    },
+    account: {
+      type: mongoose.SchemaTypes.ObjectId,
+      required: true,
       ref: "gl_accounts",
     },
     sgl_ind: { type: String, trim: true, required: true },
@@ -45,13 +49,13 @@ const DefaulSchema = new mongoose.Schema({
   data_entry_view: {
     document_number: { type: Number, required: true },
     document_date: { type: Date, default: () => new Date(), required: true },
-    reference: { type: String, trim: true, required: true },
+    reference: { type: String, trim: true, required: false },
     currency: { type: String, trim: true, required: true },
     posting_date: { type: Date, default: () => new Date(), required: true },
-    cross_cc_no: { type: Number, required: true },
+    cross_cc_no: { type: Number, required: false },
     fiscal_year: { type: Date, default: () => new Date(), required: true },
     period: { type: Number, required: true },
-    ledger_group_id: {
+    ledger_group: {
       type: mongoose.SchemaTypes.ObjectId,
       required: false,
       ref: "ledger_groups",

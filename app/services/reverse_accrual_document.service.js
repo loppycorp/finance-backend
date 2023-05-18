@@ -68,41 +68,37 @@ exports.getAll = async (query) => {
 
 exports.pipeline = (filters) => {
   return [
-    // {
-    //     $lookup: {
-    //         from: 'companies',
-    //         localField: 'company_code_id',
-    //         foreignField: '_id',
-    //         as: 'company'
-    //     },
-    // },
-    // { $unwind: '$company' },
-    // {
-    //     $lookup: {
-    //         from: 'cost_centers',
-    //         localField: 'time_dependent.interval.cost_center_id',
-    //         foreignField: '_id',
-    //         as: 'cost_center'
-    //     },
-    // },
-    // { $unwind: '$cost_center' },
-    // { $match: filters }
+    {
+      $lookup: {
+        from: 'companies',
+        localField: 'header.company_code',
+        foreignField: '_id',
+        as: 'company_code'
+      },
+    },
+    { $unwind: '$company_code' },
+    { $match: filters }
   ];
 };
 
 exports.mapData = (data) => {
   return {
     _id: data._id,
-    company_code_id: data.company_code_id,
-    company_code_id_to: data.company_code_id_to,
-    document_number: data.document_number,
-    document_number_to: data.document_number_to,
-    fiscal_year: data.fiscal_year,
-    fiscal_year_to: data.fiscal_year_to,
-    document_type: data.document_type,
-    document_type_to: data.document_type_to,
-    ledger_group: data.ledger_group,
-    ledger_group_to: data.ledger_group_to,
+    header: {
+      company_code: {
+        _id: data.company_code._id,
+        description: data.company_code.desc
+      },
+      company_code_to: data.header.company_code_to,
+      document_number: data.header.document_number,
+      document_number_to: data.header.document_number_to,
+      fiscal_year: data.header.fiscal_year,
+      fiscal_year_to: data.header.fiscal_year_to,
+      document_type: data.header.document_type,
+      document_type_to: data.header.document_type_to,
+      ledger_group: data.header.ledger_group,
+      ledger_group_to: data.header.ledger_group_to,
+    },
     general_selections: data.general_selections,
     further_selections: data.further_selections,
     reverse_posting_details: data.reverse_posting_details,
