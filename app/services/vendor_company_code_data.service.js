@@ -10,17 +10,16 @@ exports.create = async (data) => {
 };
 
 exports.get = async (id, options = {}) => {
-    const filters = { _id: ObjectId(id), status: Vendor.STATUS_ACTIVE };
+    const record = await Vendor.aggregate(this.pipeline({
+        _id: ObjectId(id),
+        status: (options.display_inactive === true)
+            ? Vendor.STATUS_INACTIVE
+            : Vendor.STATUS_ACTIVE
+    }));
 
-    if (options.allowed_inactive && options.allowed_inactive == true)
-        filters.status = Vendor.STATUS_INACTIVE;
+    if (!record[0]) return false;
 
-    const results = await Vendor.aggregate(this.pipeline(filters))
-    const vendor = results[0];
-
-    if (!vendor) return null;
-
-    return this.mapData(vendor);
+    return this.mapData(record[0]);
 };
 
 exports.update = async (id, data) => {
@@ -74,14 +73,14 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'tolerance_groups',
-                localField: 'payment_transactions.payment_data.tolerance_group',
+                localField: 'payment_transactions.payment_data.tolerance_groups',
                 foreignField: '_id',
-                as: 'tolerance_group'
+                as: 'tolerance_groups'
             },
         },
         {
             $unwind: {
-                path: "$tolerance_group",
+                path: "$tolerance_groups",
                 preserveNullAndEmptyArrays: true
             }
         },
@@ -175,10 +174,9 @@ exports.mapData = (data) => {
             payment_data: {
                 payment_terms: data.payment_transactions.payment_data.payment_terms,
                 chk_cashing_time: data.payment_transactions.payment_data.chk_cashing_time,
-                tolerance_group: (data.payment_transactions.payment_data.tolerance_group)
-                    ? {
-                        _id: data.tolerance_group._id,
-                    } : null,
+                tolerance_groups: (data.payment_transactions.payment_data.tolerance_groups) ? {
+                    _id: data.tolerance_groups._id,
+                } : null,
                 chk_double_inv: data.payment_transactions.payment_data.chk_double_inv,
             },
             auto_payment_transactions: {

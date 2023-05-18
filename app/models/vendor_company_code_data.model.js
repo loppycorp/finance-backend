@@ -36,7 +36,7 @@ const vendorCompanyCodeData = new mongoose.Schema({
         payment_data: {
             payment_terms: { type: Number, trim: true, required: false },
             chk_cashing_time: { type: Date, required: false },
-            tolerance_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
+            tolerance_groups: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'tolerance_groups' },
             chk_double_inv: { type: Boolean, required: false },
         },
         auto_payment_transactions: {
