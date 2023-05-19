@@ -187,30 +187,25 @@ exports.mapData = (data) => {
         },
         control_data: {
             account_control: {
-                customer: {
-                    customer: (data.control_data.account_control.customer) ? {
-                        _id: data.customer._id,
-                        name: data.customer.name
-                    } : null
-                },
-                trading_partner: {
-                    trading_partner: (data.control_data.account_control.trading_partner) ? {
-                        _id: data.trading_partner._id,
-                        name: data.trading_partner.name
-                    } : null
-                },
-                authorization: {
-                    authorization: (data.control_data.account_control.authorization) ? {
-                        _id: data.authorization._id,
-                        name: data.authorization.name
-                    } : null
-                },
-                corporate_group: {
-                    corporate_group: (data.control_data.account_control.corporate_group) ? {
-                        _id: data.corporate_group._id,
-                        name: data.corporate_group.name
-                    } : null
-                },
+                customer: (data.control_data.account_control.customer) ? {
+                    _id: data.customer._id,
+                    name: data.customer.name
+                } : null,
+
+                trading_partner: (data.control_data.account_control.trading_partner) ? {
+                    _id: data.trading_partner._id,
+                    name: data.trading_partner.name
+                } : null,
+
+                authorization: (data.control_data.account_control.authorization) ? {
+                    _id: data.authorization._id,
+                    name: data.authorization.name
+                } : null,
+
+                corporate_group: (data.control_data.account_control.corporate_group) ? {
+                    _id: data.corporate_group._id,
+                    name: data.corporate_group.name
+                } : null
             },
             reference_data: {
                 location_one: data.control_data.reference_data.location_one,

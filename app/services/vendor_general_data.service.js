@@ -95,7 +95,7 @@ exports.pipeline = (filters) => {
         // { $unwind: '$account_group' },
         {
             $lookup: {
-                from: 'customers',
+                from: 'customer_general_datas',
                 localField: 'control_data.account_control.customer',
                 foreignField: '_id',
                 as: 'customer'
