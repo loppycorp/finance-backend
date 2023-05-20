@@ -55,8 +55,8 @@ const defaultSchema = Joi.object({
     },
     payment_transactions: {
         bank_details: Joi.array().items(Joi.object({
-            country: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
-            bank_key: Joi.number().integer().allow(''),
+            country: Joi.string().trim().required().hex().length(24).allow(null),
+            bank_key: Joi.string().trim().required().hex().length(24).allow(null),
             bank_account: Joi.number().integer().allow(''),
             account_holder: Joi.number().integer().allow(''),
             ck: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
