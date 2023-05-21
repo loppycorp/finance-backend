@@ -56,8 +56,8 @@ const customerGeneralDataSchema = new mongoose.Schema({
     },
     payment_transactions: {
         bank_details: [{
-            country: { type: String, trim: true, required: false },
-            bank_key: { type: Number, trim: true, required: false },
+            country: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'countries' },
+            bank_key: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'bank_keys' },
             bank_account: { type: Number, trim: true, required: false },
             account_holder: { type: Number, trim: true, required: false },
             ck: { type: String, trim: true, required: false },
