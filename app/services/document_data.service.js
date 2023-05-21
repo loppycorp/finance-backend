@@ -269,11 +269,11 @@ exports.mapData = (data) => {
                 const itemProfit = data.profit_center.find(i => i._id.toString() == o.profit_center.toString());
                 const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
 
-                if (o.transaction_type == DefaultModel.TRANS_TYPE_CREDIT)
-                    totalCred += parseFloat(o.amount_in_doc_curr);
+                if (itemPk.type == DefaultModel.TRANS_TYPE_CREDIT)
+                    totalCred += parseFloat(o.amount);
 
-                if (o.transaction_type == DefaultModel.TRANS_TYPE_DEBIT)
-                    totalDeb += parseFloat(o.amount_in_doc_curr);
+                if (itemPk.type == DefaultModel.TRANS_TYPE_DEBIT)
+                    totalDeb += parseFloat(o.amount);
 
                 let totalBalance = totalDeb - totalCred;
 
@@ -317,14 +317,14 @@ exports.mapData = (data) => {
                     description: o.description,
                     amount: o.amount,
                     tax: o.tax,
-                    profit_center: {
+                    profit_center: (itemProfit) ? {
                         _id: itemProfit._id,
-                        code: itemProfit.basic_data.description.profit_center_code ? itemProfit.basic_data.description.profit_center_code : '',
-                    },
-                    segment: {
+                        code: itemProfit.basic_data.description.profit_center_code
+                    } : null,
+                    segment: (itemSegment) ? {
                         _id: itemSegment._id,
-                        name: itemSegment.name ? itemSegment.name : '',
-                    },
+                        name: itemSegment.name
+                    } : null,
 
                 };
             }),
