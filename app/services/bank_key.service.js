@@ -116,21 +116,23 @@ exports.mapData = (data) => {
       } : null,
       bank_key_code: data.header.bank_key_code,
     },
-    address: {
-      name: data.address.name,
-      region: data.address.region,
-      street: data.address.street,
-      city: data.address.city,
-      bank_branch: data.address.bank_branch,
-    },
-    control_data: {
-      swift_code: data.control_data.swift_code,
-      bank_group: (data.control_data.bank_group) ? {
-        _id: data.bank_group._id,
-        name: data.bank_group.name,
-      } : null,
-      postbank_account: data.control_data.postbank_account,
-      bank_number: data.control_data.bank_number,
+    details: {
+      address: {
+        name: data.address.name,
+        region: data.address.region,
+        street: data.address.street,
+        city: data.address.city,
+        bank_branch: data.address.bank_branch,
+      },
+      control_data: {
+        swift_code: data.control_data.swift_code,
+        bank_group: (data.control_data.bank_group) ? {
+          _id: data.bank_group._id,
+          name: data.bank_group.name,
+        } : null,
+        postbank_account: data.control_data.postbank_account,
+        bank_number: data.control_data.bank_number,
+      },
     },
     status: data.status,
     date_created: data.date_created,
