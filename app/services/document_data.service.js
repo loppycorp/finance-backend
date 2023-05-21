@@ -296,11 +296,11 @@ exports.mapData = (data) => {
                         code: itemCompany.code,
                         name: itemCompany.name,
                     },
-                    trading_part_ba: {
+                    trading_part_ba: (itemTrading) ? {
                         _id: itemTrading._id,
-                        code: itemTrading.code ? itemTrading.code : '',
-                        name: itemTrading.name ? itemTrading.name : '',
-                    },
+                        code: itemTrading.code,
+                        name: itemTrading.name,
+                    } : null,
                     bussiness_place: o.bussiness_place,
                     partner: o.partner,
                     cost_center: {
@@ -308,12 +308,12 @@ exports.mapData = (data) => {
                         cost_center_code: itemCostCenter.cost_center_code
                     },
                     //added from accrual
-                    transaction_type: {
+                    transaction_type: (itemPk) ? {
                         _id: itemPk._id,
-                        code: itemPk.posting_key_code ? itemPk.posting_key_code : '',
-                        name: itemPk.name ? itemPk.name : '',
-                        type: itemPk.type ? itemPk.type : '',
-                    },
+                        code: itemPk.posting_key_code,
+                        name: itemPk.name,
+                        type: itemPk.type
+                    } : null,
                     description: o.description,
                     amount: o.amount,
                     tax: o.tax,
