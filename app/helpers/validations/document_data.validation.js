@@ -17,14 +17,14 @@ const defaultSchema = Joi.object({
         reversal_date: Joi.date().allow(''),
         ledger_group: Joi.string().trim().required().hex().max(24).allow('', null),
         type: Joi.string().trim().required().hex().max(24).allow(null),
-        translatn_date: Joi.date().allow(''),
+        translation_date: Joi.date().allow(''),
         fiscal_year: Joi.date().allow(''),
         period: Joi.string().trim().required().hex().max(24).allow(null),
     }),
     items: {
         items: Joi.array().items(Joi.object().keys({
             gl_account: Joi.string().trim().required().hex().max(24),
-            transaction_type: Joi.string().trim().required().valid(DefaultModel.TRANS_TYPE_CREDIT, DefaultModel.TRANS_TYPE_DEBIT),
+            transaction_type: Joi.string().trim().required().hex().max(24),
             amount: Joi.number().required(),
             company_code: Joi.string().trim().required().hex().max(24),
             trading_part_ba: Joi.string().trim().required().hex().max(24),

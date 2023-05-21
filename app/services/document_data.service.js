@@ -214,6 +214,14 @@ exports.pipeline = (filters) => {
                 as: 'segment'
             },
         },
+        {
+            $lookup: {
+                from: 'posting_keys',
+                localField: 'items.items.transaction_type',
+                foreignField: '_id',
+                as: 'transaction_type'
+            },
+        },
         { $match: filters }
     ];
 };
@@ -280,7 +288,7 @@ exports.mapData = (data) => {
                     gl_account: {
                         _id: itemGLAcct._id,
                         company_code: itemGLAcct.header.company_code,
-                        description: itemGLAcct.type_description_description.short_text
+                        description: itemGLAcct.type_description.description.short_text
                     },
                     amount_in_doc_curr: o.amount_in_doc_curr,
                     company_code: {
