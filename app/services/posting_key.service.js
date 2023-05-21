@@ -67,9 +67,9 @@ exports.getAll = async (query) => {
   return { data: bankKeyData, total: bankKeyTotal };
 };
 
-exports.getByCode = async (house_bank_code, existing_id) => {
+exports.getByCode = async (code, existing_id) => {
   const options = {
-    house_bank_code: house_bank_code,
+    posting_key_code: code,
     status: DefaultModel.STATUS_ACTIVE,
   };
 
@@ -96,7 +96,9 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
   return {
     _id: data._id,
-    posting_key: data.posting_key,
+    posting_key_code: data.posting_key_code,
+    name: data.name,
+    type: data.type,
     status: data.status,
     date_created: data.date_created,
     date_updated: data.date_updated,

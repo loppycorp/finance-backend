@@ -7,6 +7,8 @@ const STATUS_DELETED = "DELETED";
 const DOC_TYPE_GL_ACCOUNT = 'GL_ACCOUNT';
 const DOC_TYPE_SAMPLE_DOCUMENT = 'SAMPLE_DOCUMENT';
 const DOC_TYPE_POST_DOCUMENT = 'POST_DOCUMENT';
+const DOC_TYPE_ACCRUAL_DEFERRAL = 'ACCRUAL/DEFERRAL_DOCUMENT';
+
 
 const DOC_STATUS_HOLD = "HOLD";
 const DOC_STATUS_COMPLETED = "POST";
@@ -34,37 +36,26 @@ const defaultSchema = new mongoose.Schema({
         currency: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'currencies' },
 
         //added from accrual document
-        reversal_reason: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'reversal_reasons' },
+        reversal_reason: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'reversal_reasons' },
         reversal_date: { type: Date, required: false, default: '' },
-        ledger_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'ledger_groups' },
-        type: { type: String, trim: true, required: false, default: '' },
-        translatn_date: { type: Date, default: () => new Date(), required: false, default: '' },
-        fiscal_year: { type: Date, default: () => new Date(), required: false, default: '' },
-        period: { type: Number, required: false, default: '' },
-        texts_exist: { type: Boolean, required: false, default: false },
-
+        ledger_group: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'ledger_groups', },
+        type: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'document_types' },
+        translation_date: { type: Date, default: () => new Date(), required: false },
+        fiscal_year: { type: Date, default: () => new Date(), required: false },
+        period: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'fiscal_periods' },
 
     },
     items: [
         {
             gl_account: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'gl_accounts' },
-            short_text: { type: String, required: true },
-            transaction_type: { type: String, required: true },
-            amount_in_doc_curr: { type: Number, required: true },
+            transaction_type: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
+            amount: { type: Number, required: true },
             company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
             trading_part_ba: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
             bussiness_place: { type: String, required: false, default: '' },
             partner: { type: String, required: false, default: '' },
             cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
-
-            //added from accrual document
-            item: { type: Number, required: false, default: '' },
-            pk: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
-            s: { type: String, trim: true, required: false, default: '' },
-            description: { type: String, trim: true, required: false, default: '' },
-            amount: { type: Number, required: false, default: '' },
-            curr: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "currencies" },
-            tx: { type: String, trim: true, required: false, default: '' },
+            tax: { type: String, trim: true, required: false, default: '' },
             profit_center: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "profit_centers" },
             segment: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "segments" },
         }
@@ -91,6 +82,7 @@ module.exports.TRANS_TYPE_CREDIT = TRANS_TYPE_CREDIT;
 module.exports.DOC_TYPE_GL_ACCOUNT = DOC_TYPE_GL_ACCOUNT;
 module.exports.DOC_TYPE_SAMPLE_DOCUMENT = DOC_TYPE_SAMPLE_DOCUMENT;
 module.exports.DOC_TYPE_POST_DOCUMENT = DOC_TYPE_POST_DOCUMENT;
+module.exports.DOC_TYPE_ACCRUAL_DEFERRAL = DOC_TYPE_ACCRUAL_DEFERRAL;
 
 module.exports.DOC_STATUS_HOLD = DOC_STATUS_HOLD;
 module.exports.DOC_STATUS_COMPLETED = DOC_STATUS_COMPLETED;
