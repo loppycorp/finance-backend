@@ -45,21 +45,23 @@ const defaultSchema = new mongoose.Schema({
         period: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'fiscal_periods' },
 
     },
-    items: [
-        {
-            gl_account: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'gl_accounts' },
-            transaction_type: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
-            amount: { type: Number, required: true },
-            company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-            trading_part_ba: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
-            bussiness_place: { type: String, required: false, default: '' },
-            partner: { type: String, required: false, default: '' },
-            cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
-            tax: { type: String, trim: true, required: false, default: '' },
-            profit_center: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "profit_centers" },
-            segment: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "segments" },
-        }
-    ],
+    items: {
+        items: [
+            {
+                gl_account: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'gl_accounts' },
+                transaction_type: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
+                amount: { type: Number, required: true },
+                company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+                trading_part_ba: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
+                bussiness_place: { type: String, required: false, default: '' },
+                partner: { type: String, required: false, default: '' },
+                cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
+                tax: { type: String, trim: true, required: false, default: '' },
+                profit_center: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "profit_centers" },
+                segment: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "segments" },
+            }
+        ],
+    },
     type: {
         document_code: { type: String, required: false },
         document_status: { type: String, required: false, default: DOC_STATUS_PENDING }

@@ -144,7 +144,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'gl_accounts',
-                localField: 'items.gl_account',
+                localField: 'items.items.gl_account',
                 foreignField: '_id',
                 as: 'gl_accounts'
             },
@@ -152,7 +152,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'companies',
-                localField: 'items.company_code',
+                localField: 'items.items.company_code',
                 foreignField: '_id',
                 as: 'companies'
             },
@@ -160,7 +160,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'trading_partners',
-                localField: 'items.trading_part_ba',
+                localField: 'items.items.trading_part_ba',
                 foreignField: '_id',
                 as: 'trading_partners'
             },
@@ -168,7 +168,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'cost_centers',
-                localField: 'items.cost_center',
+                localField: 'items.items.cost_center',
                 foreignField: '_id',
                 as: 'cost_centers'
             },
@@ -193,23 +193,15 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'posting_keys',
-                localField: 'items.pk',
+                localField: 'items.items.pk',
                 foreignField: '_id',
                 as: 'pk'
             },
         },
         {
             $lookup: {
-                from: 'currencies',
-                localField: 'items.curr',
-                foreignField: '_id',
-                as: 'curr'
-            },
-        },
-        {
-            $lookup: {
                 from: 'profit_centers',
-                localField: 'items.profit_center',
+                localField: 'items.items.profit_center',
                 foreignField: '_id',
                 as: 'profit_center'
             },
@@ -217,7 +209,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'segments',
-                localField: 'items.segment',
+                localField: 'items.items.segment',
                 foreignField: '_id',
                 as: 'segment'
             },
@@ -259,75 +251,76 @@ exports.mapData = (data) => {
             fiscal_year: data.header.fiscal_year,
             period: data.header.period,
         },
-        items: data.items.map((o) => {
-            const itemGLAcct = data.gl_accounts.find(i => i._id.toString() == o.gl_account.toString());
-            const itemCompany = data.companies.find(i => i._id.toString() == o.company_code.toString());
-            const itemTrading = data.trading_partners.find(i => i._id.toString() == o.trading_part_ba.toString());
-            const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
-            const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());
-            const itemCurr = data.curr.find(i => i._id.toString() == o.curr.toString());
-            const itemProfit = data.profit_center.find(i => i._id.toString() == o.profit_center.toString());
-            const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
+        items: {
+            items: data.items.items.map((o) => {
+                const itemGLAcct = data.gl_accounts.find(i => i._id.toString() == o.gl_account.toString());
+                const itemCompany = data.companies.find(i => i._id.toString() == o.company_code.toString());
+                const itemTrading = data.trading_partners.find(i => i._id.toString() == o.trading_part_ba.toString());
+                const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
+                const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());
+                const itemProfit = data.profit_center.find(i => i._id.toString() == o.profit_center.toString());
+                const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
 
-            if (o.transaction_type == DefaultModel.TRANS_TYPE_CREDIT)
-                totalCred += parseFloat(o.amount_in_doc_curr);
+                if (o.transaction_type == DefaultModel.TRANS_TYPE_CREDIT)
+                    totalCred += parseFloat(o.amount_in_doc_curr);
 
-            if (o.transaction_type == DefaultModel.TRANS_TYPE_DEBIT)
-                totalDeb += parseFloat(o.amount_in_doc_curr);
+                if (o.transaction_type == DefaultModel.TRANS_TYPE_DEBIT)
+                    totalDeb += parseFloat(o.amount_in_doc_curr);
 
-            let totalBalance = totalDeb - totalCred;
+                let totalBalance = totalDeb - totalCred;
 
-            if (totalBalance == 0)
-                balanceStatus = DefaultModel.DOC_BALANCED;
+                if (totalBalance == 0)
+                    balanceStatus = DefaultModel.DOC_BALANCED;
 
-            if (totalBalance != 0)
-                balanceStatus = DefaultModel.DOC_UNBALANCED;
+                if (totalBalance != 0)
+                    balanceStatus = DefaultModel.DOC_UNBALANCED;
 
-            return {
-                _id: o._id,
-                gl_account: {
-                    _id: itemGLAcct._id,
-                    company_code: itemGLAcct.header.company_code,
-                    description: itemGLAcct.type_description_description.short_text
-                },
-                amount_in_doc_curr: o.amount_in_doc_curr,
-                company_code: {
-                    _id: itemCompany._id,
-                    code: itemCompany.code,
-                    name: itemCompany.name,
-                },
-                trading_part_ba: {
-                    _id: itemTrading._id,
-                    code: itemTrading.code ? itemTrading.code : '',
-                    name: itemTrading.name ? itemTrading.name : '',
-                },
-                bussiness_place: o.bussiness_place,
-                partner: o.partner,
-                cost_center: {
-                    _id: itemCostCenter._id,
-                    cost_center_code: itemCostCenter.cost_center_code
-                },
-                //added from accrual
-                transaction_type: {
-                    _id: itemPk._id,
-                    code: itemPk.posting_key_code ? itemPk.posting_key_code : '',
-                    name: itemPk.name ? itemPk.name : '',
-                    type: itemPk.type ? itemPk.type : '',
-                },
-                description: o.description,
-                amount: o.amount,
-                tax: o.tax,
-                profit_center: {
-                    _id: itemProfit._id,
-                    code: itemProfit.basic_data.description.profit_center_code ? itemProfit.basic_data.description.profit_center_code : '',
-                },
-                segment: {
-                    _id: itemSegment._id,
-                    name: itemSegment.name ? itemSegment.name : '',
-                },
+                return {
+                    _id: o._id,
+                    gl_account: {
+                        _id: itemGLAcct._id,
+                        company_code: itemGLAcct.header.company_code,
+                        description: itemGLAcct.type_description_description.short_text
+                    },
+                    amount_in_doc_curr: o.amount_in_doc_curr,
+                    company_code: {
+                        _id: itemCompany._id,
+                        code: itemCompany.code,
+                        name: itemCompany.name,
+                    },
+                    trading_part_ba: {
+                        _id: itemTrading._id,
+                        code: itemTrading.code ? itemTrading.code : '',
+                        name: itemTrading.name ? itemTrading.name : '',
+                    },
+                    bussiness_place: o.bussiness_place,
+                    partner: o.partner,
+                    cost_center: {
+                        _id: itemCostCenter._id,
+                        cost_center_code: itemCostCenter.cost_center_code
+                    },
+                    //added from accrual
+                    transaction_type: {
+                        _id: itemPk._id,
+                        code: itemPk.posting_key_code ? itemPk.posting_key_code : '',
+                        name: itemPk.name ? itemPk.name : '',
+                        type: itemPk.type ? itemPk.type : '',
+                    },
+                    description: o.description,
+                    amount: o.amount,
+                    tax: o.tax,
+                    profit_center: {
+                        _id: itemProfit._id,
+                        code: itemProfit.basic_data.description.profit_center_code ? itemProfit.basic_data.description.profit_center_code : '',
+                    },
+                    segment: {
+                        _id: itemSegment._id,
+                        name: itemSegment.name ? itemSegment.name : '',
+                    },
 
-            };
-        }),
+                };
+            }),
+        },
         amount_information: {
             total_deb: totalDeb,
             total_cred: totalCred,

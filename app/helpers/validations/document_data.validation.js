@@ -21,20 +21,22 @@ const defaultSchema = Joi.object({
         fiscal_year: Joi.date().allow(''),
         period: Joi.string().trim().required().hex().max(24).allow(null),
     }),
-    items: Joi.array().items(Joi.object().keys({
-        gl_account: Joi.string().trim().required().hex().max(24),
-        transaction_type: Joi.string().trim().required().valid(DefaultModel.TRANS_TYPE_CREDIT, DefaultModel.TRANS_TYPE_DEBIT),
-        amount: Joi.number().required(),
-        company_code: Joi.string().trim().required().hex().max(24),
-        trading_part_ba: Joi.string().trim().required().hex().max(24),
-        bussiness_place: Joi.string().trim().required().allow(''),
-        partner: Joi.string().trim().required().allow(''),
-        cost_center: Joi.string().trim().required().hex().max(24),
-        //added from accrual document
-        tax: Joi.number().allow(''),
-        profit_center: Joi.string().trim().required().hex().max(24).allow(null),
-        segment: Joi.string().trim().required().hex().max(24).allow(null),
-    })),
+    items: {
+        items: Joi.array().items(Joi.object().keys({
+            gl_account: Joi.string().trim().required().hex().max(24),
+            transaction_type: Joi.string().trim().required().valid(DefaultModel.TRANS_TYPE_CREDIT, DefaultModel.TRANS_TYPE_DEBIT),
+            amount: Joi.number().required(),
+            company_code: Joi.string().trim().required().hex().max(24),
+            trading_part_ba: Joi.string().trim().required().hex().max(24),
+            bussiness_place: Joi.string().trim().required().allow(''),
+            partner: Joi.string().trim().required().allow(''),
+            cost_center: Joi.string().trim().required().hex().max(24),
+            //added from accrual document
+            tax: Joi.number().allow(''),
+            profit_center: Joi.string().trim().required().hex().max(24).allow(null),
+            segment: Joi.string().trim().required().hex().max(24).allow(null),
+        })),
+    },
     type: {
         document_code: Joi.string().trim()
             .valid(DefaultModel.DOC_TYPE_GL_ACCOUNT, DefaultModel.DOC_TYPE_SAMPLE_DOCUMENT, DefaultModel.DOC_TYPE_POST_DOCUMENT, DefaultModel.DOC_TYPE_ACCRUAL_DEFERRAL),
