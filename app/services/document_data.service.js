@@ -222,6 +222,14 @@ exports.pipeline = (filters) => {
                 as: 'transaction_type'
             },
         },
+        {
+            $lookup: {
+                from: 'document_types',
+                localField: 'header.type',
+                foreignField: '_id',
+                as: 'type'
+            },
+        },
         { $match: filters }
     ];
 };
@@ -254,7 +262,13 @@ exports.mapData = (data) => {
 
             reversal_date: data.header.reversal_date,
             ledger_group: data.header.ledger_group,
-            type: data.header.type,
+            type: (data.header.type) ? {
+                _id: data.type._id,
+                description: data.type.description,
+                document_type_code: data.type.document_type_code,
+                reverse_type: data.type.reverse_type,
+                account_types: data.type.account_types,
+            } : null,
             translation_date: data.header.translation_date,
             fiscal_year: data.header.fiscal_year,
             period: data.header.period,

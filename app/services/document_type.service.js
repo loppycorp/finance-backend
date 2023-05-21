@@ -96,7 +96,10 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
   return {
     _id: data._id,
-    document_type: data.document_type,
+    description: data.description,
+    document_type_code: data.document_type_code,
+    reverse_type: data.reverse_type,
+    account_types: data.account_types,
     status: data.status,
     date_created: data.date_created,
     date_updated: data.date_updated,
