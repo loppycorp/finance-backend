@@ -31,7 +31,19 @@ const defaultSchema = new mongoose.Schema({
         doc_header_text: { type: String, required: false, default: '' },
         cross_cc_no: { type: String, required: false, default: '' },
         company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-        currency: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'currencies' }
+        currency: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'currencies' },
+
+        //added from accrual document
+        reversal_reason: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'reversal_reasons' },
+        reversal_date: { type: Date, required: false, default: '' },
+        ledger_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'ledger_groups' },
+        type: { type: String, trim: true, required: false, default: '' },
+        translatn_date: { type: Date, default: () => new Date(), required: false, default: '' },
+        fiscal_year: { type: Date, default: () => new Date(), required: false, default: '' },
+        period: { type: Number, required: false, default: '' },
+        texts_exist: { type: Boolean, required: false, default: false },
+
+
     },
     items: [
         {
@@ -43,7 +55,18 @@ const defaultSchema = new mongoose.Schema({
             trading_part_ba: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
             bussiness_place: { type: String, required: false, default: '' },
             partner: { type: String, required: false, default: '' },
-            cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' }
+            cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
+
+            //added from accrual document
+            item: { type: Number, required: false, default: '' },
+            pk: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
+            s: { type: String, trim: true, required: false, default: '' },
+            description: { type: String, trim: true, required: false, default: '' },
+            amount: { type: Number, required: false, default: '' },
+            curr: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "currencies" },
+            tx: { type: String, trim: true, required: false, default: '' },
+            profit_center: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "profit_centers" },
+            segment: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "segments" },
         }
     ],
     type: {

@@ -10,7 +10,16 @@ const defaultSchema = Joi.object({
         doc_header_text: Joi.string().trim().required().allow(''),
         cross_cc_no: Joi.string().trim().required().allow(''),
         company_code: Joi.string().trim().required().hex().max(24),
-        currency: Joi.string().trim().required().hex().max(24)
+        currency: Joi.string().trim().required().hex().max(24),
+        //added from accrual document
+        reversal_reason: Joi.string().trim().required().hex().max(24).allow('', null),
+        // reversal_date: Joi.date().required().allow(''),
+        ledger_group: Joi.string().trim().required().hex().max(24).allow('', null),
+        // type: Joi.string().trim().required().allow(''),
+        // translatn_date: Joi.date().required().allow(''),
+        // fiscal_year: Joi.date().required().allow(''),
+        // period: Joi.number().required().allow(''),
+        // texts_exist: Joi.boolean().required().allow(''),
     }),
     items: Joi.array().items(Joi.object().keys({
         gl_account: Joi.string().trim().required().hex().max(24),
@@ -21,7 +30,17 @@ const defaultSchema = Joi.object({
         trading_part_ba: Joi.string().trim().required().hex().max(24),
         bussiness_place: Joi.string().trim().required().allow(''),
         partner: Joi.string().trim().required().allow(''),
-        cost_center: Joi.string().trim().required().hex().max(24)
+        cost_center: Joi.string().trim().required().hex().max(24),
+        //added from accrual document
+        // item: Joi.number().required().allow(''),
+        pk: Joi.string().trim().required().hex().max(24).allow('', null),
+        // s: Joi.string().trim().required().allow(''),
+        // description: Joi.string().trim().required().allow(''),
+        // amount: Joi.number().required().allow(''),
+        curr: Joi.string().trim().required().hex().max(24).allow('', null),
+        // tx: Joi.string().trim().required().allow(''),
+        profit_center: Joi.string().trim().required().hex().max(24).allow('', null),
+        segment: Joi.string().trim().required().hex().max(24).allow('', null),
     })),
     type: {
         document_code: Joi.string().trim()

@@ -12,6 +12,15 @@ const serviceCurrency = require('../services/currency.service');
 const serviceTrading = require('../services/trading_partner.service');
 const serviceCost = require('../services/cost_center.service');
 
+//accrual
+const reversal_reasons = require('../services/code_reversal_reason.service');
+const ledger_groups = require('../services/code_ledger_group.service');
+const posting_keys = require('../services/posting_key.service');
+const currencies = require('../services/currency.service');
+const profit_centers = require('../services/profit_center.service');
+const segments = require('../services/segment.service');
+
+
 exports.validate = async (body) => {
     const validationBody = validateBodySchema.validate(body, { abortEarly: false });
     if (validationBody.error) {
@@ -86,7 +95,88 @@ exports.validate = async (body) => {
                 }
             };
         }
+        //accrual validation
 
+        // Validate item reversal_reason record
+        const itemReversalReasons = await reversal_reasons.get(header.reversal_reason);
+        if (!itemReversalReasons && itemReversalReasons != null) {
+            return {
+                status: false,
+                message: lang.t('document_data.err.reversal_reasons_not_exists'),
+                error: {
+                    index: i,
+                    field: 'reversal_reason',
+                    value: header.reversal_reason
+                }
+            };
+        }
+        // Validate item ledger_groups record
+        const itemLedger = await ledger_groups.get(header.ledger_group);
+        if (!itemLedger && itemLedger != null) {
+            return {
+                status: false,
+                message: lang.t('document_data.err.ledger_item_not_exists'),
+                error: {
+                    index: i,
+                    field: 'ledger_group',
+                    value: header.ledger_group
+                }
+            };
+        }
+        // Validate item posting_key record
+        const itemPk = await posting_keys.get(item.pk);
+        if (!itemPk && itemPk != null) {
+            return {
+                status: false,
+                message: lang.t('document_data.err.posting_key_not_exists'),
+                error: {
+                    index: i,
+                    field: 'pk',
+                    value: item.pk
+                }
+            };
+        }
+
+        // Validate item Currency record
+        const itemCurr = await currencies.get(item.curr);
+        if (!itemCurr && itemCurr != null) {
+            return {
+                status: false,
+                message: lang.t('document_data.err.Currency_not_exists'),
+                error: {
+                    index: i,
+                    field: 'curr',
+                    value: item.curr
+                }
+            };
+        }
+
+        // Validate item profit_center record
+        const itemProfit = await profit_centers.get(item.profit_center);
+        if (!itemProfit && itemProfit != null) {
+            return {
+                status: false,
+                message: lang.t('document_data.err.profit_center_not_exists'),
+                error: {
+                    index: i,
+                    field: 'profit_center',
+                    value: item.profit_center
+                }
+            };
+        }
+        // Validate item segments record
+        const itemsegments = await segments.get(item.segment);
+        if (!itemsegments && itemsegments != null) {
+            return {
+                status: false,
+                message: lang.t('document_data.err.segment_item_not_exists'),
+                error: {
+                    index: i,
+                    field: 'segment',
+                    value: item.segment
+                }
+            };
+        }
     }
 
     return { status: true };

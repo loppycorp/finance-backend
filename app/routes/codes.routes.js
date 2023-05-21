@@ -9,6 +9,7 @@ const code_corporate_group = require('../controllers/code_corporate_group.contro
 const code_buying_group = require('../controllers/code_buying_group.controller');
 const code_ledger_group = require('../controllers/code_ledger_group.controller');
 const bank_group = require('../controllers/bank_group.controller');
+const reversal = require('../controllers/code_reversal_reason.controller');
 
 const auth = require('../middlewares/authorization.middleware');
 const pagination = require('../middlewares/pagination.middleware');
@@ -75,5 +76,10 @@ module.exports = (app) => {
     app.get(process.env.BASE_URL + '/bank-groups/:id', auth.validateToken, bank_group.read);
     app.put(process.env.BASE_URL + '/bank-groups/:id', auth.validateToken, bank_group.update);
     app.delete(process.env.BASE_URL + '/bank-groups/:id', auth.validateToken, bank_group.delete);
-
+    //reversal reason
+    app.post(process.env.BASE_URL + '/reversal-reason', auth.validateToken, reversal.create);
+    app.get(process.env.BASE_URL + '/reversal-reason', auth.validateToken, pagination.setAttributes, reversal.search);
+    app.get(process.env.BASE_URL + '/reversal-reason/:id', auth.validateToken, reversal.read);
+    app.put(process.env.BASE_URL + '/reversal-reason/:id', auth.validateToken, reversal.update);
+    app.delete(process.env.BASE_URL + '/reversal-reason/:id', auth.validateToken, reversal.delete);
 }
