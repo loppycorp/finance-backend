@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
     }
 
     // validate code
-    const code = await DefaulService.getByCode(body.posting_key_code);
+    const code = await DefaultService.getByCode(body.posting_key_code);
     if (code) {
       return res.status(400).send({
         status: 'error',
