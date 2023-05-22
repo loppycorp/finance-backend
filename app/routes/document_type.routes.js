@@ -17,6 +17,12 @@ module.exports = (app) => {
     pagination.setAttributes,
     defaultController.search
   );
+  // Get by Id
+  app.get(
+    process.env.BASE_URL + "/document-type/:id",
+    auth.validateToken,
+    defaultController.get
+  );
   // Edit document-type
   app.put(
     process.env.BASE_URL + "/document-type/:id",

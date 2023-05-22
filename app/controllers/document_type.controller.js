@@ -40,6 +40,44 @@ exports.create = async (req, res) => {
     });
   }
 };
+exports.get = async (req, res) => {
+  try {
+    logger.info(req.path);
+
+    const params = req.params;
+
+    const validationParams = paramsSchema.validate(params, { abortEarly: false });
+    if (validationParams.error) {
+      return res.status(400).send({
+        'status': 'error',
+        'message': lang.t('global.err.validation_failed'),
+        'error': validationParams.error.details
+      });
+    }
+
+    const defaultService = await DefaultService.get(params.id);
+    if (!defaultService) {
+      return res.status(400).send({
+        status: 'error',
+        message: lang.t('document_type.err.not_exists')
+      });
+    }
+
+    return res.status(200).send({
+      status: 'success',
+      message: lang.t('document_type.suc.read'),
+      data: defaultService
+    });
+  } catch (err) {
+    logger.error(req.path);
+    logger.error(err);
+
+    return res.status(500).send({
+      status: 'error',
+      message: utilities.getMessage(err)
+    });
+  }
+};
 exports.search = async (req, res) => {
   try {
     logger.info(req.path);
@@ -90,7 +128,7 @@ exports.update = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationParams.error.details,
       });
-      return false;
+
     }
 
     const defaultService = await DefaultService.get(params.id);
@@ -108,7 +146,7 @@ exports.update = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-      return false;
+
     }
 
     const updated_defaultService = await DefaultService.update(

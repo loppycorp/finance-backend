@@ -60,6 +60,7 @@ exports.getAll = async (query) => {
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
+
     const data = results.map(o => this.mapData(o));
 
     const total = await DefaultModel.countDocuments(filters);
@@ -143,6 +144,37 @@ exports.pipeline = (filters) => {
         { $unwind: '$currency' },
         {
             $lookup: {
+                from: 'reversal_reasons',
+                localField: 'header.reversal_reason',
+                foreignField: '_id',
+                as: 'reversal_reason'
+            },
+        },
+
+        {
+            $lookup: {
+                from: 'ledger_groups',
+                localField: 'header.ledger_group',
+                foreignField: '_id',
+                as: 'ledger_group'
+            },
+        },
+        {
+            $lookup: {
+                from: 'document_types',
+                localField: 'header.type',
+                foreignField: '_id',
+                as: 'type'
+            },
+        },
+        {
+            $unwind: {
+                path: '$type',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
                 from: 'gl_accounts',
                 localField: 'items.items.gl_account',
                 foreignField: '_id',
@@ -173,31 +205,6 @@ exports.pipeline = (filters) => {
                 as: 'cost_centers'
             },
         },
-        ///
-        {
-            $lookup: {
-                from: 'reversal_reasons',
-                localField: 'header.reversal_reason',
-                foreignField: '_id',
-                as: 'reversal_reaso'
-            },
-        },
-        {
-            $lookup: {
-                from: 'ledger_groups',
-                localField: 'header.ledger_group',
-                foreignField: '_id',
-                as: 'ledger_group'
-            },
-        },
-        {
-            $lookup: {
-                from: 'posting_keys',
-                localField: 'items.items.pk',
-                foreignField: '_id',
-                as: 'pk'
-            },
-        },
         {
             $lookup: {
                 from: 'profit_centers',
@@ -222,20 +229,13 @@ exports.pipeline = (filters) => {
                 as: 'transaction_type'
             },
         },
-        {
-            $lookup: {
-                from: 'document_types',
-                localField: 'header.type',
-                foreignField: '_id',
-                as: 'type'
-            },
-        },
+
         { $match: filters }
     ];
 };
 
 exports.mapData = (data) => {
-    const { header, company, currency } = data;
+    const { header, company, currency, type, reason, period } = data;
 
     let totalDeb = 0;
     let totalCred = 0;
@@ -260,18 +260,27 @@ exports.mapData = (data) => {
                 name: currency.name,
             },
 
+            reversal_reason: (reason) ? {
+                _id: reason._id,
+                code: reason.code,
+                name: reason.name,
+            } : null,
             reversal_date: data.header.reversal_date,
-            ledger_group: data.header.ledger_group,
-            type: (data.header.type) ? {
-                _id: data.type._id,
-                description: data.type.description,
-                document_type_code: data.type.document_type_code,
-                reverse_type: data.type.reverse_type,
-                account_types: data.type.account_types,
+            ledger_group: data.ledger_group,
+            type: (type) ? {
+                _id: type._id,
+                description: type.description,
+                document_type_code: type.document_type_code,
+                reverse_type: type.reverse_type,
+                account_types: type.account_types,
             } : null,
             translation_date: data.header.translation_date,
             fiscal_year: data.header.fiscal_year,
-            period: data.header.period,
+            period: (period) ? {
+                _id: period._id,
+                code: period.code,
+                name: period.name,
+            } : null,
         },
         items: {
             items: data.items.items.map((o) => {
