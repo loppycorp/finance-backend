@@ -61,6 +61,7 @@ exports.getAll = async (query) => {
         .limit(pageLimit);
 
 
+    console.log(filters)
     const data = results.map(o => this.mapData(o));
 
     const total = await DefaultModel.countDocuments(filters);
@@ -132,7 +133,12 @@ exports.pipeline = (filters) => {
                 as: 'company'
             },
         },
-        { $unwind: '$company' },
+        {
+            $unwind: {
+                path: '$company',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'currencies',
@@ -141,38 +147,74 @@ exports.pipeline = (filters) => {
                 as: 'currency'
             },
         },
-        { $unwind: '$currency' },
+        {
+            $unwind: {
+                path: '$currency',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'reversal_reasons',
                 localField: 'header.reversal_reason',
                 foreignField: '_id',
-                as: 'reversal_reason'
+                as: 'reason'
             },
         },
-
+        {
+            $unwind: {
+                path: '$reason',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'ledger_groups',
                 localField: 'header.ledger_group',
                 foreignField: '_id',
-                as: 'ledger_group'
-            },
-        },
-        {
-            $lookup: {
-                from: 'document_types',
-                localField: 'header.type',
-                foreignField: '_id',
-                as: 'type'
+                as: 'ledger'
             },
         },
         {
             $unwind: {
-                path: '$type',
+                path: '$ledger',
                 preserveNullAndEmptyArrays: true
             }
         },
+        {
+            $lookup: {
+                from: 'document_types',
+                localField: 'header.types',
+                foreignField: '_id',
+                as: 'types'
+            },
+        },
+        {
+            $unwind: {
+                path: '$types',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'fiscal_periods',
+                localField: 'header.period',
+                foreignField: '_id',
+                as: 'period'
+            },
+        },
+        {
+            $unwind: {
+                path: '$period',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+
+
+
+
+
+        // ////////////////////////////////////////
         {
             $lookup: {
                 from: 'gl_accounts',
@@ -235,7 +277,7 @@ exports.pipeline = (filters) => {
 };
 
 exports.mapData = (data) => {
-    const { header, company, currency, type, reason, period } = data;
+    const { header, company, currency, types, reason, period, ledger } = data;
 
     let totalDeb = 0;
     let totalCred = 0;
@@ -249,16 +291,16 @@ exports.mapData = (data) => {
             reference: (header.reference) ? header.reference : '',
             doc_header_text: (header.doc_header_text) ? header.doc_header_text : '',
             cross_cc_no: (header.cross_cc_no) ? header.cross_cc_no : '',
-            company_code: {
+            company_code: (company) ? {
                 _id: company._id,
                 code: company.code,
                 name: company.name,
-            },
-            currency: {
+            } : null,
+            currency: (currency) ? {
                 _id: currency._id,
                 code: currency.code,
                 name: currency.name,
-            },
+            } : null,
 
             reversal_reason: (reason) ? {
                 _id: reason._id,
@@ -266,13 +308,17 @@ exports.mapData = (data) => {
                 name: reason.name,
             } : null,
             reversal_date: data.header.reversal_date,
-            ledger_group: data.ledger_group,
-            type: (type) ? {
-                _id: type._id,
-                description: type.description,
-                document_type_code: type.document_type_code,
-                reverse_type: type.reverse_type,
-                account_types: type.account_types,
+            ledger_group: (ledger) ? {
+                _id: ledger._id,
+                code: ledger.code,
+                name: ledger.name,
+            } : null,
+            types: (types) ? {
+                _id: types._id,
+                description: types.description,
+                document_type_code: types.document_type_code,
+                reverse_type: types.reverse_type,
+                account_types: types.account_types,
             } : null,
             translation_date: data.header.translation_date,
             fiscal_year: data.header.fiscal_year,

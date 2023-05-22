@@ -16,7 +16,7 @@ const defaultSchema = Joi.object({
         reversal_reason: Joi.string().trim().required().hex().max(24).allow(null),
         reversal_date: Joi.date().allow(''),
         ledger_group: Joi.string().trim().required().hex().max(24).allow('', null),
-        type: Joi.string().trim().required().hex().max(24).allow(null),
+        types: Joi.string().trim().required().hex().max(24).allow(null),
         translation_date: Joi.date().allow(''),
         fiscal_year: Joi.date().allow(''),
         period: Joi.string().trim().required().hex().max(24).allow(null),

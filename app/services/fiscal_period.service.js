@@ -96,7 +96,8 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
   return {
     _id: data._id,
-    fiscal_period: data.fiscal_period,
+    period: data.period,
+    name: data.name,
     status: data.status,
     date_created: data.date_created,
     date_updated: data.date_updated,

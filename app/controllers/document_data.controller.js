@@ -11,6 +11,7 @@ const serviceCompany = require('../services/company.service');
 const serviceCurrency = require('../services/currency.service');
 const serviceTrading = require('../services/trading_partner.service');
 const serviceCost = require('../services/cost_center.service');
+const serviceDocumentType = require('../services/document_type.service');
 
 //accrual
 const reversal_reasons = require('../services/code_reversal_reason.service');
@@ -197,6 +198,10 @@ exports.create = async (req, res) => {
                 error: validate.error
             });
         }
+
+        // const documentType = await serviceDocumentType.getAll(req);
+        // const ace = documentType.data;
+
 
         const data = await serviceDocumentdata.create(body, query);
 

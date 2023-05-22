@@ -5,10 +5,8 @@ const STATUS_INACTIVE = "INACTIVE";
 const STATUS_DELETED = "DELETED";
 
 const DefaulSchema = new mongoose.Schema({
-  fiscal_period: {
-    period: { type: Number, required: true },
-    name: { type: String, trim: true, required: true },
-  },
+  period: { type: Number, required: true },
+  name: { type: String, trim: true, required: true },
   status: { type: String, default: STATUS_ACTIVE, required: true },
   date_created: { type: Date, default: () => new Date(), required: true },
   date_updated: { type: Date, default: () => new Date(), required: true },
