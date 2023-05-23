@@ -13,13 +13,13 @@ const defaultSchema = Joi.object({
         currency: Joi.string().trim().required().hex().max(24),
 
         //added from accrual document
-        reversal_reason: Joi.string().trim().required().hex().max(24).allow(null),
+        reversal_reason: Joi.string().trim().hex().max(24).allow(null),
         reversal_date: Joi.date().allow(''),
-        ledger_group: Joi.string().trim().required().hex().max(24).allow('', null),
-        types: Joi.string().trim().required().hex().max(24).allow(null),
+        ledger_group: Joi.string().trim().hex().max(24).allow('', null),
+        types: Joi.string().trim().hex().max(24).allow(null),
         translation_date: Joi.date().allow(''),
         fiscal_year: Joi.date().allow(''),
-        period: Joi.string().trim().required().hex().max(24).allow(null),
+        period: Joi.string().trim().hex().max(24).allow(null),
     }),
     items: {
         items: Joi.array().items(Joi.object().keys({
@@ -33,8 +33,8 @@ const defaultSchema = Joi.object({
             cost_center: Joi.string().trim().required().hex().max(24),
             //added from accrual document
             tax: Joi.number().allow(''),
-            profit_center: Joi.string().trim().required().hex().max(24).allow(null),
-            segment: Joi.string().trim().required().hex().max(24).allow(null),
+            profit_center: Joi.string().trim().hex().max(24).allow(null),
+            segment: Joi.string().trim().hex().max(24).allow(null),
         })),
     },
     type: {
