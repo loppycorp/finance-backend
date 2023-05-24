@@ -128,6 +128,17 @@ exports.create = async (req, res) => {
             });
         }
 
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.created_by = user.username;
+        body.updated_by = user.username;
+
         const costCenter = await costCenterSerrvice.create(body);
 
         return res.status(200).send({
@@ -160,7 +171,15 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
+        }
+
+        // validate cost_center_code
+        const costCode = await costCenterSerrvice.getByCode(body.header.cost_center_code);
+        if (costCode) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('Cost Center already exists')
+            });
         }
 
         const costCenter = await costCenterSerrvice.get(params.id);
@@ -178,8 +197,18 @@ exports.update = async (req, res) => {
                 message: validate.message,
                 error: validate.error
             });
-            return false;
+
         }
+
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.updated_by = user.username;
 
         const updatedCostCenter = await costCenterSerrvice.update(costCenter._id, body);
 

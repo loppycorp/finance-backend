@@ -202,6 +202,16 @@ exports.create = async (req, res) => {
         // const documentType = await serviceDocumentType.getAll(req);
         // const ace = documentType.data;
 
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.created_by = user.username;
+        body.updated_by = user.username;
 
         const data = await serviceDocumentdata.create(body, query);
 
@@ -292,6 +302,16 @@ exports.update = async (req, res) => {
             });
         }
 
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.updated_by = user.username;
+
         const updated = await serviceDocumentdata.update(params.id, body);
 
         return res.status(200).send({
@@ -373,8 +393,16 @@ exports.simulate = async (req, res) => {
                 message: lang.t("document_data.error.not_exists"),
             });
         }
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.updated_by = user.username;
 
-        console.log(data);
         const post = await serviceDocumentdata.posting(params.id);
 
         return res.status(200).send({
@@ -416,7 +444,16 @@ exports.status = async (req, res) => {
             });
         }
 
-        console.log(data);
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.updated_by = user.username;
+
         const post = await serviceDocumentdata.updateStatus(params.id);
 
         return res.status(200).send({

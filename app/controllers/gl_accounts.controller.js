@@ -8,6 +8,7 @@ const account_group_service = require('../services/gl_account_group.service');
 const trading_partner_service = require('../services/trading_partner.service');
 const account_currency_service = require('../services/currency.service');
 const field_status_group_service = require('../services/field_status_group.service');
+const userService = require('../services/user.service');
 const { createSchema, updateSchema } = require('../helpers/validations/gl_accounts.validation');
 
 
@@ -84,6 +85,16 @@ exports.create = async (req, res) => {
                 'message': lang.t('field_status_group is not exists'),
             });
         }
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.created_by = user.username;
+        body.updated_by = user.username;
 
         const gl_accounts = await gl_accounts_service.create(body);
 
@@ -151,8 +162,8 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationParams.error.details
             });
-            return false;
         }
+
 
         const gl_accounts = await gl_accounts_service.get(params.id);
         if (!gl_accounts) {
@@ -169,8 +180,26 @@ exports.update = async (req, res) => {
                 'message': lang.t('global.err.validation_failed'),
                 'error': validationBody.error.details
             });
-            return false;
         }
+
+        // validate
+        const gl_account_code = await gl_accounts_service.getByCode(body.header.gl_account_code);
+        if (gl_account_code) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('G/L Account Code is already exists'),
+            });
+        }
+
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.updated_by = user.username;
 
         const updated_gl_accounts = await gl_accounts_service.update(gl_accounts._id, body);
 

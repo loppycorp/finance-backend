@@ -69,6 +69,8 @@ const defaultSchema = new mongoose.Schema({
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
     date_updated: { type: Date, default: () => new Date(), required: true },
+    created_by: { type: String, required: true },
+    updated_by: { type: String, required: true },
 });
 
 // defaultSchema.index({ 'header.document_number': 1 }, { unique: true, sparse: true });

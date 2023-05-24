@@ -99,6 +99,17 @@ exports.create = async (req, res) => {
             });
         }
 
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.created_by = user.username;
+        body.updated_by = user.username;
+
         const createdProfitCenter = await profitCenterService.create(body);
 
         return res.status(200).send({
@@ -134,6 +145,16 @@ exports.update = async (req, res) => {
 
         }
 
+        // validate profit_center_code
+        const profitCode = await profitCenterService.getByCode(body.basic_data.description.profit_center_code);
+        console.log(profitCode);
+        if (profitCode) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('Profit Center already exists')
+            });
+        }
+
         const profitCenter = await profitCenterService.get(params.id);
         if (!profitCenter) {
             return res.status(400).send({
@@ -151,6 +172,17 @@ exports.update = async (req, res) => {
             });
 
         }
+
+        const auth = req.auth;
+        const user = await userService.get(auth._id);
+        if (!user) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('user.err.not_exists')
+            });
+        }
+        body.updated_by = user.username;
+
 
         const updatedProfitCenter = await profitCenterService.update(profitCenter._id, body);
 

@@ -47,6 +47,8 @@ const gl_accountSchema = new mongoose.Schema({
   status: { type: String, default: STATUS_ACTIVE, required: true },
   date_created: { type: Date, default: () => new Date(), required: true },
   date_updated: { type: Date, default: () => new Date(), required: true },
+  created_by: { type: String, required: true },
+  updated_by: { type: String, required: true },
 });
 
 module.exports = mongoose.model("gl_account", gl_accountSchema);

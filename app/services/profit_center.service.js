@@ -168,6 +168,8 @@ exports.mapData = (data) => {
         },
         status: data.status,
         date_created: data.date_created,
-        date_updated: data.date_updated
+        date_updated: data.date_updated,
+        created_by: data.created_by,
+        updated_by: data.updated_by
     };
 };
