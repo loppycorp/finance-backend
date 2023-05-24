@@ -146,8 +146,7 @@ exports.update = async (req, res) => {
         }
 
         // validate profit_center_code
-        const profitCode = await profitCenterService.getByCode(body.basic_data.description.profit_center_code);
-        console.log(profitCode);
+        const profitCode = await profitCenterService.getByCode(body.basic_data.description.profit_center_code, params.id);
         if (profitCode) {
             return res.status(400).send({
                 status: 'error',
