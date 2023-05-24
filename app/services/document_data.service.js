@@ -353,17 +353,15 @@ exports.mapData = (data) => {
                     balanceStatus = DefaultModel.DOC_UNBALANCED;
 
                 return {
-                    _id: o._id,
                     gl_account: {
                         _id: itemGLAcct._id,
-                        company_code: itemGLAcct.header.company_code,
-                        description: itemGLAcct.type_description.description.short_text
+                        header: itemGLAcct.header,
                     },
                     amount_in_doc_curr: o.amount_in_doc_curr,
                     company_code: {
                         _id: itemCompany._id,
                         code: itemCompany.code,
-                        name: itemCompany.name,
+                        desc: itemCompany.desc,
                     },
                     trading_part_ba: (itemTrading) ? {
                         _id: itemTrading._id,
@@ -388,7 +386,9 @@ exports.mapData = (data) => {
                     tax: o.tax,
                     profit_center: (itemProfit) ? {
                         _id: itemProfit._id,
-                        code: itemProfit.basic_data.description.profit_center_code
+                        basic_data: {
+                            description: itemProfit.basic_data.description
+                        }
                     } : null,
                     segment: (itemSegment) ? {
                         _id: itemSegment._id,
