@@ -92,7 +92,7 @@ exports.pipeline = (filters) => {
     {
       $lookup: {
         from: "bank_groups",
-        localField: "control_data.bank_group",
+        localField: "details.control_data.bank_group",
         foreignField: "_id",
         as: "bank_group",
       },
@@ -117,21 +117,15 @@ exports.mapData = (data) => {
       bank_key_code: data.header.bank_key_code,
     },
     details: {
-      address: {
-        name: data.address.name,
-        region: data.address.region,
-        street: data.address.street,
-        city: data.address.city,
-        bank_branch: data.address.bank_branch,
-      },
+      address: data.details.address,
       control_data: {
-        swift_code: data.control_data.swift_code,
-        bank_group: (data.control_data.bank_group) ? {
+        swift_code: data.details.control_data.swift_code,
+        bank_group: (data.details.control_data.bank_group) ? {
           _id: data.bank_group._id,
           name: data.bank_group.name,
         } : null,
-        postbank_account: data.control_data.postbank_account,
-        bank_number: data.control_data.bank_number,
+        postbank_account: data.details.control_data.postbank_account,
+        bank_number: data.details.control_data.bank_number,
       },
     },
     status: data.status,
