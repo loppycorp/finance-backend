@@ -11,7 +11,7 @@ const serviceCompany = require('../services/company.service');
 const serviceCurrency = require('../services/currency.service');
 const serviceTrading = require('../services/trading_partner.service');
 const serviceCost = require('../services/cost_center.service');
-const serviceDocumentType = require('../services/document_type.service');
+const userService = require('../services/user.service');
 
 //accrual
 const reversal_reasons = require('../services/code_reversal_reason.service');

@@ -183,7 +183,7 @@ exports.update = async (req, res) => {
         }
 
         // validate
-        const gl_account_code = await gl_accounts_service.getByCode(body.header.gl_account_code);
+        const gl_account_code = await gl_accounts_service.getByCode(body.header.gl_account_code, params.id);
         if (gl_account_code) {
             return res.status(400).send({
                 'status': 'error',

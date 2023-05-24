@@ -174,7 +174,7 @@ exports.update = async (req, res) => {
         }
 
         // validate cost_center_code
-        const costCode = await costCenterSerrvice.getByCode(body.header.cost_center_code);
+        const costCode = await costCenterSerrvice.getByCode(body.header.cost_center_code, params.id);
         if (costCode) {
             return res.status(400).send({
                 status: 'error',

@@ -5,6 +5,7 @@ const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/primary_cost_element.service");
 const controllingAreaService = require("../services/controlling_area.service");
 const CstElmtCtgyService = require("../services/cost_element_category.service");
+const userService = require('../services/user.service');
 const { createSchema, updateSchema, } = require("../helpers/validations/primary_cost_element.validation");
 
 exports.create = async (req, res) => {
@@ -47,6 +48,18 @@ exports.create = async (req, res) => {
         message: lang.t('cost_category.err.not_exists')
       };
     }
+
+    const auth = req.auth;
+    const user = await userService.get(auth._id);
+    if (!user) {
+      return res.status(400).send({
+        status: 'error',
+        message: lang.t('user.err.not_exists')
+      });
+    }
+    body.created_by = user.username;
+    body.updated_by = user.username;
+
     const defaulService = await DefaulService.create(body);
 
     return res.status(200).send({
@@ -116,7 +129,6 @@ exports.update = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationParams.error.details,
       });
-      return false;
     }
 
     const defaulService = await DefaulService.get(params.id);
@@ -134,13 +146,28 @@ exports.update = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-      return false;
     }
 
-    const updated_defaulService = await DefaulService.update(
-      defaulService._id,
-      body
-    );
+    // validate 
+    const code = await DefaulService.getByCode(body.header.cost_element_code, params.id);
+    if (code) {
+      return res.status(400).send({
+        status: 'error',
+        message: lang.t('Primary Cost Element already exists')
+      });
+    }
+
+    const auth = req.auth;
+    const user = await userService.get(auth._id);
+    if (!user) {
+      return res.status(400).send({
+        status: 'error',
+        message: lang.t('user.err.not_exists')
+      });
+    }
+    body.updated_by = user.username;
+
+    const updated_defaulService = await DefaulService.update(defaulService._id, body);
 
     return res.status(200).send({
       status: "success",
