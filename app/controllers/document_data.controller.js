@@ -11,6 +11,7 @@ const serviceCompany = require('../services/company.service');
 const serviceCurrency = require('../services/currency.service');
 const serviceTrading = require('../services/trading_partner.service');
 const serviceCost = require('../services/cost_center.service');
+const serviceGL = require('../services/gl_accounts.service');
 const userService = require('../services/user.service');
 
 //accrual
@@ -52,8 +53,8 @@ exports.validate = async (body) => {
         };
     }
 
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
+    for (let i = 0; i < items.items.length; i++) {
+        const item = items.items[i];
 
         // Validate item company code record
         const itemCompany = await serviceCompany.get(item.company_code);
@@ -65,6 +66,20 @@ exports.validate = async (body) => {
                     index: i,
                     field: 'company_code',
                     value: item.company_code
+                }
+            };
+        }
+
+        // Validate item gl account record
+        const itemGLAccount = await serviceGL.get(item.gl_account);
+        if (!itemGLAccount) {
+            return {
+                status: false,
+                message: lang.t('document_data.err.gl_account_item_not_exists'),
+                error: {
+                    index: i,
+                    field: 'gl_account',
+                    value: item.gl_account
                 }
             };
         }
@@ -121,19 +136,6 @@ exports.validate = async (body) => {
                     index: i,
                     field: 'ledger_group',
                     value: header.ledger_group
-                }
-            };
-        }
-        // Validate item posting_key record
-        const itemPk = await posting_keys.get(item.pk);
-        if (!itemPk && itemPk != null) {
-            return {
-                status: false,
-                message: lang.t('document_data.err.posting_key_not_exists'),
-                error: {
-                    index: i,
-                    field: 'pk',
-                    value: item.pk
                 }
             };
         }
