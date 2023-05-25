@@ -81,6 +81,7 @@ require("./app/routes/check_information.routes.js")(app);
 
 //#################### PRESETS  ####################################
 require("./app/routes/posting_key.routes")(app);
+require("./app/routes/sort_key.routes")(app);
 require("./app/routes/document_type.routes")(app);
 require("./app/routes/order_type.routes")(app);
 require("./app/routes/fiscal_period.routes")(app);
