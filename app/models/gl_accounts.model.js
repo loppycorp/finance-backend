@@ -12,8 +12,8 @@ const gl_accountSchema = new mongoose.Schema({
   type_description: {
     control_in_chart_of_accounts: {
       account_group: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "account_groups", },
-      statement_account: { type: Boolean, required: true },
-      balance_sheet_account: { type: Boolean, required: true },
+      statement_account: { type: Boolean, required: false },
+      balance_sheet_account: { type: Boolean, required: false },
     },
     description: {
       short_text: { type: String, trim: true, required: true },

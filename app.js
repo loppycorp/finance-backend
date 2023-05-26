@@ -79,6 +79,9 @@ require("./app/routes/customer_invoice_header.routes")(app);
 require("./app/routes/bill_exchange_payment_header.routes")(app);
 require("./app/routes/check_information.routes.js")(app);
 
+//#################### CHAPTER 7 - Major #####################################
+require("./app/routes/fixed_asset.routes.js")(app);
+
 //#################### PRESETS  ####################################
 require("./app/routes/posting_key.routes")(app);
 require("./app/routes/sort_key.routes")(app);

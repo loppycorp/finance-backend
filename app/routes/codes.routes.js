@@ -11,6 +11,15 @@ const code_ledger_group = require('../controllers/code_ledger_group.controller')
 const bank_group = require('../controllers/bank_group.controller');
 const reversal = require('../controllers/code_reversal_reason.controller');
 
+const code_plant = require('../controllers/code_plant.controller');
+const code_stor_location = require('../controllers/code_stor_location.controller');
+const code_material_group = require('../controllers/code_material_group.controller');
+const code_purchasing_group = require('../controllers/code_purchasing_group.controller');
+const code_material_type = require('../controllers/code_material_type.controller');
+const code_meature = require('../controllers/code_meature.controller');
+const code_industry_sector = require('../controllers/code_industry_sector.controller');
+
+
 const auth = require('../middlewares/authorization.middleware');
 const pagination = require('../middlewares/pagination.middleware');
 
@@ -82,4 +91,47 @@ module.exports = (app) => {
     app.get(process.env.BASE_URL + '/reversal-reason/:id', auth.validateToken, reversal.read);
     app.put(process.env.BASE_URL + '/reversal-reason/:id', auth.validateToken, reversal.update);
     app.delete(process.env.BASE_URL + '/reversal-reason/:id', auth.validateToken, reversal.delete);
+    ////////////////////////
+    //code_plant 
+    app.post(process.env.BASE_URL + '/code-plant', auth.validateToken, code_plant.create);
+    app.get(process.env.BASE_URL + '/code-plant', auth.validateToken, pagination.setAttributes, code_plant.search);
+    app.get(process.env.BASE_URL + '/code-plant/:id', auth.validateToken, code_plant.read);
+    app.put(process.env.BASE_URL + '/code-plant/:id', auth.validateToken, code_plant.update);
+    app.delete(process.env.BASE_URL + '/code-plant/:id', auth.validateToken, code_plant.delete);
+    //code_stor_location
+    app.post(process.env.BASE_URL + '/code-stor-location', auth.validateToken, code_stor_location.create);
+    app.get(process.env.BASE_URL + '/code-stor-location', auth.validateToken, pagination.setAttributes, code_stor_location.search);
+    app.get(process.env.BASE_URL + '/code-stor-location/:id', auth.validateToken, code_stor_location.read);
+    app.put(process.env.BASE_URL + '/code-stor-location/:id', auth.validateToken, code_stor_location.update);
+    app.delete(process.env.BASE_URL + '/code-stor-location/:id', auth.validateToken, code_stor_location.delete);
+    //code-material-group
+    app.post(process.env.BASE_URL + '/code-material-group', auth.validateToken, code_material_group.create);
+    app.get(process.env.BASE_URL + '/code-material-group', auth.validateToken, pagination.setAttributes, code_material_group.search);
+    app.get(process.env.BASE_URL + '/code-material-group/:id', auth.validateToken, code_material_group.read);
+    app.put(process.env.BASE_URL + '/code-material-group/:id', auth.validateToken, code_material_group.update);
+    app.delete(process.env.BASE_URL + '/code-material-group/:id', auth.validateToken, code_material_group.delete);
+    //code_purchasing_group
+    app.post(process.env.BASE_URL + '/code-purchasing-group', auth.validateToken, code_purchasing_group.create);
+    app.get(process.env.BASE_URL + '/code-purchasing-group', auth.validateToken, pagination.setAttributes, code_purchasing_group.search);
+    app.get(process.env.BASE_URL + '/code-purchasing-group/:id', auth.validateToken, code_purchasing_group.read);
+    app.put(process.env.BASE_URL + '/code-purchasing-group/:id', auth.validateToken, code_purchasing_group.update);
+    app.delete(process.env.BASE_URL + '/code-purchasing-group/:id', auth.validateToken, code_purchasing_group.delete);
+    //code_material_type
+    app.post(process.env.BASE_URL + '/code-material-type', auth.validateToken, code_material_type.create);
+    app.get(process.env.BASE_URL + '/code-material-type', auth.validateToken, pagination.setAttributes, code_material_type.search);
+    app.get(process.env.BASE_URL + '/code-material-type/:id', auth.validateToken, code_material_type.read);
+    app.put(process.env.BASE_URL + '/code-material-type/:id', auth.validateToken, code_material_type.update);
+    app.delete(process.env.BASE_URL + '/code-material-type/:id', auth.validateToken, code_material_type.delete);
+    //code_meature
+    app.post(process.env.BASE_URL + '/code-measure', auth.validateToken, code_meature.create);
+    app.get(process.env.BASE_URL + '/code-measure', auth.validateToken, pagination.setAttributes, code_meature.search);
+    app.get(process.env.BASE_URL + '/code-measure/:id', auth.validateToken, code_meature.read);
+    app.put(process.env.BASE_URL + '/code-measure/:id', auth.validateToken, code_meature.update);
+    app.delete(process.env.BASE_URL + '/code-measure/:id', auth.validateToken, code_meature.delete);
+    //Industry Sector
+    app.post(process.env.BASE_URL + '/code-industry-sector', auth.validateToken, code_industry_sector.create);
+    app.get(process.env.BASE_URL + '/code-industry-sector', auth.validateToken, pagination.setAttributes, code_industry_sector.search);
+    app.get(process.env.BASE_URL + '/code-industry-sector/:id', auth.validateToken, code_industry_sector.read);
+    app.put(process.env.BASE_URL + '/code-industry-sector/:id', auth.validateToken, code_industry_sector.update);
+    app.delete(process.env.BASE_URL + '/code-industry-sector/:id', auth.validateToken, code_industry_sector.delete);
 }
