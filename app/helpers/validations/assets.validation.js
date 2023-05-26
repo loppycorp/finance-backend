@@ -3,12 +3,12 @@ const Joi = require('joi');
 const LIMIT_DEFAULT_CHAR = 128;
 
 const defaultSchema = Joi.object({
-  header:{
-  asset_class: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
-  company_code_id: Joi.string().trim().required().hex().max(24),
-  number_of_similar_assets: Joi.number().required(),
-  class: Joi.number().required(),
-},
+  header: {
+    asset_class: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+    company_code: Joi.string().trim().required().hex().max(24),
+    number_of_similar_assets: Joi.number().required(),
+    class: Joi.number().required(),
+  },
   general: {
     general_data: {
       description: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
@@ -33,7 +33,7 @@ const defaultSchema = Joi.object({
   },
   time_dependent: {
     interval: {
-      cost_center_id: Joi.string().trim().required().hex().max(24),
+      cost_center: Joi.string().trim().required().hex().max(24),
       plant: Joi.number().required(),
       location: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
       room: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),

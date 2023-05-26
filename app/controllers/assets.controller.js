@@ -23,20 +23,20 @@ exports.create = async (req, res) => {
 
     }
     // validate company_code
-    const company_code = await company_code_service.get(body.header.company_code_id);
+    const company_code = await company_code_service.get(body.header.company_code);
     if (!company_code) {
-      return {
+      return res.status(200).send({
         status: false,
         message: lang.t('company_code.err.not_exists')
-      };
+      });
     }
     // validate cost_center
-    const cost_center = await cost_center_service.get(body.time_dependent.interval.cost_center_id);
+    const cost_center = await cost_center_service.get(body.time_dependent.interval.cost_center);
     if (!cost_center) {
-      return {
+      return res.status(200).send({
         status: false,
         message: lang.t('cost_center.err.not_exists')
-      };
+      });
     }
     const defaulService = await DefaulService.create(body);
 
