@@ -1,18 +1,16 @@
 require("dotenv").config();
 const gl_accounts = require("../controllers/gl_accounts.controller");
 const pagination = require("../middlewares/pagination.middleware");
+const auth = require('../middlewares/authorization.middleware');
+
 
 module.exports = (app) => {
   // Create new gl accounts
-  app.post(process.env.BASE_URL + "/gl-accounts", gl_accounts.create);
+  app.post(process.env.BASE_URL + "/gl-accounts", auth.validateToken, gl_accounts.create);
   // List available gl accounts
-  app.get(
-    process.env.BASE_URL + "/gl-accounts",
-    pagination.setAttributes,
-    gl_accounts.search
-  );
+  app.get(process.env.BASE_URL + "/gl-accounts", pagination.setAttributes, auth.validateToken, gl_accounts.search);
   // Edit gl accounts
-  app.put(process.env.BASE_URL + "/gl-accounts/:id", gl_accounts.update);
+  app.put(process.env.BASE_URL + "/gl-accounts/:id", auth.validateToken, gl_accounts.update);
   // Delete gl accounts
-  app.delete(process.env.BASE_URL + "/gl-accounts/:id", gl_accounts.delete);
+  app.delete(process.env.BASE_URL + "/gl-accounts/:id", auth.validateToken, gl_accounts.delete);
 };

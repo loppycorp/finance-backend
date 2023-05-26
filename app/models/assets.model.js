@@ -7,7 +7,7 @@ const STATUS_DELETED = 'DELETED';
 const assetsSchema = new mongoose.Schema({
   header: {
     asset_class: { type: String, trim: true, required: true },
-    company_code_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
+    company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
     number_of_similar_assets: { type: Number, trim: true, required: true },
     class: { type: Number, trim: true, required: true },
   },
@@ -35,7 +35,7 @@ const assetsSchema = new mongoose.Schema({
   },
   time_dependent: {
     interval: {
-      cost_center_id: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
+      cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
       plant: { type: Number, trim: true, required: true },
       location: { type: String, trim: true, required: true },
       room: { type: String, trim: true, required: false },
