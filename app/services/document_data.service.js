@@ -404,6 +404,7 @@ exports.mapData = (data) => {
             total_cred: totalCred,
             balance_status: balanceStatus
         },
+        type: data.type,
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated

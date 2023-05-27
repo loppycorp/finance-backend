@@ -428,6 +428,8 @@ exports.status = async (req, res) => {
         logger.info(req.path);
 
         const { params, body } = req;
+        const query = req.query;
+
 
         const validateParams = validateParamsSchema.validate(params, { abortEarly: false });
         if (validateParams.error) {
@@ -456,7 +458,7 @@ exports.status = async (req, res) => {
         }
         body.updated_by = user.username;
 
-        const post = await serviceDocumentdata.updateStatus(params.id);
+        const post = await serviceDocumentdata.updateStatus(params.id, query);
 
         return res.status(200).send({
             status: "success",
