@@ -6,9 +6,9 @@ const defaultSchema = Joi.object({
     header: Joi.object().keys({
         document_date: Joi.date().required(),
         posting_date: Joi.date().required(),
-        reference: Joi.string().trim().required().allow(''),
-        doc_header_text: Joi.string().trim().required().allow(''),
-        cross_cc_no: Joi.string().trim().required().allow(''),
+        reference: Joi.string().trim().allow(''),
+        doc_header_text: Joi.string().trim().allow(''),
+        cross_cc_no: Joi.string().trim().allow(''),
         company_code: Joi.string().trim().required().hex().max(24),
         currency: Joi.string().trim().required().hex().max(24),
 
