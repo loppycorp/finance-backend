@@ -356,7 +356,11 @@ exports.mapData = (data) => {
                     gl_account: {
                         _id: itemGLAcct._id,
                         header: itemGLAcct.header,
-                        description: itemGLAcct.type_description.description.short_text
+                        type_description : {
+                            description: {
+                                short_text: itemGLAcct.type_description.description.short_text
+                            }
+                        }
                     },
                     amount_in_doc_curr: o.amount_in_doc_curr,
                     company_code: {
