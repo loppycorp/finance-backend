@@ -378,7 +378,7 @@ exports.mapData = (data) => {
                     //added from accrual
                     transaction_type: (itemPk) ? {
                         _id: itemPk._id,
-                        code: itemPk.posting_key_code,
+                        posting_key_code: itemPk.posting_key_code,
                         name: itemPk.name,
                         type: itemPk.type
                     } : null,
