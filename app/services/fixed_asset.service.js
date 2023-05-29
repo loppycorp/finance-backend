@@ -59,14 +59,7 @@ exports.getAll = async (query) => {
 };
 exports.pipeline = (filters) => {
     return [
-        // {
-        //     $lookup: {
-        //         from: 'materials',
-        //         localField: 'header.material',
-        //         foreignField: '_id',
-        //         as: 'material'
-        //     },
-        // },
+
         {
             $lookup: {
                 from: 'industry_sectors',
@@ -103,7 +96,7 @@ exports.pipeline = (filters) => {
             },
         },
         { $unwind: '$stor_location' },
-        { $unwind: '$base_unit_of_measure' },
+        // { $unwind: '$base_unit_of_measure' },
         {
             $lookup: {
                 from: 'material_groups',
@@ -123,7 +116,6 @@ exports.pipeline = (filters) => {
             },
         },
         { $unwind: '$purchasing_group' },
-
         {
             $lookup: {
                 from: 'material_groups',
@@ -180,7 +172,7 @@ exports.pipeline = (filters) => {
         { $unwind: '$currency' },
 
         // if the id is optional or nullable
-        { $unwind: '$field_status_group' },
+        // { $unwind: '$field_status_group' },
         { $match: filters }
     ];
 };
