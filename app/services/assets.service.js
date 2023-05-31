@@ -106,7 +106,7 @@ exports.mapData = (data) => {
       asset_class: data.header.asset_class,
       company_code: {
         _id: data.company_code._id,
-        code: data.company_codecode,
+        code: data.company_code.code,
         description: data.company_code.desc
       },
       number_of_similar_assets: data.header.number_of_similar_assets,
