@@ -28,7 +28,7 @@ const costCtrSchema = new mongoose.Schema({
             business_area: { type: Number, required: false },
             functional_area: { type: Number, required: false },
             currency: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'currencies' },
-            profit_center: { type: mongoose.SchemaTypes.ObjectId, required: falser, ref: 'profit_centers' }
+            profit_center: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'profit_centers' }
         },
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
