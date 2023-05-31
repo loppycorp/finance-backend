@@ -4,6 +4,10 @@ const STATUS_ACTIVE = 'ACTIVE';
 const STATUS_INACTIVE = 'INACTIVE';
 const STATUS_DELETED = 'DELETED';
 
+const INVOICE_TYPE_VENDOR = 'INVOICE_VENDOR';
+const INVOICE_TYPE_CUSTOMER = 'INVOICE_CUSTOMER';
+
+
 const vendorWithholdingTaxSchema = new mongoose.Schema({
     header: {
         vendor: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "vendor_general_datas" },

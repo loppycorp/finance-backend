@@ -33,12 +33,14 @@ exports.validate = async (body) => {
     }
 
     // Validate user_responsible_id
-    const userUserRes = await userService.get(body.basic_data.basic_data.user_responsible);
-    if (!userUserRes) {
-        return {
-            status: false,
-            message: lang.t('profit_center.err.not_exists_user')
-        };
+    if (body.basic_data.basic_data.user_responsible != null) {
+        const userUserRes = await userService.get(body.basic_data.basic_data.user_responsible);
+        if (!userUserRes) {
+            return {
+                status: false,
+                message: lang.t('profit_center.err.not_exists_user')
+            };
+        }
     }
 
     // Validate department_id
@@ -119,13 +121,15 @@ exports.create = async (req, res) => {
             });
         }
 
-        // Validate profit_center_id    
-        const profitCenter = await profitCenterService.get(body.basic_data.basic_data.profit_center);
-        if (!profitCenter) {
-            return res.status(400).send({
-                status: 'error',
-                message: lang.t('profit_center.err.not_exists')
-            });
+        // Validate profit_center_id  
+        if (body.basic_data.basic_data.profit_center != null) {
+            const profitCenter = await profitCenterService.get(body.basic_data.basic_data.profit_center);
+            if (!profitCenter) {
+                return res.status(400).send({
+                    status: 'error',
+                    message: lang.t('profit_center.err.not_exists')
+                });
+            }
         }
 
         const auth = req.auth;

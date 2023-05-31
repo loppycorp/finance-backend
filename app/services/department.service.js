@@ -48,7 +48,7 @@ exports.getAll = async (query) => {
     const options = { status: Department.STATUS_ACTIVE };
 
     const results = await Department.find(options)
-        .collation({'locale':'en'}).sort({ [sortBy]: sortOrderInt })
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
@@ -62,6 +62,7 @@ exports.getAll = async (query) => {
 exports.mapData = (data) => {
     return {
         _id: data._id,
+        code: data.code,
         name: data.name,
         desc: data.desc,
         status: data.status,

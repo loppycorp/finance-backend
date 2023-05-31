@@ -235,14 +235,14 @@ exports.mapData = (data) => {
                     _id: data.currency._id,
                     code: data.currency.code
                 },
-                profit_center: {
+                profit_center: (data.profit_center) ? {
                     _id: data.profit_center._id,
                     basic_data: {
                         description: {
                             name: data.profit_center.basic_data.description.name
                         },
                     },
-                },
+                } : null,
             },
         },
         status: data.status,
