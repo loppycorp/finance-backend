@@ -395,6 +395,10 @@ exports.simulate = async (req, res) => {
                 message: lang.t("document_data.error.not_exists"),
             });
         }
+
+
+        // if(data.type.balance_status = )
+
         const auth = req.auth;
         const user = await userService.get(auth._id);
         if (!user) {
@@ -406,6 +410,12 @@ exports.simulate = async (req, res) => {
         body.updated_by = user.username;
 
         const post = await serviceDocumentdata.posting(params.id);
+        if (!post) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('unbalanced amount')
+            });
+        }
 
         return res.status(200).send({
             status: "success",

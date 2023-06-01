@@ -66,6 +66,12 @@ const defaultSchema = new mongoose.Schema({
         document_code: { type: String, required: false },
         document_status: { type: String, required: false, default: DOC_STATUS_PENDING }
     },
+    amount_information: {
+        total_credit: { type: Number, required: false },
+        total_debit: { type: Number, required: false },
+        balance_status: { type: String, required: false, default: DOC_UNCHECKED }
+    },
+
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
     date_updated: { type: Date, default: () => new Date(), required: true },

@@ -22,15 +22,15 @@ const assetsSchema = new mongoose.Schema({
       manage_historically: { type: Boolean, required: true },
     },
     inventory: {
-      last_inventory_on: { type: Date, default: '', required: false },
+      last_inventory_on: { type: Date, default: () => new Date(), required: false },
       inventory_note: { type: String, trim: true, required: false },
       include_asset_in_inventory_list: { type: Boolean, required: false },
     },
     posting_information: {
       capitalized_on: { type: String, trim: true, required: false },
       first_acquisition_on: { type: Date, default: () => new Date(), required: false },
-      acquisition_year: { type: Date, default: '', required: false },
-      deactivation_on: { type: Date, default: '', required: false },
+      acquisition_year: { type: Date, default: () => new Date(), required: false },
+      deactivation_on: { type: Date, default: () => new Date(), required: false },
     },
   },
   time_dependent: {

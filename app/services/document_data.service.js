@@ -1,18 +1,41 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/document_data.model");
+const posting_keys = require('../services/posting_key.service');
+
 
 
 exports.create = async (data, req) => {
 
-    const balanceStatus = data.balanceStatus;
+    let totalDeb = 0;
+    let totalCred = 0;
+    // const balanceStatus = data.balanceStatus;
 
-    if (balanceStatus == DefaultModel.DOC_BALANCED) {
-        data['type.document_status'] = DefaultModel.DOC_STATUS_SIMULATE;
-    }
+    // if (balanceStatus == DefaultModel.DOC_BALANCED) {
+    //     data['type.document_status'] = DefaultModel.DOC_STATUS_SIMULATE;
+    // }
 
     const doc_type = req.type;
     if (doc_type && doc_type != '') {
         data['type.document_code'] = doc_type;
+    }
+
+    for (let i = 0; i < data.items.items.length; i++) {
+        const item = data.items.items[i];
+
+        const itemss = await posting_keys.get(item.transaction_type);
+
+        if (itemss.type == DefaultModel.TRANS_TYPE_CREDIT)
+            totalCred += parseFloat(item.amount);
+
+        if (itemss.type == DefaultModel.TRANS_TYPE_DEBIT)
+            totalDeb += parseFloat(item.amount);
+
+        let totalBalance = totalDeb - totalCred;
+
+        data['amount_information.total_credit'] = totalCred;
+        data['amount_information.total_debit'] = totalDeb;
+        data['amount_information.balance_status'] = (totalBalance == 0) ? DefaultModel.DOC_BALANCED : DefaultModel.DOC_UNBALANCED;
+
     }
 
     const result = await DefaultModel.create(data);
@@ -70,17 +93,42 @@ exports.getAll = async (query) => {
 };
 
 exports.update = async (id, data) => {
+    let totalDeb = 0;
+    let totalCred = 0;
+
+    for (let i = 0; i < data.items.items.length; i++) {
+        const item = data.items.items[i];
+
+        const itemss = await posting_keys.get(item.transaction_type);
+
+        if (itemss.type == DefaultModel.TRANS_TYPE_CREDIT)
+            totalCred += parseFloat(item.amount);
+
+        if (itemss.type == DefaultModel.TRANS_TYPE_DEBIT)
+            totalDeb += parseFloat(item.amount);
+
+        let totalBalance = totalDeb - totalCred;
+
+        data['amount_information.total_credit'] = totalCred;
+        data['amount_information.total_debit'] = totalDeb;
+        data['amount_information.balance_status'] = (totalBalance == 0) ? DefaultModel.DOC_BALANCED : DefaultModel.DOC_UNBALANCED;
+
+    }
     const result = await DefaultModel.findOneAndUpdate({ _id: ObjectId(id) }, { $set: data });
 
     if (!result) return false;
 
+
     return await this.get(result._id);
+
 };
 
 exports.posting = async (id) => {
     const document = await DefaultModel.findOne({ _id: ObjectId(id) });
 
     if (!document) return false;
+
+    if (document.amount_information.balance_status != DefaultModel.DOC_BALANCED) return false;
 
     // Generate the document number here
     const documentNumber = await generateDocumentNumber();
@@ -279,8 +327,8 @@ exports.pipeline = (filters) => {
 exports.mapData = (data) => {
     const { header, company, currency, types, reason, period, ledger } = data;
 
-    let totalDeb = 0;
-    let totalCred = 0;
+    // let totalDeb = 0;
+    // let totalCred = 0;
 
     return {
         _id: data._id,
@@ -338,25 +386,25 @@ exports.mapData = (data) => {
                 const itemProfit = data.profit_center.find(i => i._id.toString() == o.profit_center.toString());
                 const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
 
-                if (itemPk.type == DefaultModel.TRANS_TYPE_CREDIT)
-                    totalCred += parseFloat(o.amount);
+                // if (itemPk.type == DefaultModel.TRANS_TYPE_CREDIT)
+                //     totalCred += parseFloat(o.amount);
 
-                if (itemPk.type == DefaultModel.TRANS_TYPE_DEBIT)
-                    totalDeb += parseFloat(o.amount);
+                // if (itemPk.type == DefaultModel.TRANS_TYPE_DEBIT)
+                //     totalDeb += parseFloat(o.amount);
 
-                let totalBalance = totalDeb - totalCred;
+                // let totalBalance = totalDeb - totalCred;
 
-                if (totalBalance == 0)
-                    balanceStatus = DefaultModel.DOC_BALANCED;
+                // if (totalBalance == 0)
+                //     balanceStatus = DefaultModel.DOC_BALANCED;
 
-                if (totalBalance != 0)
-                    balanceStatus = DefaultModel.DOC_UNBALANCED;
+                // if (totalBalance != 0)
+                //     balanceStatus = DefaultModel.DOC_UNBALANCED;
 
                 return {
                     gl_account: {
                         _id: itemGLAcct._id,
                         header: itemGLAcct.header,
-                        type_description : {
+                        type_description: {
                             description: {
                                 short_text: itemGLAcct.type_description.description.short_text
                             }
@@ -403,12 +451,8 @@ exports.mapData = (data) => {
                 };
             }),
         },
-        amount_information: {
-            total_deb: totalDeb,
-            total_cred: totalCred,
-            balance_status: balanceStatus
-        },
         type: data.type,
+        amount_information: data.amount_information,
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated
