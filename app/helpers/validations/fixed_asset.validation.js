@@ -84,9 +84,11 @@ const defaultSchema = Joi.object({
 
 
     foreign_trade_import: {
-        cas_number: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
-        prodcom_no: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
-        control_code: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
+        header: {
+            cas_number: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
+            prodcom_no: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
+            control_code: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow('')
+        },
         origin_eu_market_organization_preferences: {
             country_of_origin: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
             cap_product_list_no: Joi.number().allow(''),

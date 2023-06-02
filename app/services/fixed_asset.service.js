@@ -257,9 +257,7 @@ exports.mapData = (data) => {
 
 
         foreign_trade_import: {
-            cas_number: data.foreign_trade_import.cas_number,
-            prodcom_no: data.foreign_trade_import.prodcom_no,
-            control_code: data.foreign_trade_import.control_code,
+            header: data.foreign_trade_import.header,
             origin_eu_market_organization_preferences: data.foreign_trade_import.origin_eu_market_organization_preferences,
             legal_control: data.foreign_trade_import.egal_control,
             excise_data: {

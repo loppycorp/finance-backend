@@ -86,9 +86,11 @@ const DefaulSchema = new mongoose.Schema({
 
 
     foreign_trade_import: {
-        cas_Number: { type: String, trim: true, required: false },
-        prodcom_no: { type: String, trim: true, required: false },
-        control_code: { type: String, trim: true, required: false },
+        header: {
+            cas_Number: { type: String, trim: true, required: false },
+            prodcom_no: { type: String, trim: true, required: false },
+            control_code: { type: String, trim: true, required: false }
+        },
         origin_eu_market_organization_preferences: {
             country_of_origin: { type: String, trim: true, required: false },
             cap_product_list_no: { type: Number, trim: true, required: false },
