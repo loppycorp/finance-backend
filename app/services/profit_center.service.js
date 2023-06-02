@@ -120,7 +120,12 @@ exports.pipeline = (filters) => {
                 as: 'profit_ctr_group'
             },
         },
-        { $unwind: '$profit_ctr_group' },
+        {
+            $unwind: {
+                path: "$profit_ctr_group",
+                preserveNullAndEmptyArrays: true
+            }
+        },
 
         {
             $lookup: {
@@ -130,7 +135,12 @@ exports.pipeline = (filters) => {
                 as: 'segment'
             },
         },
-        { $unwind: '$segment' },
+        {
+            $unwind: {
+                path: "$segment",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         { $match: filters }
     ];
 };
@@ -162,8 +172,8 @@ exports.mapData = (data) => {
                         name: data.department.name,
                         description: data.department.desc
                     } : null,
-                profit_ctr_group: data.profit_ctr_group,
-                segment: data.segment,
+                profit_ctr_group: (data.profit_ctr_group) ? data.profit_ctr_group : null,
+                segment: (data.segment) ? data.segment : null,
             },
         },
         status: data.status,

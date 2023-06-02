@@ -17,8 +17,8 @@ const defaultSchema = Joi.object({
                 to: Joi.date().required(),
             },
             name: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
-            long_text: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR_LONG),
-            status: Joi.string().trim().required().valid(
+            long_text: Joi.string().trim().max(LIMIT_DEFAULT_CHAR_LONG),
+            status: Joi.string().trim().valid(
                 ProfitCenter.STATUS_PROFIT_CTR_INACTIVE_CREATE,
                 ProfitCenter.STATUS_PROFIT_CTR_INACTIVE_UPDATE,
                 ProfitCenter.STATUS_PROFIT_CTR_INACTIVE_DELETE,
@@ -31,8 +31,8 @@ const defaultSchema = Joi.object({
             user_responsible: Joi.string().trim().hex().length(24).allow(null),
             person_responsible: Joi.string().trim().allow(''),
             department: Joi.string().trim().hex().length(24).allow(null),
-            profit_ctr_group: Joi.string().trim().required().hex().length(24),
-            segment: Joi.string().trim().required().hex().length(24)
+            profit_ctr_group: Joi.string().trim().hex().length(24).allow(null),
+            segment: Joi.string().trim().hex().length(24).allow(null)
         }
     }
 });
