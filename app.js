@@ -73,6 +73,7 @@ require("./app/routes/vendor_invoice.routes")(app);
 
 //#################### CHAPTER 4 - Major #####################################
 require("./app/routes/incoming_payment.routes")(app);
+require("./app/routes/invoice.routes")(app);
 
 //#################### CHAPTER 5 - Major #####################################
 require("./app/routes/customer_invoice_header.routes")(app);
