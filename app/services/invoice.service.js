@@ -22,12 +22,12 @@ exports.create = async (data, req) => {
     for (let i = 0; i < data.items.items.length; i++) {
         const item = data.items.items[i];
 
-        const itemss = await posting_keys.get(item.transaction_type);
+        const itemsPK = await posting_keys.get(item.transaction_type);
 
-        if (itemss.type == DefaultModel.TRANS_TYPE_CREDIT)
+        if (itemsPK.type == DefaultModel.TRANS_TYPE_CREDIT)
             totalCred += parseFloat(item.amount);
 
-        if (itemss.type == DefaultModel.TRANS_TYPE_DEBIT)
+        if (itemsPK.type == DefaultModel.TRANS_TYPE_DEBIT)
             totalDeb += parseFloat(item.amount);
 
         let totalBalance = totalDeb - totalCred;
@@ -67,14 +67,14 @@ exports.getAll = async (query) => {
     if (query.status && query.status != '') {
         const statuses = query.status.split(',');
         if (statuses.length > 0) {
-            filters['type.document_status'] = { $in: statuses };
+            filters['type.invoice_status'] = { $in: statuses };
         }
     }
 
     if (query.type && query.type != '') {
         const statuses = query.type.split(',');
         if (statuses.length > 0) {
-            filters['type.document_code'] = { $in: statuses };
+            filters['type.invoice_code'] = { $in: statuses };
         }
     }
 
@@ -288,22 +288,23 @@ exports.mapData = (data) => {
         _id: data._id,
         header: {
             vendor: {
-            _id: vendor._id,
-            header: { 
-                vendor_code: vendor.header.vendor_code
-            },
-            address: {
-                name:{
-                name: vendor.address.name.name
-                }
-            },
-            payment_transactions:{
-                bank_details:[
-                    {
-                        bank_account: payment_transactions.bank_details.bank_account    
+                _id: vendor._id,
+                header: {
+                    vendor_code: vendor.header.vendor_code
+                },
+                address: {
+                    name: {
+                        name: vendor.address.name.name
                     }
-                ]
-            }
+                },
+                payment_transactions: {
+                    bank_details: [
+                        {
+                            bank_account: (vendor.payment_transactions.bank_details.bank_account)
+                                ? vendor.payment_transactions.bank_details.bank_account : null
+                        }
+                    ]
+                }
             },
             document_number: header.document_number,
             invoice_date: header.invoice_date,
@@ -318,10 +319,8 @@ exports.mapData = (data) => {
                 code: company.code,
                 name: company.name,
             } : null,
-    
+
             cross_cc_no: header.cross_cc_no,
-            amount: header.amount,
-            tax_amount: header.tax_amount,
             business_place: header.business_place,
             section: header.section,
             text: header.text,
@@ -333,7 +332,7 @@ exports.mapData = (data) => {
                 name: currency.name,
             } : null,
             calculate_tax: header.calculate_tax
-    
+
         },
         items: {
             items: data.items.items.map((o) => {
@@ -341,7 +340,7 @@ exports.mapData = (data) => {
                 const itemTrading = data.trading_partners.find(i => i._id.toString() == o.trading_part_ba.toString());
                 const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
                 const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());
-                const itemProfit = data.profit_center.find(i => i._id.toString() == o.profit_center.toString());
+                // const itemProfit = data.profit_center.find(i => i._id.toString() == o.profit_center.toString());
                 const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
 
                 return {
@@ -360,7 +359,8 @@ exports.mapData = (data) => {
                         name: itemPk.name,
                         type: itemPk.type
                     } : null,
-                    amount_in_doc_curr: o.amount_in_doc_curr,
+                    amount: o.amount,
+                    tax_amount: o.tax_amount,
                     trading_part_ba: (itemTrading) ? {
                         _id: itemTrading._id,
                         code: itemTrading.code,

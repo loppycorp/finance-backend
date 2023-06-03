@@ -56,19 +56,19 @@ exports.validate = async (body) => {
     for (let i = 0; i < items.items.length; i++) {
         const item = items.items[i];
 
-        // Validate item company code record
-        const itemCompany = await serviceCompany.get(item.company_code);
-        if (!itemCompany) {
-            return {
-                status: false,
-                message: lang.t('document_data.err.company_item_not_exists'),
-                error: {
-                    index: i,
-                    field: 'company_code',
-                    value: item.company_code
-                }
-            };
-        }
+        // // Validate item company code record
+        // const itemCompany = await serviceCompany.get(item.company_code);
+        // if (!itemCompany) {
+        //     return {
+        //         status: false,
+        //         message: lang.t('document_data.err.company_item_not_exists'),
+        //         error: {
+        //             index: i,
+        //             field: 'company_code',
+        //             value: item.company_code
+        //         }
+        //     };
+        // }
 
         // Validate item gl account record
         const itemGLAccount = await serviceGL.get(item.gl_account);
@@ -86,16 +86,18 @@ exports.validate = async (body) => {
 
         // Validate item trading part ba record
         const itemTrading = await serviceTrading.get(item.trading_part_ba);
-        if (!itemTrading) {
-            return {
-                status: false,
-                message: lang.t('document_data.err.trading_item_not_exists'),
-                error: {
-                    index: i,
-                    field: 'trading_part_ba',
-                    value: item.trading_part_ba
-                }
-            };
+        if (item.trading_part_ba != null) {
+            if (!itemTrading) {
+                return {
+                    status: false,
+                    message: lang.t('document_data.err.trading_item_not_exists'),
+                    error: {
+                        index: i,
+                        field: 'trading_part_ba',
+                        value: item.trading_part_ba
+                    }
+                };
+            }
         }
 
         // Validate item cost center record
@@ -103,7 +105,7 @@ exports.validate = async (body) => {
         if (!itemCostCenter) {
             return {
                 status: false,
-                message: lang.t('document_data.err.trading_item_not_exists'),
+                message: lang.t('cost center not exist'),
                 error: {
                     index: i,
                     field: 'cost_center',

@@ -30,16 +30,14 @@ const defaultSchema = new mongoose.Schema({
         posting_date: { type: Date, required: true },
         document_type: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'document_types' },
         company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
-        cross_cc_no: { type: String, required: false},
-        amount: { type: Number, required: true},
-        tax_amount: { type: Number, required: false},
-        business_place: { type: Number, required: false},
-        section: { type: Number, required: false},
-        text: { type: String, required: false},
-        sgl_ind: { type: String, required: false},
-        reference: { type: String, required: false},
+        cross_cc_no: { type: String, required: false },
+        business_place: { type: Number, required: false },
+        section: { type: Number, required: false },
+        text: { type: String, required: false },
+        sgl_ind: { type: String, required: false },
+        reference: { type: String, required: false },
         currency: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'currencies' },
-        calculate_tax: {type: Boolean, required:false}
+        calculate_tax: { type: Boolean, required: false }
 
     },
     items: {
@@ -48,11 +46,12 @@ const defaultSchema = new mongoose.Schema({
                 gl_account: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'gl_accounts' },
                 transaction_type: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
                 amount: { type: Number, required: true },
+                tax_amount: { type: Number, required: false },
                 trading_part_ba: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
                 segment: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: "segments" },
                 cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
                 tax: { type: String, trim: true, required: false, default: '' },
-            
+
             }
         ],
     },
@@ -83,7 +82,7 @@ module.exports.STATUS_DELETED = STATUS_DELETED;
 module.exports.TRANS_TYPE_DEBIT = TRANS_TYPE_DEBIT;
 module.exports.TRANS_TYPE_CREDIT = TRANS_TYPE_CREDIT;
 
-module.exports.DOC_TYPE_VENDOR= DOC_TYPE_VENDOR;
+module.exports.DOC_TYPE_VENDOR = DOC_TYPE_VENDOR;
 module.exports.DOC_TYPE_CUSTOMER = DOC_TYPE_CUSTOMER;
 
 
