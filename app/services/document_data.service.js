@@ -334,7 +334,7 @@ exports.mapData = (data) => {
         _id: data._id,
         header: {
             document_date: header.document_date,
-            document_number: header.document_number,
+            document_number: (header.document_number) ? header.document_number : 'Not yet posted',
             posting_date: header.posting_date,
             reference: (header.reference) ? header.reference : '',
             doc_header_text: (header.doc_header_text) ? header.doc_header_text : '',
@@ -421,8 +421,8 @@ exports.mapData = (data) => {
                         code: itemTrading.code,
                         name: itemTrading.name,
                     } : null,
-                    bussiness_place: o.bussiness_place,
-                    partner: o.partner,
+                    bussiness_place: (o.bussiness_place) ? o.bussiness_place : '',
+                    partner: (o.partner) ? o.partner : '',
                     cost_center: {
                         _id: itemCostCenter._id,
                         cost_center_code: itemCostCenter.cost_center_code
@@ -455,7 +455,9 @@ exports.mapData = (data) => {
         amount_information: data.amount_information,
         status: data.status,
         date_created: data.date_created,
-        date_updated: data.date_updated
+        date_updated: data.date_updated,
+        created_by: data.created_by,
+        updated_by: data.updated_by
     };
 };
 

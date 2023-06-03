@@ -65,7 +65,7 @@ exports.getAll = async (query) => {
 };
 
 exports.getByCode = async (code, existing_id) => {
-  const options = { "header.asset_class": code, status: DefaultModel.STATUS_ACTIVE, };
+  const options = { "header.cost_element_code": code, status: DefaultModel.STATUS_ACTIVE, };
 
   if (existing_id && existing_id != "")
     options["_id"] = { $ne: existing_id };
@@ -85,6 +85,17 @@ exports.pipeline = (filters) => {
     },
     // if the id is required
     { $unwind: '$company_code', },
+    {
+      $lookup: {
+        from: 'cost_centers',
+        localField: 'time_dependent.interval.cost_center',
+        foreignField: '_id',
+        as: 'cost_center',
+      },
+    },
+    // if the id is optional or nullable
+    { $unwind: '$cost_center', },
+
     { $match: filters },
   ];
 };
@@ -100,7 +111,6 @@ exports.mapData = (data) => {
       },
       number_of_similar_assets: data.header.number_of_similar_assets,
       class: data.header.class,
-      post_capitalization: data.header.post_capitalization,
     },
     general: {
       general_data: {
@@ -122,6 +132,20 @@ exports.mapData = (data) => {
         first_acquisition_on: data.general.posting_information.first_acquisition_on,
         acquisition_year: data.general.posting_information.acquisition_year,
         deactivation_on: data.general.posting_information.deactivation_on,
+      },
+    },
+    time_dependent: {
+      interval: {
+        cost_center: {
+          _id: data.cost_center._id,
+          code: data.cost_center.cost_center_code,
+          name: data.cost_center.name,
+          description: data.cost_center.description
+        },
+        plant: data.time_dependent.interval.plant,
+        location: data.time_dependent.interval.location,
+        room: data.time_dependent.interval.room,
+        shift_factor: data.time_dependent.interval.shift_factor,
       },
     },
     status: data.status,

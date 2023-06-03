@@ -306,7 +306,7 @@ exports.mapData = (data) => {
                     ]
                 }
             },
-            document_number: header.document_number,
+            document_number: (header.document_number) ? header.document_number : 'Not yet posted',
             invoice_date: header.invoice_date,
             posting_date: header.posting_date,
             document_type: (types) ? {

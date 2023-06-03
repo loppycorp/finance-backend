@@ -27,9 +27,9 @@ const defaultSchema = Joi.object({
             transaction_type: Joi.string().trim().required().hex().max(24),
             amount: Joi.number().required(),
             company_code: Joi.string().trim().required().hex().max(24),
-            trading_part_ba: Joi.string().trim().required().hex().max(24),
-            bussiness_place: Joi.string().trim().required().allow(''),
-            partner: Joi.string().trim().required().allow(''),
+            trading_part_ba: Joi.string().trim().hex().max(24),
+            bussiness_place: Joi.string().trim().allow(''),
+            partner: Joi.string().trim().allow(''),
             cost_center: Joi.string().trim().required().hex().max(24),
             //added from accrual document
             tax: Joi.number().allow(''),
