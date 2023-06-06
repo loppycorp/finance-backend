@@ -134,15 +134,10 @@ exports.pipeline = (filters) => {
                 from: 'bank_keys',
                 localField: 'payment_transactions.bank_details.bank_key',
                 foreignField: '_id',
-                as: 'bank_key'
+                as: 'bank_keys'
             },
         },
-        {
-            $unwind: {
-                path: '$bank_key',
-                preserveNullAndEmptyArrays: true
-            }
-        },
+
         { $match: filters }
     ];
 };
@@ -178,20 +173,32 @@ exports.mapData = (data) => {
             }
         },
         payment_transactions: {
-            bank_details: [{
-                country: data.payment_transactions.bank_details.country,
-                bank_key: (data.payment_transactions.bank_details.bank_key) ?
-                    {
-                        _id: data.bank_key._id,
-                        bank_key_code: data.payment_transactions.bank_details.bank_key.header.bank_key_code
-                    } : null,
-                bank_account: data.payment_transactions.bank_details.bank_account,
-                account_holder: data.payment_transactions.bank_details.account_holder,
-                ck: data.payment_transactions.bank_details.ck,
-                iban_value: data.payment_transactions.bank_details.iban_value,
-                bnkt: data.payment_transactions.bank_details.bnkt,
-                reference: data.payment_transactions.bank_details.reference
-            }],
+            bank_details: data.payment_transactions.bank_details.map((o) => {
+                const itemBankKey = data.bank_keys.find(i => i._id.toString() == o.bank_key.toString());
+
+                return {
+                    country: o.country,
+                    bank_key: (itemBankKey) ?
+                        {
+                            _id: itemBankKey._id,
+                            header: {
+                                bank_key_code: itemBankKey.header.bank_key_code
+                            },
+                            details: {
+                                control_data: {
+                                    bank_number: itemBankKey.details.control_data.bank_number
+                                }
+                            }
+                        } : null,
+                    bank_account: o.bank_account,
+                    account_holder: o.account_holder,
+                    ck: o.ck,
+                    iban_value: o.iban_value,
+                    bnkt: o.bnkt,
+                    reference: o.reference
+                };
+            }),
+
             payment_transactions: data.payment_transactions.payment_transactions,
             alternative_payee: data.payment_transactions.alternative_payee,
         },

@@ -229,6 +229,20 @@ exports.pipeline = (filters) => {
                 preserveNullAndEmptyArrays: true
             }
         },
+        {
+            $lookup: {
+                from: 'customer_general_datas',
+                localField: 'header.customer',
+                foreignField: '_id',
+                as: 'customer'
+            },
+        },
+        {
+            $unwind: {
+                path: '$customer',
+                preserveNullAndEmptyArrays: true
+            }
+        },
 
 
         // ////////////////////////////////////////
@@ -280,7 +294,7 @@ exports.pipeline = (filters) => {
 };
 
 exports.mapData = (data) => {
-    const { vendor, header, company, currency, types, reason, period } = data;
+    const { vendor, customer, header, company, currency, types } = data;
 
     // let totalDeb = 0;
     // let totalCred = 0;
@@ -288,8 +302,40 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            vendor: (data.type.invoice_code == DefaultModel.DOC_TYPE_VENDOR) ? header.vendor : undefined,
-            customer: (data.type.invoice_code == DefaultModel.DOC_TYPE_CUSTOMER) ? header.customer : undefined,
+            vendor: (data.type.invoice_code == DefaultModel.DOC_TYPE_VENDOR) ?
+                {
+                    _id: vendor._id,
+                    header: {
+                        vendor_code: vendor.header.vendor_code
+                    },
+                    address: {
+                        name: {
+                            name: vendor.address.name.name
+                        },
+                        communication: {
+                            telephone: (vendor.address.communication.telephone) ? vendor.address.communication.telephone : '',
+                            mobile_phone: (vendor.address.communication.mobile_phone) ? vendor.address.communication.telephone : '',
+                            email: (vendor.address.communication.email) ? vendor.address.communication.email : ''
+                        }
+                    }
+                } : undefined,
+            customer: (data.type.invoice_code == DefaultModel.DOC_TYPE_CUSTOMER) ?
+                {
+                    _id: customer._id,
+                    header: {
+                        customer_code: customer.header.customer_code
+                    },
+                    address: {
+                        name: {
+                            name: customer.address.name.name
+                        },
+                        communication: {
+                            telephone: (customer.address.communication.telephone) ? customer.address.communication.telephone : '',
+                            mobile_phone: (customer.address.communication.mobile_phone) ? customer.address.communication.telephone : '',
+                            email: (customer.address.communication.email) ? customer.address.communication.email : ''
+                        }
+                    }
+                } : undefined,
 
             // vendor: {
             //     _id: vendor._id,
