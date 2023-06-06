@@ -4,7 +4,8 @@ const DefaultModel = require('../../models/invoice.model');
 
 const defaultSchema = Joi.object({
     header: Joi.object().keys({
-        vendor: Joi.string().trim().required().hex().max(24),
+        vendor: Joi.string().trim().hex().max(24).allow(null),
+        customer: Joi.string().trim().hex().max(24).allow(null),
         invoice_date: Joi.date().required(),
         posting_date: Joi.date().required(),
         document_type: Joi.string().trim().required().hex().max(24),

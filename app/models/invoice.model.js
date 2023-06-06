@@ -24,7 +24,8 @@ const TRANS_TYPE_CREDIT = "CREDIT";
 
 const defaultSchema = new mongoose.Schema({
     header: {
-        vendor: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendor_general_datas' },
+        vendor: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'vendor_general_datas' },
+        customer: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'customer_general_datas' },
         document_number: { type: Number, required: false, default: '' },
         invoice_date: { type: Date, required: true },
         posting_date: { type: Date, required: true },

@@ -230,6 +230,7 @@ exports.pipeline = (filters) => {
             }
         },
 
+
         // ////////////////////////////////////////
         {
             $lookup: {
@@ -287,25 +288,37 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            vendor: {
-                _id: vendor._id,
-                header: {
-                    vendor_code: vendor.header.vendor_code
-                },
-                address: {
-                    name: {
-                        name: vendor.address.name.name
-                    }
-                },
-                payment_transactions: {
-                    bank_details: [
-                        {
-                            bank_account: (vendor.payment_transactions.bank_details.bank_account)
-                                ? vendor.payment_transactions.bank_details.bank_account : null
-                        }
-                    ]
-                }
-            },
+            vendor: (data.type.invoice_code == DefaultModel.DOC_TYPE_VENDOR) ? header.vendor : undefined,
+            customer: (data.type.invoice_code == DefaultModel.DOC_TYPE_CUSTOMER) ? header.customer : undefined,
+
+            // vendor: {
+            //     _id: vendor._id,
+            //     header: {
+            //         vendor_code: vendor.header.vendor_code
+            //     },
+            //     address: {
+            //         name: {
+            //             name: vendor.address.name.name
+            //         },
+            //         communication: {
+            //             telephone: (vendor.address.communication.telephone) ? vendor.address.communication.telephone : '',
+            //             mobile_phone: (vendor.address.communication.mobile_phone) ? vendor.address.communication.telephone : '',
+            //             email: (vendor.address.communication.email) ? vendor.address.communication.email : ''
+            //         }
+            //     },
+            //     payment_transactions: {
+            //         bank_details: [
+            //             {
+            //                 bank_key: (vendor.payment_transactions.bank_details.bank_key)
+            //                     ? {
+            //                         bank_number: vendor.details.control_data.bank_number
+            //                     } : null,
+            //                 bank_account: (vendor.payment_transactions.bank_details.bank_account)
+            //                     ? vendor.payment_transactions.bank_details.bank_account : null
+            //             }
+            //         ]
+            //     }
+            // },
             document_number: (header.document_number) ? header.document_number : 'Not yet posted',
             invoice_date: header.invoice_date,
             posting_date: header.posting_date,
