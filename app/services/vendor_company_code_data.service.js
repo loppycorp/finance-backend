@@ -63,6 +63,15 @@ exports.pipeline = (filters) => {
     return [
         {
             $lookup: {
+                from: 'vendor_general_datas',
+                localField: 'header.vendor',
+                foreignField: '_id',
+                as: 'vendor'
+            },
+        },
+        { $unwind: '$vendor' },
+        {
+            $lookup: {
                 from: 'companies',
                 localField: 'header.company_code',
                 foreignField: '_id',
@@ -148,7 +157,7 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            vendor_code: data.vendor_code,
+            vendor: data.vendor,
             company_code: data.company_code,
         },
         account_management: {

@@ -6,7 +6,7 @@ const STATUS_DELETED = 'DELETED';
 
 const vendorCompanyCodeData = new mongoose.Schema({
     header: {
-        vendor_code: { type: Number, trim: true, required: false },
+        vendor: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'vendor_general_datas' },
         company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
     },
     account_management: {

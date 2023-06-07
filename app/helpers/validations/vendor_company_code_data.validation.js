@@ -5,7 +5,7 @@ const LIMIT_DEFAULT_CHAR_LONG = 225;
 
 const defaultSchema = Joi.object({
     header: {
-        vendor_code: Joi.number().integer(),
+        vendor: Joi.string().trim().required().hex().length(24),
         company_code: Joi.string().trim().required().hex().length(24),
     },
     account_management: {

@@ -67,8 +67,8 @@ const defaultSchema = Joi.object({
 
         },
         alternative_payee: {
-            individual_spec: Joi.boolean().required(),
-            spec_reference: Joi.boolean().required(),
+            individual_spec: Joi.boolean(),
+            spec_reference: Joi.boolean(),
         },
     },
 });

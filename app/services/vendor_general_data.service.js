@@ -92,7 +92,12 @@ exports.pipeline = (filters) => {
                 as: 'account_group'
             },
         },
-        // { $unwind: '$account_group' },
+        {
+            $unwind: {
+                path: '$account_group',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'customer_general_datas',
@@ -101,7 +106,12 @@ exports.pipeline = (filters) => {
                 as: 'customer'
             },
         },
-        // { $unwind: '$customer' },
+        {
+            $unwind: {
+                path: '$customer',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'trading_partners',
@@ -110,7 +120,12 @@ exports.pipeline = (filters) => {
                 as: 'trading_partner'
             },
         },
-        // { $unwind: '$trading_partner' },
+        {
+            $unwind: {
+                path: '$trading_partner',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'authorizations',
@@ -119,7 +134,12 @@ exports.pipeline = (filters) => {
                 as: 'authorization'
             },
         },
-        // { $unwind: '$authorizations' },
+        {
+            $unwind: {
+                path: '$authorization',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'corporate_groups',
@@ -128,7 +148,12 @@ exports.pipeline = (filters) => {
                 as: 'corporate_group'
             },
         },
-
+        {
+            $unwind: {
+                path: '$corporate_group',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'bank_keys',

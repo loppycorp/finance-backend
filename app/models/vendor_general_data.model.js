@@ -67,8 +67,8 @@ const vendorGeneralDataSchema = new mongoose.Schema({
 
         },
         alternative_payee: {
-            individual_spec: { type: Boolean, required: false },
-            spec_reference: { type: Boolean, required: false },
+            individual_spec: { type: Boolean, required: false, default: false },
+            spec_reference: { type: Boolean, required: false, default: false },
         },
 
     },
