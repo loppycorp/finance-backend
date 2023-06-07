@@ -11,7 +11,7 @@ const gl_accountSchema = new mongoose.Schema({
   },
   type_description: {
     control_in_chart_of_accounts: {
-      account_group: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "account_groups", },
+      account_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "account_groups", },
       statement_account: { type: Boolean, required: false },
       balance_sheet_account: { type: Boolean, required: false },
     },
@@ -25,16 +25,16 @@ const gl_accountSchema = new mongoose.Schema({
   },
   control_data: {
     account_control_in_company_code: {
-      account_currency: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: "currencies", },
-      local_crcy: { type: Boolean, required: true },
+      account_currency: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "currencies", },
+      local_crcy: { type: Boolean, required: false },
       exchange_rate: { type: String, trim: true, required: false },
       valuation_group: { type: String, trim: true, required: false },
       tax_category: { type: String, trim: true, required: false },
-      posting_tax_allowed: { type: Boolean, required: true },
+      posting_tax_allowed: { type: Boolean, required: false },
     },
     account_management_in_company_code: {
-      item_mgmt: { type: Boolean, required: true },
-      line_item: { type: Boolean, required: true },
+      item_mgmt: { type: Boolean, required: false },
+      line_item: { type: Boolean, required: false },
       sort_key: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "sort_keys", },
     },
   },

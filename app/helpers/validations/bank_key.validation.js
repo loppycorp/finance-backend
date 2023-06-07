@@ -10,15 +10,15 @@ const defaultSchema = Joi.object({
     },
     details: {
         address: {
-            name: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
+            name: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
             region: Joi.number().integer().allow(''),
-            street: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
-            city: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
-            bank_branch: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
+            street: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
+            city: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
+            bank_branch: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
         },
         control_data: {
-            swift_code: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR).allow(''),
-            bank_group: Joi.string().trim().required().hex().length(24).allow(null),
+            swift_code: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
+            bank_group: Joi.string().trim().hex().length(24).allow(null),
             postbank_account: Joi.boolean(),
             bank_number: Joi.number().integer().allow(''),
         },

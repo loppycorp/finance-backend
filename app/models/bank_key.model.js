@@ -21,7 +21,7 @@ const bankSchema = new mongoose.Schema({
             swift_code: { type: String, trim: true, required: true },
             bank_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'bank_groups' },
             postbank_account: { type: Boolean, required: false },
-            bank_number: { type: Number, required: true },
+            bank_number: { type: Number, required: false },
         }
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },

@@ -12,10 +12,10 @@ const vendorCompanyCodeData = new mongoose.Schema({
     account_management: {
         accounting_information: {
             recon_account: { type: Number, trim: true, required: true },
-            head_office: { type: String, trim: true, required: true },
+            head_office: { type: String, trim: true, required: false },
             authorization: { type: Number, trim: true, required: false },
             minority_indic: { type: Number, trim: true, required: false },
-            sort_key: { type: Number, trim: true, required: true },
+            sort_key: { type: Number, trim: true, required: false },
             cash_mgmnt_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'cash_mgmnt_groups' },
             release_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'release_groups' },
             certification_date: { type: Date, required: false },
