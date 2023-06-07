@@ -302,7 +302,7 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            vendor: (data.type.invoice_code == DefaultModel.DOC_TYPE_VENDOR) ?
+            vendor: (data.type.invoice_code == DefaultModel.DOC_TYPE_VENDOR && vendor) ?
                 {
                     _id: vendor._id,
                     header: {
@@ -319,7 +319,7 @@ exports.mapData = (data) => {
                         }
                     }
                 } : undefined,
-            customer: (data.type.invoice_code == DefaultModel.DOC_TYPE_CUSTOMER) ?
+            customer: (data.type.invoice_code == DefaultModel.DOC_TYPE_CUSTOMER && customer) ?
                 {
                     _id: customer._id,
                     header: {
