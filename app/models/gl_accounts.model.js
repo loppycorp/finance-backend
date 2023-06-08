@@ -41,7 +41,7 @@ const gl_accountSchema = new mongoose.Schema({
   create_bank_interest: {
     control_of_document_creation_in_company_code: {
       field_status_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "field_status_groups" },
-      post_automatically: { type: Boolean, required: true },
+      post_automatically: { type: Boolean, required: false },
     },
   },
   status: { type: String, default: STATUS_ACTIVE, required: true },

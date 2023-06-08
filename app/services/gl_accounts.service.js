@@ -132,6 +132,12 @@ exports.pipeline = (filters) => {
             },
         },
         {
+            $unwind: {
+                path: '$sort_key',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
             $lookup: {
                 from: 'field_status_groups',
                 localField: 'create_bank_interest.control_of_document_creation_in_company_code.field_status_group',
@@ -151,7 +157,7 @@ exports.pipeline = (filters) => {
 };
 
 exports.mapData = (data) => {
-    const { trading_partner, account_groups, account_currency, fsg } = data;
+    const { trading_partner, account_groups, account_currency, fsg, sort_key } = data;
 
 
     return {
@@ -167,8 +173,8 @@ exports.mapData = (data) => {
         type_description: {
             control_in_chart_of_accounts: {
                 account_group: (account_groups) ? {
-                    _id: account_groups.account_group._id,
-                    name: account_groups.account_group.name
+                    _id: account_groups._id,
+                    name: account_groups.name
                 } : null,
                 statement_account: data.type_description.control_in_chart_of_accounts.statement_account,
                 balance_sheet_account: data.type_description.control_in_chart_of_accounts.balance_sheet_account,
@@ -195,10 +201,10 @@ exports.mapData = (data) => {
             account_management_in_company_code: {
                 item_mgmt: data.control_data.account_management_in_company_code.item_mgmt,
                 line_item: data.control_data.account_management_in_company_code.line_item,
-                sort_key: (data.control_data.account_control_in_company_code.sort_key) ? {
-                    _id: data.sort_key._id,
-                    code: data.sort_key.code,
-                    name: data.sort_key.name
+                sort_key: (sort_key) ? {
+                    _id: sort_key._id,
+                    code: sort_key.code,
+                    name: sort_key.name
                 } : null,
             },
         },
