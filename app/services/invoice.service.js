@@ -59,6 +59,16 @@ exports.get = async (id, options = {}) => {
     return this.mapData(record[0]);
 };
 
+exports.getForReport = async (id) => {
+    const record = await DefaultModel.findOne({ _id: ObjectId(id) });
+
+    if (record.invoice_status != DefaultModel.DOC_STATUS_COMPLETED) return false;
+
+    if (!record) return false;
+
+    return this.mapData(record[0]);
+};
+
 exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
