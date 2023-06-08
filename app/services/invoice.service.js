@@ -272,6 +272,15 @@ exports.pipeline = (filters) => {
 
         {
             $lookup: {
+                from: 'gl_accounts',
+                localField: 'items.items.sl_account',
+                foreignField: '_id',
+                as: 'sl_accounts'
+            },
+        },
+
+        {
+            $lookup: {
                 from: 'trading_partners',
                 localField: 'items.items.trading_part_ba',
                 foreignField: '_id',
@@ -411,6 +420,7 @@ exports.mapData = (data) => {
         items: {
             items: data.items.items.map((o) => {
                 const itemGLAcct = data.gl_accounts.find(i => i._id.toString() == o.gl_account.toString());
+                const itemSLAcct = data.sl_accounts.find(i => i._id.toString() == o.gl_account.toString());
                 const itemTrading = data.trading_partners.find(i => i._id.toString() == o.trading_part_ba.toString());
                 const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
                 const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());
@@ -424,6 +434,15 @@ exports.mapData = (data) => {
                         type_description: {
                             description: {
                                 short_text: itemGLAcct.type_description.description.short_text
+                            }
+                        }
+                    } : null,
+                    sl_account: (itemSLAcct) ? {
+                        _id: itemSLAcct._id,
+                        header: itemSLAcct.header,
+                        type_description: {
+                            description: {
+                                short_text: itemSLAcct.type_description.description.short_text
                             }
                         }
                     } : null,
@@ -465,9 +484,6 @@ exports.mapData = (data) => {
 
 exports.reportData = (data) => {
     const { vendor, customer, header, company, currency, types } = data;
-
-    // let totalDeb = 0;
-    // let totalCred = 0;
 
     return {
         _id: data._id,
@@ -523,6 +539,7 @@ exports.reportData = (data) => {
         items: {
             items: data.items.items.map((o) => {
                 const itemGLAcct = data.gl_accounts.find(i => i._id.toString() == o.gl_account.toString());
+                const itemSLAcct = data.sl_accounts.find(i => i._id.toString() == o.gl_account.toString());
                 const itemTrading = data.trading_partners.find(i => i._id.toString() == o.trading_part_ba.toString());
                 const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
                 const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());
@@ -536,6 +553,15 @@ exports.reportData = (data) => {
                         type_description: {
                             description: {
                                 short_text: itemGLAcct.type_description.description.short_text
+                            }
+                        }
+                    } : null,
+                    sl_account: (itemSLAcct) ? {
+                        _id: itemSLAcct._id,
+                        header: itemSLAcct.header,
+                        type_description: {
+                            description: {
+                                short_text: itemSLAcct.type_description.description.short_text
                             }
                         }
                     } : null,

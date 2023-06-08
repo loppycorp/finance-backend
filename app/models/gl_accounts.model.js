@@ -4,6 +4,9 @@ const STATUS_ACTIVE = "ACTIVE";
 const STATUS_INACTIVE = "INACTIVE";
 const STATUS_DELETED = "DELETED";
 
+const DOC_TYPE_GL_ACCOUNT = 'GL';
+const DOC_TYPE_SL_ACCOUNT = 'SL';
+
 const gl_accountSchema = new mongoose.Schema({
   header: {
     gl_account_code: { type: Number, trim: true, required: true },
@@ -44,6 +47,9 @@ const gl_accountSchema = new mongoose.Schema({
       post_automatically: { type: Boolean, required: false, default: false },
     },
   },
+  type: {
+    account_type: { type: String, trim: true, required: false },
+  },
   status: { type: String, default: STATUS_ACTIVE, required: true },
   date_created: { type: Date, default: () => new Date(), required: true },
   date_updated: { type: Date, default: () => new Date(), required: true },
@@ -56,3 +62,9 @@ module.exports = mongoose.model("gl_account", gl_accountSchema);
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;
 module.exports.STATUS_DELETED = STATUS_DELETED;
+
+module.exports.DOC_TYPE_GL_ACCOUNT = DOC_TYPE_GL_ACCOUNT;
+module.exports.DOC_TYPE_SL_ACCOUNT = DOC_TYPE_SL_ACCOUNT;
+
+
+

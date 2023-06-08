@@ -21,7 +21,8 @@ const defaultSchema = Joi.object({
     }),
     items: {
         items: Joi.array().items(Joi.object().keys({
-            gl_account: Joi.string().trim().required().hex().max(24),
+            gl_account: Joi.string().trim().hex().max(24).allow(null),
+            sl_account: Joi.string().trim().hex().max(24).allow(null),
             transaction_type: Joi.string().trim().hex().max(24).allow(null),
             amount: Joi.number().required(),
             tax_amount: Joi.number().allow(''),

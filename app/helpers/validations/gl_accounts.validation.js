@@ -1,4 +1,6 @@
 const Joi = require('joi');
+const DefaultModel = require('../../models/gl_accounts.model');
+
 
 const LIMIT_DEFAULT_CHAR = 128;
 
@@ -41,6 +43,9 @@ const defaultSchema = Joi.object({
             field_status_group: Joi.string().trim().hex().length(24).allow(null),
             post_automatically: Joi.boolean(),
         },
+    },
+    type: {
+        account_type: Joi.string().trim().valid(DefaultModel.DOC_TYPE_GL_ACCOUNT, DefaultModel.DOC_TYPE_SL_ACCOUNT),
     },
 });
 module.exports = {

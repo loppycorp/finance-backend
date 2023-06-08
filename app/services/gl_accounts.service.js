@@ -2,7 +2,13 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const Gl_accounts = require('../models/gl_accounts.model');
 
 
-exports.create = async (data) => {
+exports.create = async (data, req) => {
+
+    const doc_type = req.type;
+    if (doc_type && doc_type != '') {
+        data['type.account_type'] = doc_type;
+    }
+
     const gl_accounts = await Gl_accounts.create(data);
 
     if (!gl_accounts) return false;
@@ -45,6 +51,13 @@ exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
     const options = { status: Gl_accounts.STATUS_ACTIVE };
+
+    if (query.type && query.type != '') {
+        const statuses = query.type.split(',');
+        if (statuses.length > 0) {
+            options['type.account_type'] = { $in: statuses };
+        }
+    }
 
     const results = await Gl_accounts.aggregate(this.pipeline(options))
         .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
@@ -217,6 +230,7 @@ exports.mapData = (data) => {
                 post_automatically: data.create_bank_interest.control_of_document_creation_in_company_code.post_automatically,
             },
         },
+        type: data.type,
         status: data.status,
         date_created: data.date_created.toISOString().split('T')[0],
         date_updated: data.date_updated.toISOString().split('T')[0]

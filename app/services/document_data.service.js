@@ -348,9 +348,9 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         header: {
-            document_date: header.document_date,
+            document_date: header.document_date.toISOString().split('T')[0],
             document_number: (header.document_number) ? header.document_number : 'Not yet posted',
-            posting_date: header.posting_date,
+            posting_date: header.posting_date.toISOString().split('T')[0],
             reference: (header.reference) ? header.reference : '',
             doc_header_text: (header.doc_header_text) ? header.doc_header_text : '',
             cross_cc_no: (header.cross_cc_no) ? header.cross_cc_no : '',
@@ -370,7 +370,7 @@ exports.mapData = (data) => {
                 code: reason.code,
                 name: reason.name,
             } : null,
-            reversal_date: data.header.reversal_date,
+            reversal_date: data.header.reversal_date.toISOString().split('T')[0],
             ledger_group: (ledger) ? {
                 _id: ledger._id,
                 code: ledger.code,
@@ -383,7 +383,7 @@ exports.mapData = (data) => {
                 reverse_type: types.reverse_type,
                 account_types: types.account_types,
             } : null,
-            translation_date: data.header.translation_date,
+            translation_date: data.header.translation_date.toISOString().split('T')[0],
             fiscal_year: data.header.fiscal_year,
             period: (period) ? {
                 _id: period._id,
@@ -469,8 +469,8 @@ exports.mapData = (data) => {
         type: data.type,
         amount_information: data.amount_information,
         status: data.status,
-        date_created: data.date_created,
-        date_updated: data.date_updated,
+        date_created: data.date_created.toISOString().split('T')[0],
+        date_updated: data.date_updated.toISOString().split('T')[0],
         created_by: data.created_by,
         updated_by: data.updated_by
     };

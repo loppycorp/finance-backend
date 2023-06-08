@@ -44,7 +44,8 @@ const defaultSchema = new mongoose.Schema({
     items: {
         items: [
             {
-                gl_account: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'gl_accounts' },
+                gl_account: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'gl_accounts' },
+                sl_account: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'gl_accounts' },
                 transaction_type: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
                 amount: { type: Number, required: true },
                 tax_amount: { type: Number, required: false },

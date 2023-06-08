@@ -17,6 +17,8 @@ exports.create = async (req, res) => {
         logger.info(req.path);
 
         const body = req.body;
+        const query = req.query;
+
 
         const validationBody = createSchema.validate(body, { abortEarly: false });
         if (validationBody.error) {
@@ -96,7 +98,7 @@ exports.create = async (req, res) => {
         body.created_by = user.username;
         body.updated_by = user.username;
 
-        const gl_accounts = await gl_accounts_service.create(body);
+        const gl_accounts = await gl_accounts_service.create(body, query);
 
         return res.status(200).send({
             status: 'success',
