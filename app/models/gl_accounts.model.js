@@ -25,23 +25,23 @@ const gl_accountSchema = new mongoose.Schema({
   },
   control_data: {
     account_control_in_company_code: {
-      account_currency: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "currencies", },
-      local_crcy: { type: Boolean, required: false },
-      exchange_rate: { type: String, trim: true, required: false },
-      valuation_group: { type: String, trim: true, required: false },
-      tax_category: { type: String, trim: true, required: false },
-      posting_tax_allowed: { type: Boolean, required: false },
+      account_currency: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: "currencies", },
+      local_crcy: { type: Boolean, required: false, default: false },
+      exchange_rate: { type: String, trim: true, required: false, default: '' },
+      valuation_group: { type: String, trim: true, required: false, default: '' },
+      tax_category: { type: String, trim: true, required: false, default: '' },
+      posting_tax_allowed: { type: Boolean, required: false, default: false },
     },
     account_management_in_company_code: {
-      item_mgmt: { type: Boolean, required: false },
-      line_item: { type: Boolean, required: false },
+      item_mgmt: { type: Boolean, required: false, default: false },
+      line_item: { type: Boolean, required: false, default: false },
       sort_key: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "sort_keys", },
     },
   },
   create_bank_interest: {
     control_of_document_creation_in_company_code: {
       field_status_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "field_status_groups" },
-      post_automatically: { type: Boolean, required: false },
+      post_automatically: { type: Boolean, required: false, default: false },
     },
   },
   status: { type: String, default: STATUS_ACTIVE, required: true },
