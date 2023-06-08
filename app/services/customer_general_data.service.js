@@ -216,8 +216,6 @@ exports.mapData = (data) => {
         },
         payment_transactions: {
             bank_details: data.payment_transactions.bank_details,
-            payment_transactions: data.payment_transactions.payment_transactions,
-            alternative_payer: data.payment_transactions.alternative_payer,
         },
         status: data.status,
         date_created: data.date_created,

@@ -64,15 +64,7 @@ const customerGeneralDataSchema = new mongoose.Schema({
             iban_value: { type: Number, trim: true, required: false },
             bnkt: { type: String, trim: true, required: false },
             reference: { type: String, trim: true, required: false },
-        }],
-        payment_transactions: {
-            alternative_payer: { type: String, trim: true, required: false },
-        },
-        alternative_payer: {
-            individual_spec: { type: Boolean, required: false },
-            spec_reference: { type: Boolean, required: false },
-        },
-
+        }]
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },

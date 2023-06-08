@@ -370,7 +370,7 @@ exports.mapData = (data) => {
                 code: reason.code,
                 name: reason.name,
             } : null,
-            reversal_date: data.header.reversal_date.toISOString().split('T')[0],
+            reversal_date: (header.reversal_date) ? header.reversal_date.toISOString().split('T')[0] : null,
             ledger_group: (ledger) ? {
                 _id: ledger._id,
                 code: ledger.code,
@@ -383,7 +383,7 @@ exports.mapData = (data) => {
                 reverse_type: types.reverse_type,
                 account_types: types.account_types,
             } : null,
-            translation_date: data.header.translation_date.toISOString().split('T')[0],
+            translation_date: (header.translation_date) ? header.translation_date.toISOString().split('T')[0] : null,
             fiscal_year: data.header.fiscal_year,
             period: (period) ? {
                 _id: period._id,
