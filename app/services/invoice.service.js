@@ -59,12 +59,17 @@ exports.get = async (id, options = {}) => {
     return this.mapData(record[0]);
 };
 
-exports.getForReport = async (id) => {
-    const record = await DefaultModel.findOne({ _id: ObjectId(id) });
+exports.getForReport = async (id, options = {}) => {
+    const record = await DefaultModel.aggregate(this.pipeline({
+        _id: ObjectId(id),
+        status: (options.display_inactive === true)
+            ? DefaultModel.STATUS_INACTIVE
+            : DefaultModel.STATUS_ACTIVE
+    }));
 
-    if (record.invoice_status != DefaultModel.DOC_STATUS_COMPLETED) return false;
+    if (record[0].type.invoice_status != DefaultModel.DOC_STATUS_COMPLETED) return false;
 
-    if (!record) return false;
+    if (!record[0]) return false;
 
     return this.mapData(record[0]);
 };

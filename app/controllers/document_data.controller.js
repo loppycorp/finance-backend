@@ -272,6 +272,45 @@ exports.read = async (req, res) => {
     }
 };
 
+exports.reports = async (req, res) => {
+    try {
+        logger.info(req.path);
+
+        const { params } = req;
+
+        const validateParams = validateParamsSchema.validate(params, { abortEarly: false });
+        if (validateParams.error) {
+            return {
+                status: false,
+                message: lang.t('global.err.validation_failed'),
+                error: validateParams.error.details
+            };
+        }
+
+        const data = await serviceDocumentdata.getForReports(params.id);
+        if (!data) {
+            return res.status(200).send({
+                status: "error",
+                message: lang.t("document not yet posted")
+            });
+        }
+
+        return res.status(200).send({
+            status: "success",
+            message: lang.t("document_data.suc.read"),
+            data: data
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+
+        return res.status(500).send({
+            status: "error",
+            message: utilities.getMessage(err),
+        });
+    }
+};
+
 exports.update = async (req, res) => {
     try {
         logger.info(req.path);

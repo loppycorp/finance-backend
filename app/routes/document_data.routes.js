@@ -17,6 +17,11 @@ module.exports = (app) => {
         defaultController.read
     );
 
+    app.get(
+        process.env.BASE_URL + '/document-data/:id/reports',
+        defaultController.reports
+    );
+
     app.put(
         process.env.BASE_URL + '/document-data/:id',
         auth.validateToken,

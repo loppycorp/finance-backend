@@ -59,6 +59,21 @@ exports.get = async (id, options = {}) => {
     return this.mapData(record[0]);
 };
 
+exports.getForReports = async (id, options = {}) => {
+    const record = await DefaultModel.aggregate(this.pipeline({
+        _id: ObjectId(id),
+        status: (options.display_inactive === true)
+            ? DefaultModel.STATUS_INACTIVE
+            : DefaultModel.STATUS_ACTIVE
+    }));
+
+    if (record[0].type.document_status != DefaultModel.DOC_STATUS_COMPLETED) return false;
+
+    if (!record[0]) return false;
+
+    return this.mapData(record[0]);
+};
+
 exports.getAll = async (query) => {
     const { pageNum, pageLimit, sortOrderInt, sortBy } = query.pagination;
 
