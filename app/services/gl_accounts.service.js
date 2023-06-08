@@ -97,7 +97,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'trading_partners',
-                localField: 'type_description.consoldation_data_in_chart_of_accounts.trading_partner',
+                localField: 'type_description.consolidation_data_in_chart_of_accounts.trading_partner',
                 foreignField: '_id',
                 as: 'trading_partner'
             },
@@ -182,8 +182,7 @@ exports.mapData = (data) => {
             description: data.type_description.description,
 
             consolidation_data_in_chart_of_accounts: {
-                trading_partner: (data.type_description.consolidation_data_in_chart_of_accounts.trading_partner) ?
-                    data.type_description.consolidation_data_in_chart_of_accounts.trading_partner : null
+                trading_partner: (trading_partner) ? trading_partner : null
             },
         },
         control_data: {
