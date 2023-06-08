@@ -9,7 +9,7 @@ const defaultSchema = Joi.object({
     },
     type_description: {
         control_in_chart_of_accounts: {
-            account_group: Joi.string().trim().required().hex().length(24).allow(null),
+            account_group: Joi.string().trim().hex().length(24).allow(null),
             statement_account: Joi.boolean(),
             balance_sheet_account: Joi.boolean(),
         },
