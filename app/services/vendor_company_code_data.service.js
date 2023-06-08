@@ -69,7 +69,12 @@ exports.pipeline = (filters) => {
                 as: 'vendor'
             },
         },
-        { $unwind: '$vendor' },
+        {
+            $unwind: {
+                path: "$vendor",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'companies',

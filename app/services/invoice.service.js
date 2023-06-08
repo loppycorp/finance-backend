@@ -71,7 +71,7 @@ exports.getForReport = async (id, options = {}) => {
 
     if (!record[0]) return false;
 
-    return this.mapData(record[0]);
+    return this.reportData(record[0]);
 };
 
 exports.getAll = async (query) => {
@@ -381,8 +381,8 @@ exports.mapData = (data) => {
             //     }
             // },
             document_number: (header.document_number) ? header.document_number : 'Not yet posted',
-            invoice_date: header.invoice_date,
-            posting_date: header.posting_date,
+            invoice_date: header.invoice_date.toISOString().split('T')[0],
+            posting_date: header.posting_date.toISOString().split('T')[0],
             document_type: (types) ? {
                 _id: types._id,
                 code: types.code,
@@ -418,7 +418,7 @@ exports.mapData = (data) => {
                 const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
 
                 return {
-                    gl_account: {
+                    gl_account: (itemGLAcct) ? {
                         _id: itemGLAcct._id,
                         header: itemGLAcct.header,
                         type_description: {
@@ -426,7 +426,7 @@ exports.mapData = (data) => {
                                 short_text: itemGLAcct.type_description.description.short_text
                             }
                         }
-                    },
+                    } : null,
                     transaction_type: (itemPk) ? {
                         _id: itemPk._id,
                         posting_key_code: itemPk.posting_key_code,
@@ -446,10 +446,10 @@ exports.mapData = (data) => {
                         name: itemSegment.name,
                     } : null,
 
-                    cost_center: {
+                    cost_center: (itemCostCenter) ? {
                         _id: itemCostCenter._id,
                         cost_center_code: itemCostCenter.cost_center_code
-                    },
+                    } : null,
                     tax: o.tax,
                 };
             }),
@@ -457,8 +457,120 @@ exports.mapData = (data) => {
         type: data.type,
         amount_information: data.amount_information,
         status: data.status,
-        date_created: data.date_created,
-        date_updated: data.date_updated
+        date_created: data.date_created.toISOString().split('T')[0],
+        date_updated: data.date_updated.toISOString().split('T')[0]
+    };
+};
+
+
+exports.reportData = (data) => {
+    const { vendor, customer, header, company, currency, types } = data;
+
+    // let totalDeb = 0;
+    // let totalCred = 0;
+
+    return {
+        _id: data._id,
+        header: {
+            vendor: (vendor) ?
+                {
+                    _id: vendor._id,
+                    header: {
+                        vendor_code: vendor.header.vendor_code
+                    },
+                    address: {
+                        name: {
+                            name: vendor.address.name.name
+                        },
+                        communication: {
+                            telephone: (vendor.address.communication.telephone) ? vendor.address.communication.telephone : '',
+                            mobile_phone: (vendor.address.communication.mobile_phone) ? vendor.address.communication.telephone : '',
+                            email: (vendor.address.communication.email) ? vendor.address.communication.email : ''
+                        }
+                    }
+                } : undefined,
+            customer: (customer) ?
+                {
+                    _id: customer._id,
+                    header: {
+                        customer_code: customer.header.customer_code
+                    },
+                    address: {
+                        name: {
+                            name: customer.address.name.name
+                        },
+                        communication: {
+                            telephone: (customer.address.communication.telephone) ? customer.address.communication.telephone : '',
+                            mobile_phone: (customer.address.communication.mobile_phone) ? customer.address.communication.telephone : '',
+                            email: (customer.address.communication.email) ? customer.address.communication.email : ''
+                        }
+                    }
+                } : undefined,
+            document_number: (header.document_number) ? header.document_number : 'Not yet posted',
+            invoice_date: header.invoice_date.toISOString().split('T')[0],
+            posting_date: header.posting_date.toISOString().split('T')[0],
+            document_type: (types) ? `${types.code} ${types.name}` : null,
+            company_code: (company) ? `${company.code} ${company.desc}` : null,
+            cross_cc_no: header.cross_cc_no,
+            business_place: header.business_place,
+            section: header.section,
+            text: header.text,
+            sgl_ind: header.sgl_ind,
+            reference: header.reference,
+            currency: (currency) ? `${currency.code} ${currency.name}` : null,
+
+        },
+        items: {
+            items: data.items.items.map((o) => {
+                const itemGLAcct = data.gl_accounts.find(i => i._id.toString() == o.gl_account.toString());
+                const itemTrading = data.trading_partners.find(i => i._id.toString() == o.trading_part_ba.toString());
+                const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
+                const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());
+                // const itemProfit = data.profit_center.find(i => i._id.toString() == o.profit_center.toString());
+                const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
+
+                return {
+                    gl_account: (itemGLAcct) ? {
+                        _id: itemGLAcct._id,
+                        header: itemGLAcct.header,
+                        type_description: {
+                            description: {
+                                short_text: itemGLAcct.type_description.description.short_text
+                            }
+                        }
+                    } : null,
+                    transaction_type: (itemPk) ? {
+                        _id: itemPk._id,
+                        posting_key_code: itemPk.posting_key_code,
+                        name: itemPk.name,
+                        type: itemPk.type
+                    } : null,
+                    amount: o.amount,
+                    tax_amount: o.tax_amount,
+                    trading_part_ba: (itemTrading) ? {
+                        _id: itemTrading._id,
+                        code: itemTrading.code,
+                        name: itemTrading.name,
+                    } : null,
+                    segment: (itemSegment) ? {
+                        _id: itemSegment._id,
+                        code: itemSegment.code,
+                        name: itemSegment.name,
+                    } : null,
+
+                    cost_center: (itemCostCenter) ? {
+                        _id: itemCostCenter._id,
+                        cost_center_code: itemCostCenter.cost_center_code
+                    } : null,
+                    tax: o.tax,
+                };
+            }),
+        },
+        type: data.type,
+        amount_information: data.amount_information,
+        status: data.status,
+        date_created: data.date_created.toISOString().split('T')[0],
+        date_updated: data.date_updated.toISOString().split('T')[0]
     };
 };
 

@@ -416,7 +416,7 @@ exports.mapData = (data) => {
                 //     balanceStatus = DefaultModel.DOC_UNBALANCED;
 
                 return {
-                    gl_account: {
+                    gl_account: (itemGLAcct) ? {
                         _id: itemGLAcct._id,
                         header: itemGLAcct.header,
                         type_description: {
@@ -424,7 +424,7 @@ exports.mapData = (data) => {
                                 short_text: itemGLAcct.type_description.description.short_text
                             }
                         }
-                    },
+                    } : null,
                     amount_in_doc_curr: o.amount_in_doc_curr,
                     company_code: {
                         _id: itemCompany._id,
@@ -438,10 +438,10 @@ exports.mapData = (data) => {
                     } : null,
                     bussiness_place: (o.bussiness_place) ? o.bussiness_place : '',
                     partner: (o.partner) ? o.partner : '',
-                    cost_center: {
+                    cost_center: (itemCostCenter) ? {
                         _id: itemCostCenter._id,
                         cost_center_code: itemCostCenter.cost_center_code
-                    },
+                    } : null,
                     //added from accrual
                     transaction_type: (itemPk) ? {
                         _id: itemPk._id,

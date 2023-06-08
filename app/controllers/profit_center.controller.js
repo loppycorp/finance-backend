@@ -281,6 +281,14 @@ exports.delete = async (req, res) => {
 
         const params = req.params;
 
+        const profitCenter = await profitCenterService.delete(params.id);
+        if (!profitCenter) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('profit_center.err.not_exists')
+            });
+        }
+
         return res.status(200).send({
             status: 'success',
             message: lang.t('profit_center.suc.delete'),

@@ -38,6 +38,8 @@ exports.delete = async (id) => {
         $set: { status: ProfitCenter.STATUS_INACTIVE }
     });
 
+    console.log(profitCenter)
+
     if (!profitCenter) return false;
 
     return await this.get(profitCenter._id, { allowed_inactive: true });
@@ -177,8 +179,8 @@ exports.mapData = (data) => {
             },
         },
         status: data.status,
-        date_created: data.date_created,
-        date_updated: data.date_updated,
+        date_created: data.date_created.toISOString().split('T')[0],
+        date_updated: data.date_updated.toISOString().split('T')[0],
         created_by: data.created_by,
         updated_by: data.updated_by
     };

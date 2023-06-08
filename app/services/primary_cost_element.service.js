@@ -107,8 +107,8 @@ exports.mapData = (data) => {
         _id: data.controlling_area_code._id
       },
       validity: {
-        from: data.header.validity.from,
-        to: data.header.validity.to
+        from: data.header.validity.from.toISOString().split('T')[0],
+        to: data.header.validity.to.toISOString().split('T')[0]
       },
     },
     basic_data: {
@@ -125,7 +125,7 @@ exports.mapData = (data) => {
       },
     },
     status: data.status,
-    date_created: data.date_created,
-    date_updated: data.date_updated,
+    date_created: data.date_created.toISOString().split('T')[0],
+    date_updated: data.date_updated.toISOString().split('T')[0]
   };
 };
