@@ -42,10 +42,10 @@ const vendorGeneralDataSchema = new mongoose.Schema({
     },
     control_data: {
         account_control: {
-            customer: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'customer_general_datas' },
-            trading_partner: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
-            authorization: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'authorizations' },
-            corporate_group: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'corporate_groups' },
+            customer: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'customer_general_datas' },
+            trading_partner: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'trading_partners' },
+            authorization: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'authorizations' },
+            corporate_group: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'corporate_groups' },
         },
     },
     payment_transactions: {
