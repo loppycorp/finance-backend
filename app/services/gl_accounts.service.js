@@ -84,13 +84,13 @@ exports.pipeline = (filters) => {
                 from: 'account_groups',
                 localField: 'type_description.control_in_chart_of_accounts.account_group',
                 foreignField: '_id',
-                as: 'account_group'
+                as: 'account_groups'
             },
         },
         // if the id is optional or nullable
         {
             $unwind: {
-                path: '$account_group',
+                path: '$account_groups',
                 preserveNullAndEmptyArrays: true
             }
         },
@@ -117,7 +117,12 @@ exports.pipeline = (filters) => {
                 as: 'account_currency'
             },
         },
-        { $unwind: '$account_currency', },
+        {
+            $unwind: {
+                path: '$account_currency',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'sort_keys',
@@ -131,16 +136,24 @@ exports.pipeline = (filters) => {
                 from: 'field_status_groups',
                 localField: 'create_bank_interest.control_of_document_creation_in_company_code.field_status_group',
                 foreignField: '_id',
-                as: 'field_status_group'
+                as: 'fsg'
             },
         },
         // if the id is optional or nullable
-        { $unwind: '$field_status_group' },
+        {
+            $unwind: {
+                path: '$fsg',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         { $match: filters }
     ];
 };
 
 exports.mapData = (data) => {
+    const { trading_partner, account_groups, account_currency, fsg } = data;
+
+
     return {
         _id: data._id,
         header: {
@@ -153,10 +166,10 @@ exports.mapData = (data) => {
         },
         type_description: {
             control_in_chart_of_accounts: {
-                account_group: {
-                    _id: data.account_group._id,
-                    name: data.account_group.name
-                },
+                account_group: (account_groups) ? {
+                    _id: account_groups.account_group._id,
+                    name: account_groups.account_group.name
+                } : null,
                 statement_account: data.type_description.control_in_chart_of_accounts.statement_account,
                 balance_sheet_account: data.type_description.control_in_chart_of_accounts.balance_sheet_account,
             },
@@ -169,10 +182,10 @@ exports.mapData = (data) => {
         },
         control_data: {
             account_control_in_company_code: {
-                account_currency: {
-                    _id: data.account_currency._id,
-                    code: data.account_currency.code
-                },
+                account_currency: (account_currency) ? {
+                    _id: account_currency._id,
+                    code: account_currency.code
+                } : null,
                 local_crcy: data.control_data.account_control_in_company_code.local_crcy,
                 exchange_rate: data.control_data.account_control_in_company_code.exchange_rate,
                 valuation_group: data.control_data.account_control_in_company_code.valuation_group,
@@ -191,11 +204,11 @@ exports.mapData = (data) => {
         },
         create_bank_interest: {
             control_of_document_creation_in_company_code: {
-                field_status_group: {
-                    _id: data.field_status_group._id,
-                    group_name: data.field_status_group.group_name,
-                    description: data.field_status_group.description
-                },
+                field_status_group: (fsg) ? {
+                    _id: fsg._id,
+                    group_name: fsg.group_name,
+                    description: fsg.description
+                } : null,
                 post_automatically: data.create_bank_interest.control_of_document_creation_in_company_code.post_automatically,
             },
         },
