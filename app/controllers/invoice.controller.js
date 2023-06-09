@@ -5,6 +5,8 @@ const utilities = require('../helpers/utilities.helper');
 
 const { validateParamsSchema } = require("../helpers/validations/common.validation");
 const { validateBodySchema, updateSchema } = require('../helpers/validations/invoice.validation');
+const DefaultModel = require("../models/invoice.model");
+
 
 const serviceDocumentdata = require('../services/invoice.service');
 const serviceCompany = require('../services/company.service');
@@ -351,8 +353,14 @@ exports.update = async (req, res) => {
             });
         }
 
-        body.header.document_number = data.header.document_number;
-        const validate = await updateSchema.validate(body);
+        if (data.type.invoice_status == DefaultModel.DOC_STATUS_COMPLETED) {
+            return res.status(200).send({
+                status: "error",
+                message: lang.t("invoice already posted")
+            });
+        }
+
+        const validate = await this.validate(body);
         if (!validate.status) {
             return res.status(400).send({
                 status: 'error',

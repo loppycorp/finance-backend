@@ -219,7 +219,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'document_types',
-                localField: 'header.types',
+                localField: 'header.document_type',
                 foreignField: '_id',
                 as: 'types'
             },
