@@ -550,7 +550,7 @@ exports.reportData = (data) => {
                 return {
                     gl_account: (itemGLAcct) ? itemGLAcct.header.gl_account_code : 'BLANK',
                     sl_account: (itemSLAcct) ? itemSLAcct.header.gl_account_code : 'BLANK',
-                    transaction_type: (itemPk) ? itemPk.name : 'BLANK',
+                    transaction_type: (itemPk) ? itemPk.type : 'BLANK',
                     amount: o.amount,
                     tax_amount: o.tax_amount,
                     trading_part_ba: (itemTrading) ? {
