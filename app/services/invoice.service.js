@@ -525,11 +525,11 @@ exports.reportData = (data) => {
             document_number: (header.document_number) ? header.document_number : 'Not yet posted',
             invoice_date: header.invoice_date.toISOString().split('T')[0],
             posting_date: header.posting_date.toISOString().split('T')[0],
-            document_type: (types) ? `${types.code} ${types.name}` : null,
-            company_code: (company) ? `${company.code} ${company.desc}` : null,
+            document_type: (types) ? `${types.code} ${types.name}` : 'BLANK',
+            company_code: (company) ? `${company.code} ${company.desc}` : 'BLANK',
             cross_cc_no: header.cross_cc_no,
             business_place: header.business_place,
-            section: header.section,
+            section: (header.section) ? header.section : 'BLANK',
             text: header.text,
             sgl_ind: header.sgl_ind,
             reference: header.reference,
@@ -547,47 +547,19 @@ exports.reportData = (data) => {
                 const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
 
                 return {
-                    gl_account: (itemGLAcct) ? {
-                        _id: itemGLAcct._id,
-                        header: itemGLAcct.header,
-                        type_description: {
-                            description: {
-                                short_text: itemGLAcct.type_description.description.short_text
-                            }
-                        }
-                    } : null,
-                    sl_account: (itemSLAcct) ? {
-                        _id: itemSLAcct._id,
-                        header: itemSLAcct.header,
-                        type_description: {
-                            description: {
-                                short_text: itemSLAcct.type_description.description.short_text
-                            }
-                        }
-                    } : null,
-                    transaction_type: (itemPk) ? {
-                        _id: itemPk._id,
-                        posting_key_code: itemPk.posting_key_code,
-                        name: itemPk.name,
-                        type: itemPk.type
-                    } : null,
+                    gl_account: (itemGLAcct) ? itemGLAcct.header.gl_account_code : 'BLANK',
+                    sl_account: (itemSLAcct) ? itemSLAcct.header.gl_account_code : 'BLANK',
+                    transaction_type: (itemPk) ? itemPk.name : 'BLANK',
                     amount: o.amount,
                     tax_amount: o.tax_amount,
                     trading_part_ba: (itemTrading) ? {
                         _id: itemTrading._id,
                         code: itemTrading.code,
                         name: itemTrading.name,
-                    } : null,
-                    segment: (itemSegment) ? {
-                        _id: itemSegment._id,
-                        code: itemSegment.code,
-                        name: itemSegment.name,
-                    } : null,
+                    } : 'BLANK',
+                    segment: (itemSegment) ? itemSegment.code : 'BLANK',
 
-                    cost_center: (itemCostCenter) ? {
-                        _id: itemCostCenter._id,
-                        cost_center_code: itemCostCenter.cost_center_code
-                    } : null,
+                    cost_center: (itemCostCenter) ? itemCostCenter.cost_center_code : 'BLANK',
                     tax: o.tax,
                 };
             }),

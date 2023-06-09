@@ -49,7 +49,7 @@ const defaultSchema = new mongoose.Schema({
                 transaction_type: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
                 amount: { type: Number, required: true },
                 tax_amount: { type: Number, required: false },
-                trading_part_ba: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'trading_partners' },
+                trading_part_ba: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: 'trading_partners' },
                 segment: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: "segments" },
                 cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
                 tax: { type: String, trim: true, required: false, default: '' },
