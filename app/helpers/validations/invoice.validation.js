@@ -8,7 +8,7 @@ const defaultSchema = Joi.object({
         customer: Joi.string().trim().hex().max(24).allow(null),
         invoice_date: Joi.date().required(),
         posting_date: Joi.date().required(),
-        document_type: Joi.string().trim().required().hex().max(24),
+        document_type: Joi.string().trim().hex().max(24),
         company_code: Joi.string().trim().required().hex().max(24),
         cross_cc_no: Joi.string().trim().allow(''),
         business_place: Joi.number().allow(''),

@@ -419,8 +419,8 @@ exports.mapData = (data) => {
         },
         items: {
             items: data.items.items.map((o) => {
-                const itemGLAcct = data.gl_accounts.find(i => i._id.toString() == o.gl_account.toString());
-                const itemSLAcct = data.sl_accounts.find(i => i._id.toString() == o.gl_account.toString());
+                const itemGLAcct = data.gl_accounts.find(i => (i && i._id && o && o.gl_account) ? (i._id.toString() === o.gl_account.toString()) : false);
+                const itemSLAcct = data.sl_accounts.find(i => (i && i._id && o && o.sl_account) ? (i._id.toString() === o.sl_account.toString()) : false);
                 const itemTrading = data.trading_partners.find(i => (i && i._id && o && o.trading_part_ba) ? (i._id.toString() === o.trading_part_ba.toString()) : false);
                 const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
                 const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());
@@ -489,40 +489,8 @@ exports.reportData = (data) => {
     return {
         _id: data._id,
         header: {
-            vendor: (vendor) ?
-                {
-                    _id: vendor._id,
-                    header: {
-                        vendor_code: vendor.header.vendor_code
-                    },
-                    address: {
-                        name: {
-                            name: vendor.address.name.name
-                        },
-                        communication: {
-                            telephone: (vendor.address.communication.telephone) ? vendor.address.communication.telephone : '',
-                            mobile_phone: (vendor.address.communication.mobile_phone) ? vendor.address.communication.telephone : '',
-                            email: (vendor.address.communication.email) ? vendor.address.communication.email : ''
-                        }
-                    }
-                } : undefined,
-            customer: (customer) ?
-                {
-                    _id: customer._id,
-                    header: {
-                        customer_code: customer.header.customer_code
-                    },
-                    address: {
-                        name: {
-                            name: customer.address.name.name
-                        },
-                        communication: {
-                            telephone: (customer.address.communication.telephone) ? customer.address.communication.telephone : '',
-                            mobile_phone: (customer.address.communication.mobile_phone) ? customer.address.communication.telephone : '',
-                            email: (customer.address.communication.email) ? customer.address.communication.email : ''
-                        }
-                    }
-                } : undefined,
+            vendor: (vendor) ? vendor.address.name.name : undefined,
+            customer: (customer) ? customer.address.name.name : undefined,
             document_number: (header.document_number) ? header.document_number : '---',
             invoice_date: header.invoice_date.toISOString().split('T')[0],
             posting_date: header.posting_date.toISOString().split('T')[0],
@@ -539,8 +507,8 @@ exports.reportData = (data) => {
         },
         items: {
             items: data.items.items.map((o) => {
-                const itemGLAcct = data.gl_accounts.find(i => i._id.toString() == o.gl_account.toString());
-                const itemSLAcct = data.sl_accounts.find(i => i._id.toString() == o.gl_account.toString());
+                const itemGLAcct = data.gl_accounts.find(i => (i && i._id && o && o.gl_account) ? (i._id.toString() === o.gl_account.toString()) : false);
+                const itemSLAcct = data.sl_accounts.find(i => (i && i._id && o && o.sl_account) ? (i._id.toString() === o.sl_account.toString()) : false);
                 const itemTrading = data.trading_partners.find(i => (i && i._id && o && o.trading_part_ba) ? (i._id.toString() === o.trading_part_ba.toString()) : false);
                 const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
                 const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());

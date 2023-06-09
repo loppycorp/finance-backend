@@ -29,7 +29,7 @@ const defaultSchema = new mongoose.Schema({
         document_number: { type: Number, required: false, default: '' },
         invoice_date: { type: Date, required: true },
         posting_date: { type: Date, required: true },
-        document_type: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'document_types' },
+        document_type: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'document_types' },
         company_code: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'companies' },
         cross_cc_no: { type: String, required: false },
         business_place: { type: Number, required: false },

@@ -72,7 +72,20 @@ exports.validate = async (body) => {
 
         // Validate item gl account record
         const itemGLAccount = await serviceGL.get(item.gl_account);
-        if (!itemGLAccount) {
+        if (!itemGLAccount && itemGLAccount != null) {
+            return {
+                status: false,
+                message: lang.t('document_data.err.gl_account_item_not_exists'),
+                error: {
+                    index: i,
+                    field: 'gl_account',
+                    value: item.gl_account
+                }
+            };
+        }
+
+        const itemSLAccount = await serviceGL.get(item.sl_account);
+        if (!itemSLAccount && itemSLAccount != null) {
             return {
                 status: false,
                 message: lang.t('document_data.err.gl_account_item_not_exists'),
