@@ -351,6 +351,7 @@ exports.update = async (req, res) => {
             });
         }
 
+        body.header.document_number = data.header.document_number;
         const validate = await this.validate(body);
         if (!validate.status) {
             return res.status(400).send({
