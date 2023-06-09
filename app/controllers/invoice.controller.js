@@ -4,7 +4,7 @@ const lang = require('../helpers/lang.helper');
 const utilities = require('../helpers/utilities.helper');
 
 const { validateParamsSchema } = require("../helpers/validations/common.validation");
-const { validateBodySchema } = require('../helpers/validations/invoice.validation');
+const { validateBodySchema, updateSchema } = require('../helpers/validations/invoice.validation');
 
 const serviceDocumentdata = require('../services/invoice.service');
 const serviceCompany = require('../services/company.service');
@@ -352,7 +352,7 @@ exports.update = async (req, res) => {
         }
 
         body.header.document_number = data.header.document_number;
-        const validate = await this.validate(body);
+        const validate = await updateSchema.validate(body);
         if (!validate.status) {
             return res.status(400).send({
                 status: 'error',
