@@ -523,14 +523,14 @@ exports.reportData = (data) => {
                         }
                     }
                 } : undefined,
-            document_number: (header.document_number) ? header.document_number : 'Not yet posted',
+            document_number: (header.document_number) ? header.document_number : '---',
             invoice_date: header.invoice_date.toISOString().split('T')[0],
             posting_date: header.posting_date.toISOString().split('T')[0],
-            document_type: (types) ? `${types.code} ${types.name}` : 'BLANK',
-            company_code: (company) ? `${company.code} ${company.desc}` : 'BLANK',
+            document_type: (types) ? `${types.code} ${types.name}` : '---',
+            company_code: (company) ? `${company.code} ${company.desc}` : '---',
             cross_cc_no: header.cross_cc_no,
             business_place: header.business_place,
-            section: (header.section) ? header.section : 'BLANK',
+            section: (header.section) ? header.section : '---',
             text: header.text,
             sgl_ind: header.sgl_ind,
             reference: header.reference,
@@ -548,19 +548,19 @@ exports.reportData = (data) => {
                 const itemSegment = data.segments.find(i => (i && i._id && o && o.segment) ? (i._id.toString() === o.segment.toString()) : false);
 
                 return {
-                    gl_account: (itemGLAcct) ? itemGLAcct.header.gl_account_code : 'BLANK',
-                    sl_account: (itemSLAcct) ? itemSLAcct.header.gl_account_code : 'BLANK',
-                    transaction_type: (itemPk) ? itemPk.type : 'BLANK',
+                    gl_account: (itemGLAcct) ? `${itemGLAcct.header.gl_account_code} ${itemGLAcct.type_description.description.short_text}` : '---',
+                    sl_account: (itemSLAcct) ? `${itemSLAcct.header.gl_account_code} ${itemSLAcct.type_description.description.short_text}` : '---',
+                    transaction_type: (itemPk) ? itemPk.type : '---',
                     amount: o.amount,
                     tax_amount: o.tax_amount,
                     trading_part_ba: (itemTrading) ? {
                         _id: itemTrading._id,
                         code: itemTrading.code,
                         name: itemTrading.name,
-                    } : 'BLANK',
-                    segment: (itemSegment) ? itemSegment.code : 'BLANK',
+                    } : '---',
+                    segment: (itemSegment) ? itemSegment.code : '---',
 
-                    cost_center: (itemCostCenter) ? itemCostCenter.cost_center_code : 'BLANK',
+                    cost_center: (itemCostCenter) ? itemCostCenter.cost_center_code : '---',
                     tax: o.tax,
                 };
             }),
