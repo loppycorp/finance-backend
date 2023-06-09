@@ -301,7 +301,7 @@ exports.pipeline = (filters) => {
                 from: 'segments',
                 localField: 'items.items.segment',
                 foreignField: '_id',
-                as: 'segment'
+                as: 'segments'
             },
         },
         {
@@ -421,11 +421,12 @@ exports.mapData = (data) => {
             items: data.items.items.map((o) => {
                 const itemGLAcct = data.gl_accounts.find(i => i._id.toString() == o.gl_account.toString());
                 const itemSLAcct = data.sl_accounts.find(i => i._id.toString() == o.gl_account.toString());
-                const itemTrading = data.trading_partners.find(i => i._id.toString() == o.trading_part_ba.toString());
+                const itemTrading = data.trading_partners.find(i => (i && i._id && o && o.trading_part_ba) ? (i._id.toString() === o.trading_part_ba.toString()) : false);
                 const itemCostCenter = data.cost_centers.find(i => i._id.toString() == o.cost_center.toString());
                 const itemPk = data.transaction_type.find(i => i._id.toString() == o.transaction_type.toString());
                 // const itemProfit = data.profit_center.find(i => i._id.toString() == o.profit_center.toString());
-                const itemSegment = data.segment.find(i => i._id.toString() == o.segment.toString());
+                const itemSegment = data.segments.find(i => (i && i._id && o && o.segment) ? (i._id.toString() === o.segment.toString()) : false);
+
 
                 return {
                     gl_account: (itemGLAcct) ? {
