@@ -83,6 +83,9 @@ require("./app/routes/check_information.routes.js")(app);
 //#################### CHAPTER 7 - Major #####################################
 require("./app/routes/fixed_asset.routes.js")(app);
 
+//#################### CHAPTER ??- additional module #####################################
+require("./app/routes/process_manual_bank_statement.routes.js")(app);
+
 //#################### PRESETS  ####################################
 require("./app/routes/posting_key.routes")(app);
 require("./app/routes/sort_key.routes")(app);

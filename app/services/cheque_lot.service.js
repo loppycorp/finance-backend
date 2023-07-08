@@ -134,18 +134,20 @@ exports.mapData = (data) => {
             },
         },
         lot: {
-            lot_number: data.lot.lot_number,
-            cheque_number_from: data.lot.cheque_number_from,
-            cheque_number_to: data.lot.cheque_number_to,
-        },
-        control_data: {
-            next_lot_number: data.control_data.next_lot_number,
-            pmnt_meths_list: data.control_data.pmnt_meths_list,
-            non_sequential: data.control_data.non_sequential,
-        },
-        additional_information: {
-            short_info: data.additional_information.short_info,
-            purchase_date: data.additional_information.purchase_date,
+            lot: {
+                lot_number: data.lot.lot.lot_number,
+                cheque_number_from: data.lot.lot.cheque_number_from,
+                cheque_number_to: data.lot.lot.cheque_number_to,
+            },
+            control_data: {
+                next_lot_number: data.lot.control_data.next_lot_number,
+                pmnt_meths_list: data.lot.control_data.pmnt_meths_list,
+                non_sequential: data.lot.control_data.non_sequential,
+            },
+            additional_information: {
+                short_info: data.lot.additional_information.short_info,
+                purchase_date: data.lot.additional_information.purchase_date,
+            },
         },
         status: data.status,
         date_created: data.date_created,

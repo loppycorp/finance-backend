@@ -11,18 +11,20 @@ const chequeLotSchema = new mongoose.Schema({
         gl_account: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'gl_accounts' },
     },
     lot: {
-        lot_number: { type: Number, required: true },
-        cheque_number_from: { type: Number, required: true },
-        cheque_number_to: { type: Number, required: true },
-    },
-    control_data: {
-        next_lot_number: { type: Number, required: false },
-        pmnt_meths_list: { type: String, trim: true, required: true },
-        non_sequential: { type: Boolean, required: false },
-    },
-    additional_information: {
-        short_info: { type: String, trim: true, required: false },
-        purchase_date: { type: Date },
+        lot: {
+            lot_number: { type: Number, required: true },
+            cheque_number_from: { type: Number, required: true },
+            cheque_number_to: { type: Number, required: true },
+        },
+        control_data: {
+            next_lot_number: { type: Number, required: false },
+            pmnt_meths_list: { type: String, trim: true, required: true },
+            non_sequential: { type: Boolean, required: false },
+        },
+        additional_information: {
+            short_info: { type: String, trim: true, required: false },
+            purchase_date: { type: Date },
+        },
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
