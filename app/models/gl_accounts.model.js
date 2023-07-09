@@ -50,6 +50,13 @@ const gl_accountSchema = new mongoose.Schema({
   type: {
     account_type: { type: String, trim: true, required: false },
   },
+  items: {
+    items: [
+      {
+        invoice: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'invoices' }
+      }
+    ],
+  },
   status: { type: String, default: STATUS_ACTIVE, required: true },
   date_created: { type: Date, default: () => new Date(), required: true },
   date_updated: { type: Date, default: () => new Date(), required: true },

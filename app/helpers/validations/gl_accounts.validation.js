@@ -47,6 +47,11 @@ const defaultSchema = Joi.object({
     type: {
         account_type: Joi.string().trim().valid(DefaultModel.DOC_TYPE_GL_ACCOUNT, DefaultModel.DOC_TYPE_SL_ACCOUNT),
     },
+    items: {
+        items: Joi.array().items(Joi.object().keys({
+            invoice: Joi.string().trim().hex().max(24).allow(null)
+        })),
+    },
 });
 module.exports = {
     createSchema: defaultSchema,
