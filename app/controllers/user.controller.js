@@ -38,7 +38,9 @@ exports.authenticate = async (req, res) => {
             username: validatedUser.username,
             first_name: validatedUser.first_name,
             last_name: validatedUser.last_name,
-            email: validatedUser.email
+            email: validatedUser.email,
+            role: validatedUser.role,
+            access: validatedUser.access
         };
 
         const jwtToken = jwt.sign(jwtPayload, process.env.JWT_KEY, { expiresIn: process.env.TOKEN_EXPIRY });
