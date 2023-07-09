@@ -239,7 +239,7 @@ exports.mapData = (data) => {
             },
         },
         type: data.type,
-        items: {
+        items: (data.items) ? {
             items: data.items.items.map((o) => {
                 const itemInvoice = data.gl_invoices.find(i => (i && i._id && o && o.gl_invoices) ? (i._id.toString() === o.gl_invoices.toString()) : false);
                 return {
@@ -249,7 +249,7 @@ exports.mapData = (data) => {
                     } : null
                 };
             }),
-        },
+        } : null,
         status: data.status,
         date_created: data.date_created.toISOString().split('T')[0],
         date_updated: data.date_updated.toISOString().split('T')[0]
