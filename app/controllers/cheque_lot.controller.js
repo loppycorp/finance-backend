@@ -60,6 +60,19 @@ exports.create = async (req, res) => {
             };
 
         }
+        /// check the cheque range if exists
+        const codeExists = await DefaultService.checkIfCodeExists(
+            body.lot.lot.cheque_number_from,
+            body.lot.lot.cheque_number_to,
+        );
+
+        if (codeExists) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('Cheque range already exists.'),
+            });
+        }
+
         const defaulService = await DefaultService.create(body);
 
         return res.status(200).send({

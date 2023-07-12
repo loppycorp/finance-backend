@@ -1,13 +1,53 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/cheque_lot.model");
 
+// exports.create = async (data) => {
+//     const dftModel = await DefaultModel.create(data);
+
+//     if (!dftModel) return false;
+
+//     return await this.get(dftModel._id);
+// };
 exports.create = async (data) => {
-    const dftModel = await DefaultModel.create(data);
+    const { cheque_number_from, cheque_number_to } = data.lot.lot;
+    const rows = [];
 
-    if (!dftModel) return false;
+    for (let i = cheque_number_from; i <= cheque_number_to; i++) {
+        const row = {
+            header: {
+                paying_company_code: data.header.paying_company_code,
+                house_bank: data.header.house_bank,
+                gl_account: data.header.gl_account,
+            },
+            lot: {
+                lot: {
+                    lot_number: data.lot.lot.lot_number,
+                    cheque_number_from: i,
+                    cheque_number_to: i,
+                },
+                control_data: {
+                    next_lot_number: data.lot.control_data.next_lot_number,
+                    pmnt_meths_list: data.lot.control_data.pmnt_meths_list,
+                    non_sequential: data.lot.control_data.non_sequential,
+                },
+                additional_information: {
+                    short_info: data.lot.additional_information.short_info,
+                    purchase_date: data.lot.additional_information.purchase_date,
+                },
+            },
+        };
 
-    return await this.get(dftModel._id);
+        rows.push(row);
+    }
+
+    const createdRows = await DefaultModel.create(rows);
+
+    if (!createdRows) return false;
+
 };
+
+
+
 exports.get = async (id, options = {}) => {
     const filters = { _id: ObjectId(id), status: DefaultModel.STATUS_ACTIVE };
 
@@ -65,13 +105,26 @@ exports.getAll = async (query) => {
 };
 
 // exports.getByCode = async (code, existing_id) => {
-//     const options = { "header.customer_code": code, status: DefaultModel.STATUS_ACTIVE, };
+//     const options = { "lot.lot.cheque_from", "lot.lot.cheque_to": code, status: DefaultModel.STATUS_ACTIVE, };
 
 //     if (existing_id && existing_id != "")
 //         options["_id"] = { $ne: existing_id };
 
 //     return (await DefaultModel.countDocuments(options)) > 0;
 // };
+exports.checkIfCodeExists = async (cheque_from, cheque_to, existing_id) => {
+    const options = {
+        'lot.lot.cheque_number_from': { $lte: cheque_to },
+        'lot.lot.cheque_number_to': { $gte: cheque_from },
+        status: DefaultModel.STATUS_ACTIVE,
+    };
+
+    if (existing_id && existing_id !== '') {
+        options._id = { $ne: existing_id };
+    }
+
+    return (await DefaultModel.countDocuments(options)) > 0;
+};
 
 exports.pipeline = (filters) => {
     return [
