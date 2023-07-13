@@ -1,5 +1,6 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/cheque_lot.model");
+const CLRModel = require("../models/cheque_lot_reference.model");
 
 // exports.create = async (data) => {
 //     const dftModel = await DefaultModel.create(data);
@@ -9,40 +10,24 @@ const DefaultModel = require("../models/cheque_lot.model");
 //     return await this.get(dftModel._id);
 // };
 exports.create = async (data) => {
+    const dftModel = await DefaultModel.create(data);
     const { cheque_number_from, cheque_number_to } = data.lot.lot;
     const rows = [];
 
     for (let i = cheque_number_from; i <= cheque_number_to; i++) {
         const row = {
-            header: {
-                paying_company_code: data.header.paying_company_code,
-                house_bank: data.header.house_bank,
-                gl_account: data.header.gl_account,
-            },
-            lot: {
-                lot: {
-                    lot_number: data.lot.lot.lot_number,
-                    cheque_number_from: i,
-                    cheque_number_to: i,
-                },
-                control_data: {
-                    next_lot_number: data.lot.control_data.next_lot_number,
-                    pmnt_meths_list: data.lot.control_data.pmnt_meths_list,
-                    non_sequential: data.lot.control_data.non_sequential,
-                },
-                additional_information: {
-                    short_info: data.lot.additional_information.short_info,
-                    purchase_date: data.lot.additional_information.purchase_date,
-                },
-            },
+            cheque_id: data._id,
+            cheque_lot: data.lot_number,
+            cheque_number: data.cheque_number_from
         };
 
         rows.push(row);
     }
 
-    const createdRows = await DefaultModel.create(rows);
+    const createdRows = await CLRModel.create(rows);
 
     if (!createdRows) return false;
+    return await this.get(dftModel._id);
 
 };
 
