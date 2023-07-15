@@ -6,7 +6,6 @@ const STATUS_DELETED = 'DELETED';
 
 const chequeLotSchema = new mongoose.Schema({
     cheque_id: { type: Number, required: false },
-    cheque_lot_details: { type: String, trim: true, required: false },
     cheque_lot: { type: Number, required: false },
     cheque_number: { type: Number, required: false },
     is_used: { type: Boolean, required: false },
@@ -15,7 +14,7 @@ const chequeLotSchema = new mongoose.Schema({
     date_updated: { type: Date, default: () => new Date(), required: true }
 });
 
-module.exports = mongoose.model('cheque_lot_reference', chequeLotSchema);
+module.exports = mongoose.model('cheque_lot_details', chequeLotSchema);
 
 module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
 module.exports.STATUS_INACTIVE = STATUS_INACTIVE;
