@@ -79,12 +79,18 @@ require("./app/routes/invoice.routes")(app);
 require("./app/routes/customer_invoice_header.routes")(app);
 require("./app/routes/bill_exchange_payment_header.routes")(app);
 require("./app/routes/check_information.routes.js")(app);
+//#################### CHAPTER 6 - Major #####################################
+require("./app/routes/check_register.routes")(app);
+require("./app/routes/print_cheque.routes")(app);
+require("./app/routes/process_manual_bank_statement.routes.js")(app);
+
+
 
 //#################### CHAPTER 7 - Major #####################################
 require("./app/routes/fixed_asset.routes.js")(app);
 
-//#################### CHAPTER ??- additional module #####################################
-require("./app/routes/process_manual_bank_statement.routes.js")(app);
+//#################### CHAPTER 14- additional module #####################################
+require("./app/routes/material_document.routes")(app);
 
 //#################### PRESETS  ####################################
 require("./app/routes/posting_key.routes")(app);

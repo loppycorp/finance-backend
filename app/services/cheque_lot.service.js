@@ -17,8 +17,8 @@ exports.create = async (data) => {
     for (let i = cheque_number_from; i <= cheque_number_to; i++) {
         const row = {
             cheque_id: data._id,
-            cheque_lot: data.lot_number,
-            cheque_number: data.cheque_number_from
+            cheque_lot: data.lot.lot.lot_number,
+            cheque_number: data.lot.lot.cheque_number_from
         };
 
         rows.push(row);
