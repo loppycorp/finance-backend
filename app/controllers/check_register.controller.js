@@ -131,6 +131,45 @@ exports.update = async (req, res) => {
         });
     }
 };
+exports.read = async (req, res) => {
+    try {
+        logger.info(req.path);
+
+        const params = req.params;
+
+        const validationParams = paramsSchema.validate(params, { abortEarly: false });
+        if (validationParams.error) {
+            return res.status(400).send({
+                'status': 'error',
+                'message': lang.t('global.err.validation_failed'),
+                'error': validationParams.error.details
+            });
+            return false;
+        }
+
+        const ctrlingArea = await DefaultService.get(params.id);
+        if (!ctrlingArea) {
+            return res.status(400).send({
+                status: 'error',
+                message: lang.t('check_register.err.not_exists')
+            });
+        }
+
+        return res.status(200).send({
+            status: 'success',
+            message: lang.t('check_register.suc.read'),
+            data: ctrlingArea
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+
+        return res.status(500).send({
+            status: 'error',
+            message: utilities.getMessage(err)
+        });
+    }
+};
 exports.delete = async (req, res) => {
     try {
         logger.info(req.path);

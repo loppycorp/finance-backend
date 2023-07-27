@@ -2,6 +2,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/check_register.model");
 
 exports.create = async (data) => {
+    console.log(data)
     const defaultVariable = await DefaultModel.create(data);
 
     if (!defaultVariable) return false;
@@ -88,7 +89,12 @@ exports.pipeline = (filters) => {
                 as: 'paying_company_code'
             },
         },
-        { $unwind: '$paying_company_code' },
+        {
+            $unwind: {
+                path: '$paying_company_code',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'house_banks',
@@ -97,7 +103,12 @@ exports.pipeline = (filters) => {
                 as: 'house_bank'
             },
         },
-        { $unwind: '$house_bank' },
+        {
+            $unwind: {
+                path: '$house_bank',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'gl_accounts',
@@ -106,11 +117,16 @@ exports.pipeline = (filters) => {
                 as: 'account_id'
             },
         },
-        { $unwind: '$account_id' },
+        {
+            $unwind: {
+                path: '$account_id',
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $lookup: {
                 from: 'bank_keys',
-                localField: 'general_selections.general_selections.bank_key',
+                localField: 'item.selection.bank_key',
                 foreignField: '_id',
                 as: 'bank_key'
             },
@@ -124,11 +140,12 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'currencies',
-                localField: 'general_selections.general_selections.currency',
+                localField: 'item.selection.currency',
                 foreignField: '_id',
                 as: 'currency'
             },
         },
+
         {
             $unwind: {
                 path: '$currency',
@@ -165,28 +182,28 @@ exports.mapData = (data) => {
             account_id_to: data.header.account_id_to,
             payroll_checks: data.header.payroll_checks,
         },
-        general_selections: {
-            general_selections: {
+        item: {
+            selection: {
                 bank_key: (bank_keys) ? {
                     _id: bank_keys._id,
                     name: bank_keys.name
                 } : null,
-                bank_key_to: data.general_selections.general_selections.bank_key_to,
-                bank_account: data.general_selections.general_selections.bank_account,
-                bank_account_to: data.general_selections.general_selections.bank_account_to,
-                check_number: data.general_selections.general_selections.check_number,
-                check_number_to: data.general_selections.general_selections.check_number_to,
+                bank_key_to: data.item.selection.bank_key_to,
+                bank_account: data.item.selection.bank_account,
+                bank_account_to: data.item.selection.bank_account_to,
+                check_number: data.item.selection.check_number,
+                check_number_to: data.item.selection.check_number_to,
                 currency: (currencies) ? {
                     _id: currencies._id,
                     name: currencies.name
                 } : null,
-                currency_to: data.general_selections.general_selections.currency_to,
-                amount: data.general_selections.general_selections.amount,
-                amount_to: data.general_selections.general_selections.amount_to,
+                currency_to: data.item.selection.currency_to,
+                amount: data.item.selection.amount,
+                amount_to: data.item.selection.amount_to,
             },
             output_control: {
-                list_of_outstanding_checks: data.general_selections.output_control.list_of_outstanding_checks,
-                additional_heading: data.general_selections.output_control.additional_heading,
+                list_of_outstanding_checks: data.item.output_control.list_of_outstanding_checks,
+                additional_heading: data.item.output_control.additional_heading,
             },
         },
         status: data.status,

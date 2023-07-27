@@ -8,26 +8,26 @@ const DefaulSchema = new mongoose.Schema({
     header: {
         paying_company_code: {
             type: mongoose.SchemaTypes.ObjectId,
-            required: true,
+            required: false,
             ref: "companies",
         },
         paying_company_code_to: { type: Number, required: false },
         house_bank: {
             type: mongoose.SchemaTypes.ObjectId,
-            required: true,
+            required: false,
             ref: "house_banks",
         },
         house_bank_to: { type: Number, required: false },
         account_id: {
             type: mongoose.SchemaTypes.ObjectId,
-            required: true,
+            required: false,
             ref: "gl_accounts",
         },
         account_id_to: { type: Number, required: false },
         payroll_checks: { type: Boolean, required: false },
     },
-    general_selections: {
-        general_selections: {
+    item: {
+        selection: {
             bank_key: {
                 type: mongoose.SchemaTypes.ObjectId,
                 required: false,

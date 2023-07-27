@@ -11,7 +11,7 @@ module.exports = (app) => {
     app.get(process.env.BASE_URL + '/check-register', auth.validateToken, pagination.setAttributes, defaultController.search);
 
     // View account record
-    app.get(process.env.BASE_URL + '/check-register/:id', auth.validateToken, defaultController.get);
+    app.get(process.env.BASE_URL + '/check-register/:id', auth.validateToken, defaultController.read);
 
     // Edit account record
     app.put(process.env.BASE_URL + '/check-register/:id', auth.validateToken, defaultController.update);
