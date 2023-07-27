@@ -13,8 +13,8 @@ const defaultSchema = Joi.object({
         account_id_to: Joi.number().integer().allow(''),
         payroll_checks: Joi.boolean().allow(null),
     },
-    item: {
-        selection: {
+    general_selection: {
+        general_selection: {
             bank_key: Joi.string().trim().hex().length(24).allow(null),
             bank_key_to: Joi.string().trim().max(LIMIT_DEFAULT_CHAR).allow(''),
             bank_account: Joi.number().integer().allow(null),

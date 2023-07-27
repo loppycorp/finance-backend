@@ -126,7 +126,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'bank_keys',
-                localField: 'item.selection.bank_key',
+                localField: 'general_selection.selection.bank_key',
                 foreignField: '_id',
                 as: 'bank_key'
             },
@@ -140,7 +140,7 @@ exports.pipeline = (filters) => {
         {
             $lookup: {
                 from: 'currencies',
-                localField: 'item.selection.currency',
+                localField: 'general_selection.general_selection.currency',
                 foreignField: '_id',
                 as: 'currency'
             },
@@ -182,28 +182,28 @@ exports.mapData = (data) => {
             account_id_to: data.header.account_id_to,
             payroll_checks: data.header.payroll_checks,
         },
-        item: {
-            selection: {
+        general_selection: {
+            general_selection: {
                 bank_key: (bank_keys) ? {
                     _id: bank_keys._id,
                     name: bank_keys.name
                 } : null,
-                bank_key_to: data.item.selection.bank_key_to,
-                bank_account: data.item.selection.bank_account,
-                bank_account_to: data.item.selection.bank_account_to,
-                check_number: data.item.selection.check_number,
-                check_number_to: data.item.selection.check_number_to,
+                bank_key_to: data.general_selection.general_selection.bank_key_to,
+                bank_account: data.general_selection.general_selection.bank_account,
+                bank_account_to: data.general_selection.general_selection.bank_account_to,
+                check_number: data.general_selection.general_selection.check_number,
+                check_number_to: data.general_selection.general_selection.check_number_to,
                 currency: (currencies) ? {
                     _id: currencies._id,
                     name: currencies.name
                 } : null,
-                currency_to: data.item.selection.currency_to,
-                amount: data.item.selection.amount,
-                amount_to: data.item.selection.amount_to,
+                currency_to: data.general_selection.general_selection.currency_to,
+                amount: data.general_selection.general_selection.amount,
+                amount_to: data.general_selection.general_selection.amount_to,
             },
             output_control: {
-                list_of_outstanding_checks: data.item.output_control.list_of_outstanding_checks,
-                additional_heading: data.item.output_control.additional_heading,
+                list_of_outstanding_checks: data.general_selection.general_selection.output_control.list_of_outstanding_checks,
+                additional_heading: data.general_selection.general_selection.output_control.additional_heading,
             },
         },
         status: data.status,

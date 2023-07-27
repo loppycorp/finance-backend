@@ -26,8 +26,8 @@ const DefaulSchema = new mongoose.Schema({
         account_id_to: { type: Number, required: false },
         payroll_checks: { type: Boolean, required: false },
     },
-    item: {
-        selection: {
+    general_selection: {
+        general_selection: {
             bank_key: {
                 type: mongoose.SchemaTypes.ObjectId,
                 required: false,

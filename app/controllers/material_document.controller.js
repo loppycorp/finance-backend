@@ -3,10 +3,7 @@ const lang = require("../helpers/lang.helper");
 const utilities = require("../helpers/utilities.helper");
 const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaultService = require("../services/material_document.service");
-const {
-    createSchema,
-    updateSchema,
-} = require("../helpers/validations/material_document.validation");
+const { createSchema, updateSchema, } = require("../helpers/validations/material_document.validation");
 
 exports.create = async (req, res) => {
     try {
