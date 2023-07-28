@@ -1,6 +1,7 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/invoice.model");
 const posting_keys = require('../services/posting_key.service');
+const invoice_items = require('../services/gl_accounts.service');
 
 
 
@@ -19,8 +20,11 @@ exports.create = async (data, req) => {
         data['type.invoice_code'] = doc_type;
     }
 
+    const itemsId = [];
+
     for (let i = 0; i < data.items.items.length; i++) {
         const item = data.items.items[i];
+        itemsId.push(item.gl_account, item.sl_account)
 
         const itemsPK = await posting_keys.get(item.transaction_type);
 
@@ -41,6 +45,8 @@ exports.create = async (data, req) => {
     const result = await DefaultModel.create(data);
 
     if (!result) return false;
+
+    await invoice_items.addInvoice(itemsId, result._id);
 
     return await this.get(result._id);
 };

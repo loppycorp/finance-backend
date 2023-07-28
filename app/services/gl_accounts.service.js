@@ -37,6 +37,34 @@ exports.update = async (id, data) => {
 
     return await this.get(gl_accounts._id);
 };
+exports.addInvoice = async (id, data) => {
+
+    const updatedGLIds = [];
+
+    for (let i = 0; i < id.length; i++) {
+
+        const updateObject = {
+            $set: { [`items.items[${i}]`]: data }
+        };
+
+        const gl_accounts = await Gl_accounts.findByIdAndUpdate(ObjectId(id[i]), updateObject);
+
+        if (!gl_accounts) {
+            // Handle the case when the document is not found or any other error occurs during update
+            console.log(`Error updating document with id: ${id}`);
+        } else {
+            updatedGLIds.push(gl_accounts._id);
+        }
+
+    }
+
+    // Fetch the updated gl_accounts documents using the collected IDs
+    const updatedAccounts = await Promise.all(updatedGLIds.map(id => this.get(id, { allowed_inactive: true })));
+
+    // If you want to return all updated accounts, you can do that now
+    return updatedAccounts;
+
+};
 exports.delete = async (id) => {
     const gl_accounts = await Gl_accounts.findByIdAndUpdate({ _id: ObjectId(id) }, {
         $set: { status: Gl_accounts.STATUS_INACTIVE }

@@ -12,12 +12,12 @@ const defaultSchema = Joi.object({
         company_code: Joi.string().trim().required().hex().max(24),
         cross_cc_no: Joi.string().trim().allow(''),
         business_place: Joi.number().allow(''),
-        section: Joi.number().allow(''),
-        text: Joi.string().trim().allow(''),
-        sgl_ind: Joi.string().trim().allow(''),
-        reference: Joi.string().trim().allow(''),
+        section: Joi.number().allow('', null),
+        text: Joi.string().trim().allow('', null),
+        sgl_ind: Joi.string().trim().allow('', null),
+        reference: Joi.string().trim().allow('', null),
         currency: Joi.string().trim().required().hex().max(24),
-        calculate_tax: Joi.boolean(),
+        calculate_tax: Joi.boolean().allow(null),
     }),
     items: {
         items: Joi.array().items(Joi.object().keys({
