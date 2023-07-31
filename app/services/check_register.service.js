@@ -157,53 +157,59 @@ exports.pipeline = (filters) => {
 };
 
 exports.mapData = (data) => {
-    const { bank_keys, currencies } = data;
+    const { bank_keys, currencies, company_code, house_bank, account_id } = data;
+
+    const generalSelection = data.general_selection && data.general_selection.general_selection
+        ? data.general_selection.general_selection
+        : {};
+    const outputControl = generalSelection.output_control || {};
 
     return {
         _id: data._id,
         header: {
-            paying_company_code: {
-                _id: data.paying_company_code._id,
-                code: data.paying_company_code.code,
-                description: data.paying_company_code.desc
-            },
-            paying_company_code_to: data.header.paying_company_code,
-            house_bank: {
-                _id: data.house_bank._id,
-                code: data.house_bank.header.house_bank_code,
-                description: data.house_bank.address.name
-            },
-            house_bank_to: data.header.house_bank_to,
-            account_id: {
-                _id: data.account_id._id,
-                code: data.account_id.header.gl_account_code,
-                description: data.account_id.type_description.description.short_text
-            },
-            account_id_to: data.header.account_id_to,
-            payroll_checks: data.header.payroll_checks,
+            paying_company_code: company_code ? {
+                _id: company_code._id,
+                name: company_code.company_name,
+                description: company_code.desc
+            } : null,
+            paying_company_code_to: data.header ? data.header.paying_company_code : null,
+            house_bank: house_bank ? {
+                _id: house_bank._id,
+                name: house_bank.house_bank_code,
+                description: house_bank.address ? house_bank.address.name : null
+            } : null,
+            house_bank_to: data.header ? data.header.house_bank_to : null,
+            account_id: account_id ? {
+                _id: account_id._id,
+                name: account_id.header ? account_id.header.gl_account_code : null,
+                description: account_id.type_description ? account_id.type_description.description.short_text : null
+            } : null,
+            account_id_to: data.header ? data.header.account_id_to : null,
+            payroll_checks: data.header ? data.header.payroll_checks : null,
         },
         general_selection: {
             general_selection: {
-                bank_key: (bank_keys) ? {
+                bank_key: bank_keys ? {
                     _id: bank_keys._id,
-                    name: bank_keys.name
+                    name: bank_keys.details ? bank_keys.details.address.name : null,
+                    region: bank_keys.details ? bank_keys.details.address.region : null
                 } : null,
-                bank_key_to: data.general_selection.general_selection.bank_key_to,
-                bank_account: data.general_selection.general_selection.bank_account,
-                bank_account_to: data.general_selection.general_selection.bank_account_to,
-                check_number: data.general_selection.general_selection.check_number,
-                check_number_to: data.general_selection.general_selection.check_number_to,
-                currency: (currencies) ? {
+                bank_key_to: generalSelection.bank_key_to,
+                bank_account: generalSelection.bank_account,
+                bank_account_to: generalSelection.bank_account_to,
+                check_number: generalSelection.check_number,
+                check_number_to: generalSelection.check_number_to,
+                currency: currencies ? {
                     _id: currencies._id,
                     name: currencies.name
                 } : null,
-                currency_to: data.general_selection.general_selection.currency_to,
-                amount: data.general_selection.general_selection.amount,
-                amount_to: data.general_selection.general_selection.amount_to,
+                currency_to: generalSelection.currency_to,
+                amount: generalSelection.amount,
+                amount_to: generalSelection.amount_to,
             },
             output_control: {
-                list_of_outstanding_checks: data.general_selection.general_selection.output_control.list_of_outstanding_checks,
-                additional_heading: data.general_selection.general_selection.output_control.additional_heading,
+                list_of_outstanding_checks: outputControl.list_of_outstanding_checks,
+                additional_heading: outputControl.additional_heading,
             },
         },
         status: data.status,
@@ -211,3 +217,4 @@ exports.mapData = (data) => {
         date_updated: data.date_updated,
     };
 };
+

@@ -193,10 +193,18 @@ exports.pipeline = (filters) => {
 
         { $match: filters }
     ];
-};
+}; exports.mapData = (data) => {
+    const { company, currency, ledger, fiscal } = data;
 
-exports.mapData = (data) => {
-    const { itemSegment, itemPk, itemProfitCenter, itemCurrency, itemGLAcct, itemCompany, company, currency, types, fiscal } = data;
+    // Check if data.items.items is an array. If not, set it to an empty array.
+    const itemsArray = Array.isArray(data.items.items) ? data.items.items : [];
+    const companies = Array.isArray(data.companies) ? data.companies : [];
+    const posting_keys = Array.isArray(data.posting_keys) ? data.posting_keys : [];
+    const gl_accounts = Array.isArray(data.gl_accounts) ? data.gl_accounts : [];
+    const currencies = Array.isArray(data.currencies) ? data.currencies : [];
+    const profit_centers = Array.isArray(data.profit_centers) ? data.profit_centers : [];
+    const segments = Array.isArray(data.segments) ? data.segments : [];
+
 
     return {
         _id: data._id,
@@ -228,8 +236,15 @@ exports.mapData = (data) => {
                 desc: ledger.desc,
             } : null,
         },
-        items: {
-            items: {
+        items: itemsArray.map((o) => {
+            const itemCompany = companies.find(i => i._id.toString() == o.company.toString());
+            const itemPk = posting_keys.find(i => i._id.toString() == o.pk.toString());
+            const itemGLAcct = gl_accounts.find(i => i._id.toString() == o.account.toString());
+            const itemCurrency = currencies.find(i => i._id.toString() == o.currency.toString());
+            const itemProfitCenter = profit_centers.find(i => i._id.toString() == o.profit_center.toString());
+            const itemSegment = segments.find(i => i._id.toString() == o.segment.toString());
+
+            return {
                 company: (itemCompany) ? {
                     _id: itemCompany._id,
                     code: itemCompany.code,
@@ -268,8 +283,8 @@ exports.mapData = (data) => {
                     code: itemSegment.code,
                     name: itemSegment.name,
                 } : null,
-            }
-        },
+            };
+        }),
         status: data.status,
         date_created: data.date_created,
         date_updated: data.date_updated,

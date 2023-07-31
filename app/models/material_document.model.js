@@ -17,8 +17,7 @@ const defaultSchema = new mongoose.Schema({
         ledger: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'ledger_groups' },
     },
     items: {
-        items:
-        {
+        items: [{
             company: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'companies' },
             pk: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: "posting_keys", },
             account: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'gl_accounts' },
@@ -27,7 +26,7 @@ const defaultSchema = new mongoose.Schema({
             tax: { type: String, trim: true, required: false, default: '' },
             profit_center: { type: mongoose.SchemaTypes.ObjectId, required: false, ref: 'profit_center_groups' },
             segment: { type: mongoose.SchemaTypes.ObjectId, required: false, default: null, ref: "segments" },
-        }
+        }],
     },
     status: { type: String, default: STATUS_ACTIVE, required: true },
     date_created: { type: Date, default: () => new Date(), required: true },
