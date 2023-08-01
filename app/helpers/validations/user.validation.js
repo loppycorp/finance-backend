@@ -13,6 +13,15 @@ const defaultSchema = Joi.object({
     access: Joi.array().items(Joi.string().trim()).min(1),
 });
 
+const updateSchema = Joi.object({
+    first_name: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+    last_name: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+    email: Joi.string().email().required().max(LIMIT_DEFAULT_CHAR),
+    username: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
+    role: Joi.string().trim().required().valid(User.USER_ROLE_ADMIN, User.USER_ROLE_USER),
+    access: Joi.array().items(Joi.string().trim()).min(1),
+});
+
 const authSchema = Joi.object({
     username: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR),
     password: Joi.string().trim().required().max(LIMIT_DEFAULT_CHAR)
@@ -21,6 +30,6 @@ const authSchema = Joi.object({
 
 module.exports = {
     createSchema: defaultSchema,
-    updateSchema: defaultSchema,
+    updateSchema: updateSchema,
     authSchema
 };
