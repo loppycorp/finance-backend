@@ -10,6 +10,7 @@ const defaultSchema = Joi.object({
         change_number: Joi.number().allow(''),
         plant: Joi.string().trim().hex().length(24).allow(null),
         stor_location: Joi.string().trim().hex().length(24).allow(null),
+        cost_center: Joi.string().trim().hex().length(24).allow(null),
     },
     basic_data1: {
         general_data: {

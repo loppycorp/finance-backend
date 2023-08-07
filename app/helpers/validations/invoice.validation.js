@@ -17,6 +17,7 @@ const defaultSchema = Joi.object({
         sgl_ind: Joi.string().trim().allow('', null),
         reference: Joi.string().trim().allow('', null),
         currency: Joi.string().trim().required().hex().max(24),
+        cheque_lot: Joi.string().trim().hex().max(24).allow(null),
         calculate_tax: Joi.boolean().allow(null),
     }),
     items: {

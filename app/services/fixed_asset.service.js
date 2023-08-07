@@ -80,6 +80,15 @@ exports.pipeline = (filters) => {
         { $unwind: '$material_type' },
         {
             $lookup: {
+                from: 'cost_centers',
+                localField: 'header.cost_center',
+                foreignField: '_id',
+                as: 'cost_center'
+            },
+        },
+        { $unwind: '$cost_center' },
+        {
+            $lookup: {
                 from: 'plants',
                 localField: 'header.plant',
                 foreignField: '_id',
@@ -202,6 +211,12 @@ exports.mapData = (data) => {
                 _id: data.stor_location._id,
                 code: data.stor_location.code,
                 description: data.stor_location.desc
+            },
+            cost_center: {
+                _id: data.cost_center._id,
+                code: data.cost_center.cost_center_code,
+                name: data.cost_center.basic_data.names.name,
+                description: data.cost_center.basic_data.names.description,
             },
         },
         basic_data1: {

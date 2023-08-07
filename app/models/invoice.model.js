@@ -38,6 +38,7 @@ const defaultSchema = new mongoose.Schema({
         sgl_ind: { type: String, required: false },
         reference: { type: String, required: false },
         currency: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'currencies' },
+        cheque_lot: { type: mongoose.SchemaTypes.ObjectId, ref: 'cheque_lots' },
         calculate_tax: { type: Boolean, required: false }
 
     },

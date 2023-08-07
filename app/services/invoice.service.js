@@ -264,6 +264,20 @@ exports.pipeline = (filters) => {
                 preserveNullAndEmptyArrays: true
             }
         },
+        {
+            $lookup: {
+                from: 'cheque_lots',
+                localField: 'header.cheque_lot',
+                foreignField: '_id',
+                as: 'cheque_lot'
+            },
+        },
+        {
+            $unwind: {
+                path: '$cheque_lot',
+                preserveNullAndEmptyArrays: true
+            }
+        },
 
 
         // ////////////////////////////////////////
@@ -324,7 +338,7 @@ exports.pipeline = (filters) => {
 };
 
 exports.mapData = (data) => {
-    const { vendor, customer, header, company, currency, types } = data;
+    const { vendor, customer, header, company, currency, types, cheque_lot } = data;
 
     // let totalDeb = 0;
     // let totalCred = 0;
@@ -419,6 +433,10 @@ exports.mapData = (data) => {
                 _id: currency._id,
                 code: currency.code,
                 name: currency.name,
+            } : null,
+            cheque_lot: (cheque_lot) ? {
+                _id: cheque_lot._id,
+                code: cheque_lot.lot.lot.lot_number,
             } : null,
             calculate_tax: header.calculate_tax
 

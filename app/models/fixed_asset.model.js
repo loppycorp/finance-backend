@@ -12,6 +12,7 @@ const DefaulSchema = new mongoose.Schema({
         change_number: { type: Number, trim: true, required: false },
         plant: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'plants' },
         stor_location: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'stor_locations' },
+        cost_center: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'cost_centers' },
     },
     basic_data1: {
         general_data: {
