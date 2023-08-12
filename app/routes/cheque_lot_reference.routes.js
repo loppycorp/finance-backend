@@ -11,11 +11,11 @@ module.exports = (app) => {
     defaultController.create
   );
 
-  app.get(
-    process.env.BASE_URL + "/cheque-lot-reference/:id",
-    auth.validateToken,
-    defaultController.get
-  );
+  // app.get(
+  //   process.env.BASE_URL + "/cheque-lot-reference/:id",
+  //   auth.validateToken,
+  //   defaultController.get
+  // );
   // List availablecheque-lot-reference
   app.get(
     process.env.BASE_URL + "/cheque-lot-reference",
@@ -25,7 +25,7 @@ module.exports = (app) => {
   );
 
   app.get(
-    process.env.BASE_URL + "/cheque-lot-reference/:id/report",
+    process.env.BASE_URL + "/cheque-lot-reference/:id",
     auth.validateToken,
     pagination.setAttributes,
     defaultController.findAllById
