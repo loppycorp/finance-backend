@@ -1,7 +1,6 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/cheque_lot.model");
-const CLRModel = require("../models/cheque_lot_reference.model");
-
+const CLRModel = require('../services/cheque_lot_reference.service');
 // exports.create = async (data) => {
 //     const dftModel = await DefaultModel.create(data);
 
@@ -12,19 +11,16 @@ const CLRModel = require("../models/cheque_lot_reference.model");
 exports.create = async (data) => {
     const dftModel = await DefaultModel.create(data);
     const { cheque_number_from, cheque_number_to } = data.lot.lot;
-    const rows = [];
+    
 
     for (let i = cheque_number_from; i <= cheque_number_to; i++) {
-        const row = {
-            cheque_id: data._id,
-            cheque_lot: data.lot_number,
-            cheque_number: data.cheque_number_from
-        };
-
-        rows.push(row);
+        data["cheque_id"] = dftModel._id;
+        data["cheque_number"] = i;
+        createdRows = await CLRModel.create(data);
+        console.log(data)
+           
     }
 
-    const createdRows = await CLRModel.create(rows);
 
     if (!createdRows) return false;
     return await this.get(dftModel._id);
