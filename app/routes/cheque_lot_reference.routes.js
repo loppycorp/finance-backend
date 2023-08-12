@@ -25,7 +25,7 @@ module.exports = (app) => {
   );
 
   app.get(
-    process.env.BASE_URL + "/cheque-lot-reference/:id",
+    process.env.BASE_URL + "/cheque-lot-reference/:id/report",
     auth.validateToken,
     pagination.setAttributes,
     defaultController.findAllById

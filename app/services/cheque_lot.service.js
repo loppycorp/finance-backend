@@ -16,6 +16,7 @@ exports.create = async (data) => {
     for (let i = cheque_number_from; i <= cheque_number_to; i++) {
         data["cheque_id"] = dftModel._id;
         data["cheque_number"] = i;
+        data["cheque_lot"] = data.lot.lot.lot_number;
         createdRows = await CLRModel.create(data);
         console.log(data)
            

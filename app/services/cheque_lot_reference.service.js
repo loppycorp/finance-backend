@@ -54,10 +54,10 @@ exports.getAll = async (query) => {
 
     const filters = { status: DefaultModel.STATUS_ACTIVE };
 
-    const results = await DefaultModel.aggregate(this.pipeline(filters))
-        .collation({ locale: "en" })
-        .sort({ [sortBy]: sortOrderInt })
-        .skip(pageNum > 0 ? (pageNum - 1) * pageLimit : 0)
+   
+    const results = await DefaultModel.find(filters)
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt})
+        .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
     const bankKeyData = results.map((o) => this.mapData(o));
@@ -77,10 +77,10 @@ exports.getAllById = async (query, id) => {
         }
     }
 
-    const results = await DefaultModel.aggregate(this.pipeline(filters))
-        .collation({ locale: "en" })
-        .sort({ [sortBy]: sortOrderInt })
-        .skip(pageNum > 0 ? (pageNum - 1) * pageLimit : 0)
+   
+    const results = await DefaultModel.find(filters)
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
+        .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
     const bankKeyData = results.map((o) => this.mapData(o));
@@ -104,7 +104,7 @@ exports.mapData = (data) => {
     return {
         _id: data._id,
         cheque_id: data.cheque_id,
-        cheque_lot: data.lot.lot.lot_number,
+        cheque_lot: data.cheque_lot,
         cheque_number: data.cheque_number,
         is_used: data.is_used,
         status: data.status,
