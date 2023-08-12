@@ -102,6 +102,7 @@ require("./app/routes/field_status_group.routes")(app);
 require("./app/routes/trading_partner.routes")(app);
 require("./app/routes/hierarcy_area.routes")(app);
 require("./app/routes/currency.routes")(app);
+require("./app/routes/cheque_lot_reference.routes")(app);
 
 const port = process.env.APP_PORT || 3200;
 app.listen(port, () => logger.info(`Listening on port ${port}`));
