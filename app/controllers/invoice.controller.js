@@ -208,6 +208,8 @@ exports.create = async (req, res) => {
 
         const body = req.body;
         const query = req.query;
+       
+        
 
         const validate = await this.validate(body);
         if (!validate.status) {

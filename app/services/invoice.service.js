@@ -2,6 +2,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/invoice.model");
 const posting_keys = require('../services/posting_key.service');
 const invoice_items = require('../services/gl_accounts.service');
+const chequeDetails = require('../services/cheque_lot_reference.service');
 
 
 
@@ -19,7 +20,6 @@ exports.create = async (data, req) => {
     if (doc_type && doc_type != '') {
         data['type.invoice_code'] = doc_type;
     }
-
     const itemsId = [];
 
     for (let i = 0; i < data.items.items.length; i++) {
@@ -156,6 +156,19 @@ exports.posting = async (id) => {
 
     document.header.document_number = documentNumber;
     document.type.invoice_status = DefaultModel.DOC_STATUS_COMPLETED;
+
+    const details =  await chequeDetails.getAllCheques(document.header.cheque_lot)
+
+    for (let i = 0; i < details.data.length; i++) {
+        const item =  details.data[i];
+
+        if(item.is_used == false){
+            document.header.cheque_number = item.cheque_number;
+            await chequeDetails.updateById(item._id);
+        }
+    }
+
+    console.log(document)
 
     const result = await document.save();
 
@@ -508,7 +521,7 @@ exports.mapData = (data) => {
 
 
 exports.reportData = (data) => {
-    const { vendor, customer, header, company, currency, types } = data;
+    const { vendor, customer, header, company, currency, types, } = data;
 
     return {
         _id: data._id,
@@ -527,6 +540,7 @@ exports.reportData = (data) => {
             sgl_ind: header.sgl_ind,
             reference: header.reference,
             currency: (currency) ? `${currency.code} ${currency.name}` : null,
+            cheque_number: (header.cheque_number) ? header.cheque_number : '---',
 
         },
         items: {

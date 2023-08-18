@@ -13,7 +13,9 @@ exports.get = async (id, options = {}) => {
     const filters = { _id: ObjectId(id), status: DefaultModel.STATUS_ACTIVE };
 
     if (options.allowed_inactive && options.allowed_inactive == true)
-        filters.status = DefaultModel.STATUS_INACTIVE;
+        filters.status = (options.display_inactive === true)
+        ? DefaultModel.STATUS_INACTIVE
+        : DefaultModel.STATUS_ACTIVE
 
         const results = await DefaultModel.findOne(filters);
         const defaultVariable = results[0];
@@ -41,6 +43,19 @@ exports.delete = async (id) => {
         { _id: ObjectId(id) },
         {
             $set: { status: DefaultModel.STATUS_INACTIVE },
+        }
+    );
+
+    if (!defaultVariable) return false;
+
+    return await this.get(defaultVariable._id, { allowed_inactive: true });
+};
+
+exports.updateById = async (id) => {
+    const defaultVariable = await DefaultModel.findByIdAndUpdate(
+        { _id: ObjectId(id) },
+        {
+            $set: { is_used: true },
         }
     );
 
@@ -88,6 +103,26 @@ exports.getAllById = async (query, id) => {
     const bankKeyTotal = await DefaultModel.countDocuments(filters);
 
     return { data: bankKeyData, total: bankKeyTotal };
+};
+
+exports.getAllCheques = async (id) => {
+
+    const filters = { status: DefaultModel.STATUS_ACTIVE };
+
+    if (id && id != '') {
+        if (id.length > 0) {
+            filters['cheque_id'] = id;
+        }
+    }
+
+   
+    const results = await DefaultModel.find(filters)
+
+    const data = results.map((o) => this.mapData(o));
+
+    const total = await DefaultModel.countDocuments(filters);
+
+    return { data: data, total: total };
 };
 // exports.getByCode = async (house_bank_code, existing_id) => {
 //     const options = {
