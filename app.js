@@ -91,6 +91,11 @@ require("./app/routes/fixed_asset.routes.js")(app);
 
 //#################### CHAPTER 14- additional module #####################################
 require("./app/routes/material_document.routes")(app);
+//#################### additional module #####################################
+require("./app/routes/tax_code.routes")(app);
+require("./app/routes/goods.routes")(app);
+require("./app/routes/maintain_tax_code.routes")(app);
+require("./app/routes/monthly_utilization.routes")(app);
 
 //#################### PRESETS  ####################################
 require("./app/routes/posting_key.routes")(app);
