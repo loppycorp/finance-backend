@@ -96,6 +96,9 @@ require("./app/routes/tax_code.routes")(app);
 require("./app/routes/goods.routes")(app);
 require("./app/routes/maintain_tax_code.routes")(app);
 require("./app/routes/monthly_utilization.routes")(app);
+require("./app/routes/sales_order.routes")(app);
+require("./app/routes/report_and_balances.routes")(app);
+
 
 //#################### PRESETS  ####################################
 require("./app/routes/posting_key.routes")(app);

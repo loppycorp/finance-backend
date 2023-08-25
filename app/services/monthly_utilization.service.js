@@ -113,7 +113,7 @@ exports.pipeline = (filters) => {
 };
 
 exports.mapData = (data) => {
-    const { company_code, plants } = data;
+    const { company_code, plant } = data;
 
     return {
 
