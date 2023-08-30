@@ -14,11 +14,11 @@ exports.get = async (id, options = {}) => {
 
     if (options.allowed_inactive && options.allowed_inactive == true)
         filters.status = (options.display_inactive === true)
-        ? DefaultModel.STATUS_INACTIVE
-        : DefaultModel.STATUS_ACTIVE
+            ? DefaultModel.STATUS_INACTIVE
+            : DefaultModel.STATUS_ACTIVE
 
-        const results = await DefaultModel.findOne(filters);
-        const defaultVariable = results[0];
+    const results = await DefaultModel.findOne(filters);
+    const defaultVariable = results[0];
 
     if (!defaultVariable) return null;
 
@@ -69,9 +69,9 @@ exports.getAll = async (query) => {
 
     const filters = { status: DefaultModel.STATUS_ACTIVE };
 
-   
+
     const results = await DefaultModel.find(filters)
-        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt})
+        .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
         .limit(pageLimit);
 
@@ -92,7 +92,7 @@ exports.getAllById = async (query, id) => {
         }
     }
 
-   
+
     const results = await DefaultModel.find(filters)
         .collation({ 'locale': 'en' }).sort({ [sortBy]: sortOrderInt })
         .skip(pageNum > 0 ? ((pageNum - 1) * pageLimit) : 0)
@@ -115,7 +115,7 @@ exports.getAllCheques = async (id) => {
         }
     }
 
-   
+
     const results = await DefaultModel.find(filters)
 
     const data = results.map((o) => this.mapData(o));
@@ -143,7 +143,7 @@ exports.mapData = (data) => {
         cheque_number: data.cheque_number,
         is_used: data.is_used,
         status: data.status,
-        date_created: data.date_created,
-        date_updated: data.date_updated,
+        date_created: data.date_created.toISOString().split('T')[0],
+        date_updated: data.date_updated.toISOString().split('T')[0],
     };
 };

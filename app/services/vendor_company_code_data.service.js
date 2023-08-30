@@ -219,7 +219,7 @@ exports.mapData = (data) => {
             with_tax_information: data.with_tax_information.with_tax_information
         },
         status: data.status,
-        date_created: data.date_created,
-        date_updated: data.date_updated
+        date_created: data.date_created.toISOString().split('T')[0],
+        date_updated: data.date_updated.toISOString().split('T')[0]
     };
 };
