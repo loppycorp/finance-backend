@@ -157,12 +157,12 @@ exports.posting = async (id) => {
     document.header.document_number = documentNumber;
     document.type.invoice_status = DefaultModel.DOC_STATUS_COMPLETED;
 
-    const details =  await chequeDetails.getAllCheques(document.header.cheque_lot)
+    const details = await chequeDetails.getAllCheques(document.header.cheque_lot)
 
     for (let i = 0; i < details.data.length; i++) {
-        const item =  details.data[i];
+        const item = details.data[i];
 
-        if(item.is_used == false){
+        if (item.is_used == false) {
             document.header.cheque_number = item.cheque_number;
             await chequeDetails.updateById(item._id);
         }
@@ -513,6 +513,7 @@ exports.mapData = (data) => {
         },
         type: data.type,
         amount_information: data.amount_information,
+        amounts: data.amount_information.total_debit - data.amount_information.total_credit,
         status: data.status,
         date_created: data.date_created.toISOString().split('T')[0],
         date_updated: data.date_updated.toISOString().split('T')[0]

@@ -98,6 +98,10 @@ require("./app/routes/maintain_tax_code.routes")(app);
 require("./app/routes/monthly_utilization.routes")(app);
 require("./app/routes/sales_order.routes")(app);
 require("./app/routes/report_and_balances.routes")(app);
+require("./app/routes/maintain_correspondence_request.routes")(app);
+require("./app/routes/interest_calculation.routes")(app);
+require("./app/routes/interest_calculate_arrears.routes")(app);
+require("./app/routes/display_bom.routes")(app);
 
 
 //#################### PRESETS  ####################################
