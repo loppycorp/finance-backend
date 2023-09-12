@@ -106,6 +106,7 @@ require("./app/routes/display_routing.routes")(app);
 require("./app/routes/view_cost_of_final_product.routes")(app);
 require("./app/routes/display_production_order.routes")(app);
 require("./app/routes/product_order_confirmation.routes")(app);
+require("./app/routes/purchase_order.routes")(app);
 
 
 //#################### PRESETS  ####################################
