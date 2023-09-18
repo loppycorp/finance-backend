@@ -274,6 +274,40 @@ exports.search = async (req, res) => {
         });
     }
 };
+// added search 
+exports.defaultsearch = async (req, res) => {
+    try {
+        logger.info(req.path);
+        const query = req.query;
+        const pagination = query.pagination;
+        const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
+
+        const searchTerm = decodeURIComponent(req.params.searchTerm);
+
+        const { data, total } = await profitCenterService.search(searchTerm, query);
+
+        return res.status(200).send({
+            status: 'success',
+            message: lang.t('profit_center.suc.search'),
+            data: data,
+            pagination: {
+                page_num: pageNum,
+                page_limit: pageLimit,
+                page_count: data.length,
+                sort_order: sortOrder,
+                sort_by: sortBy,
+                total_result: total
+            }
+        });
+    } catch (err) {
+        logger.error(req.path);
+        logger.error(err);
+        return res.status(500).send({
+            status: 'error',
+            message: utilities.getMessage(err)
+        });
+    }
+};
 
 exports.delete = async (req, res) => {
     try {

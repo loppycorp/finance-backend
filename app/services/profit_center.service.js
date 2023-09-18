@@ -62,6 +62,55 @@ exports.getAll = async (query) => {
     return { data: profitCenterData, total: profitCenterTotal };
 };
 
+// added search 
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: ProfitCenter.STATUS_ACTIVE };
+
+    if (searchTerm) {
+        const search = new RegExp(searchTerm, 'i');
+        filters.$or = [
+            { "_id": search },
+            { "header.controlling_area._id": search },
+            { "header.controlling_area.name": search },
+            { "header.controlling_area.description": search },
+            { "basic_data.description.profit_center_code": search },
+            { "basic_data.description.analysis_period.from": search },
+            { "basic_data.description.analysis_period.to": search },
+            { "basic_data.description.name": search },
+            { "basic_data.description.long_text": search },
+            { "basic_data.description.status": search },
+            { "basic_data.basic_data.user_responsible._id": search },
+            { "basic_data.basic_data.user_responsible.full_name": search },
+            { "basic_data.basic_data.person_responsible": search },
+            { "basic_data.basic_data.department._id": search },
+            { "basic_data.basic_data.department.name": search },
+            { "basic_data.basic_data.department.description": search },
+            { "basic_data.basic_data.profit_ctr_group._id": search },
+            { "basic_data.basic_data.profit_ctr_group.group_name": search },
+            { "basic_data.basic_data.profit_ctr_group.group_code": search },
+            { "basic_data.basic_data.profit_ctr_group.desc": search },
+            { "basic_data.basic_data.profit_ctr_group.status": search },
+            { "basic_data.basic_data.profit_ctr_group.date_created": search },
+            { "basic_data.basic_data.profit_ctr_group.date_updated": search },
+            { "basic_data.basic_data.segment._id": search },
+            { "basic_data.basic_data.segment.name": search },
+            { "basic_data.basic_data.segment.desc": search },
+            { "basic_data.basic_data.segment.status": search },
+            { "basic_data.basic_data.segment.date_created": search },
+            { "basic_data.basic_data.segment.date_updated": search }
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = ProfitCenter.STATUS_INACTIVE;
+
+    const results = await ProfitCenter.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
+
 exports.getByCode = async (code, existing_id) => {
     const options = { 'basic_data.description.profit_center_code': code, status: ProfitCenter.STATUS_ACTIVE };
 
