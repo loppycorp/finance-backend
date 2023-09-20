@@ -1,6 +1,35 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/primary_cost_element.model");
 
+exports.search = async (searchTerm, options = {}) => {
+  const filters = { status: DefaultModel.STATUS_ACTIVE };
+
+  if (searchTerm) {
+    const search = new RegExp(options.search, 'i');
+    filters.$or = [
+      { "header.cost_element_code": search },
+      { "header.controlling_area_code": search },
+      { "header.validity.from": search },
+      { "header.validity.to": search },
+      { "basic_data.names.name": search },
+      { "basic_data.names.description": search },
+      { "basic_data.basic_data.cost_element_category": search },
+      { "basic_data.basic_data.attribute": search },
+      { "basic_data.basic_data.func_area": search }
+
+    ];
+  }
+
+  if (options.allowed_inactive && options.allowed_inactive == true)
+    filters.status = DefaultModel.STATUS_INACTIVE;
+
+  const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+  const mappedResults = results.map(result => this.mapData(result));
+
+  return { data: mappedResults, total: mappedResults.length };
+};
+
 exports.create = async (data) => {
   const dftModel = await DefaultModel.create(data);
 

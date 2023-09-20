@@ -1,6 +1,63 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/customer_general_data.model");
 
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: DefaultModel.STATUS_ACTIVE };
+
+    if (searchTerm) {
+        const search = new RegExp(options.search, 'i');
+        filters.$or = [
+            { "header.customer_code": search },
+            { "header.company_code": search },
+            { "header.account_group": search },
+            { "address.name.title": search },
+            { "address.name.name": search },
+            { "address.search_terms.search_term_1": search },
+            { "address.search_terms.search_term_2": search },
+            { "address.street_address.street": search },
+            { "address.street_address.house_number": search },
+            { "address.street_address.postal_code": search },
+            { "address.street_address.city": search },
+            { "address.street_address.country": search },
+            { "address.street_address.region": search },
+            { "address.po_box_address.po_box": search },
+            { "address.po_box_address.postal_code": search },
+            { "address.po_box_address.company_postal_code": search },
+            { "address.communication.language": search },
+            { "address.communication.telephone": search },
+            { "address.communication.mobile_phone": search },
+            { "address.communication.fax": search },
+            { "address.communication.email": search },
+            { "control_data.account_control.customer": search },
+            { "control_data.account_control.trading_partner": search },
+            { "control_data.account_control.authorization": search },
+            { "control_data.account_control.corporate_group": search },
+            { "control_data.reference_data.location_one": search },
+            { "control_data.reference_data.location_two": search },
+            { "control_data.reference_data.check_digit": search },
+            { "control_data.reference_data.industry": search },
+            { "payment_transactions.bank_details.country": search },
+            { "payment_transactions.bank_details.bank_key": search },
+            { "payment_transactions.bank_details.bank_account": search },
+            { "payment_transactions.bank_details.account_holder": search },
+            { "payment_transactions.bank_details.ck": search },
+            { "payment_transactions.bank_details.iban_value": search },
+            { "payment_transactions.bank_details.bnkt": search },
+            { "payment_transactions.bank_details.reference": search }
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = DefaultModel.STATUS_INACTIVE;
+
+    const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
+
 exports.create = async (data) => {
     const dftModel = await DefaultModel.create(data);
 

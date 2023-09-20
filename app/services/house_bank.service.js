@@ -1,6 +1,39 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/house_bank.model");
+exports.search = async (searchTerm, options = {}) => {
+  const filters = { status: DefaultModel.STATUS_ACTIVE };
 
+  if (searchTerm) {
+    const search = new RegExp(options.search, 'i');
+    filters.$or = [
+      { "header.company_code": search },
+      { "header.house_bank_code": search },
+      { "header.bank_country": search },
+      { "header.bank_key_code": search },
+
+      { "address.name": search },
+      { "address.region": search },
+      { "address.street": search },
+      { "address.city": search },
+      { "address.bank_branch": search },
+
+      { "control_data.swift_code": search },
+      { "control_data.bank_group": search },
+      { "control_data.postbank_account": search },
+      { "control_data.bank_number": search }
+
+    ];
+  }
+
+  if (options.allowed_inactive && options.allowed_inactive == true)
+    filters.status = DefaultModel.STATUS_INACTIVE;
+
+  const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+  const mappedResults = results.map(result => this.mapData(result));
+
+  return { data: mappedResults, total: mappedResults.length };
+};
 exports.create = async (data) => {
   const dftModel = await DefaultModel.create(data);
 

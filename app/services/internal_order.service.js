@@ -1,6 +1,54 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/internal_order.model");
 
+exports.search = async (searchTerm, options = {}) => {
+  const filters = { status: DefaultModel.STATUS_ACTIVE };
+
+  if (searchTerm) {
+    const search = new RegExp(options.search, 'i');
+    filters.$or = [
+      { "header.order_type": search },
+      { "header.order": search },
+      { "header.controlling_area": search },
+      { "header.description": search },
+      { "assignments.company_code": search },
+      { "assignments.business_area": search },
+      { "assignments.plant": search },
+      { "assignments.functional_area": search },
+      { "assignments.object_class": search },
+      { "assignments.profit_center": search },
+      { "assignments.responsible_cctr": search },
+      { "assignments.user_responsible": search },
+      { "assignments.wbs_element": search },
+      { "assignments.requesting_cctr": search },
+      { "assignments.requesting_co_code": search },
+      { "assignments.requesting_order": search },
+      { "assignments.sales_order": search },
+      { "assignments.external_order_no": search },
+      { "control_data.status.system_status": search },
+      { "control_data.status.user_status": search },
+      { "control_data.status.status_number": search },
+      { "control_data.control_data.currency": search },
+      { "control_data.control_data.order_category": search },
+      { "control_data.control_data.actual_posted_cctr": search },
+      { "control_data.control_data.statistical_order": search },
+      { "control_data.control_data.plan_integrated_order": search },
+      { "control_data.control_data.revenue_postings": search },
+      { "control_data.control_data.commitment_update": search }
+
+    ];
+  }
+
+  if (options.allowed_inactive && options.allowed_inactive == true)
+    filters.status = DefaultModel.STATUS_INACTIVE;
+
+  const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+  const mappedResults = results.map(result => this.mapData(result));
+
+  return { data: mappedResults, total: mappedResults.length };
+};
+
 exports.create = async (data) => {
   const dftModel = await DefaultModel.create(data);
 

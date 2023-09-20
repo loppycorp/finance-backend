@@ -9,6 +9,54 @@ exports.create = async (data) => {
   return await this.get(defaultVariable._id);
 };
 
+exports.search = async (searchTerm, options = {}) => {
+  const filters = { status: DefaultModel.STATUS_ACTIVE };
+
+  if (searchTerm) {
+    const search = new RegExp(options.search, 'i');
+    filters.$or = [
+      { "header.document_date": search },
+      { "header.posting_date": search },
+      { "header.document_number": search },
+      { "header.reference": search },
+      { "header.doc_header_text": search },
+      { "header.trading_part_ba": search },
+      { "header.type": search },
+      { "header.period": search },
+      { "header.ledger_group": search },
+      { "header.company_code": search },
+      { "header.currency_rate": search },
+      { "header.translatn_date": search },
+      { "header.cross_cc_no": search },
+      { "inverse_posting.reversal_reason": search },
+      { "inverse_posting.reversal_date": search },
+      { "item.pstky": search },
+      { "item.account": search },
+      { "item.sgl_ind": search },
+      { "item.ttype": search },
+      { "data_entry_view.document_number": search },
+      { "data_entry_view.document_date": search },
+      { "data_entry_view.reference": search },
+      { "data_entry_view.currency": search },
+      { "data_entry_view.posting_date": search },
+      { "data_entry_view.cross_cc_no": search },
+      { "data_entry_view.fiscal_year": search },
+      { "data_entry_view.period": search },
+      { "data_entry_view.ledger_group": search },
+      { "data_entry_view.texts_exist": search }
+
+    ];
+  }
+
+  if (options.allowed_inactive && options.allowed_inactive == true)
+    filters.status = DefaultModel.STATUS_INACTIVE;
+
+  const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+  const mappedResults = results.map(result => this.mapData(result));
+
+  return { data: mappedResults, total: mappedResults.length };
+};
 exports.get = async (id, options = {}) => {
   const filters = { _id: ObjectId(id), status: DefaultModel.STATUS_ACTIVE };
 

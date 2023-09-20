@@ -1,6 +1,59 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const DefaultModel = require('../models/vendor_invoice.model');
 
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: DefaultModel.STATUS_ACTIVE };
+
+    if (searchTerm) {
+        const search = new RegExp(options.search, 'i');
+        filters.$or = [
+            { "header.vendor": search },
+            { "header.company_code": search },
+            { "header.gl_account": search },
+            { "item.title": search },
+            { "item.name": search },
+            { "item.language_key": search },
+            { "item.street": search },
+            { "item.po_box": search },
+            { "item.po_without_no": search },
+            { "item.po_box_pcode": search },
+            { "item.city": search },
+            { "item.country": search },
+            { "item.postal_code": search },
+            { "item.region": search },
+            { "item.bank_key": search },
+            { "item.bank_account": search },
+            { "item.reference": search },
+            { "item.back_country": search },
+            { "item.control_key": search },
+            { "item.instruction_key": search },
+            { "item.dme_indicator": search },
+            { "item.tax_type": search },
+            { "item.tax_number_type": search },
+            { "item.tax_number1": search },
+            { "item.tax_number2": search },
+            { "item.tax_number3": search },
+            { "item.tax_number4": search },
+            { "item.type_of_business": search },
+            { "item.type_of_industr": search },
+            { "item.natural_person": search },
+            { "item.equalizatn_tax": search },
+            { "item.liable_for_vat": search },
+            { "item.reps_name": search }
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = DefaultModel.STATUS_INACTIVE;
+
+    const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
+
 exports.create = async (data) => {
     const defaultVariable = await DefaultModel.create(data);
 

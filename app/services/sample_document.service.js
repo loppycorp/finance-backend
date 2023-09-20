@@ -1,6 +1,43 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const DefaultModel = require("../models/sample_document.model");
 
+exports.search = async (searchTerm, options = {}) => {
+  const filters = { status: DefaultModel.STATUS_ACTIVE };
+
+  if (searchTerm) {
+    const search = new RegExp(options.search, 'i');
+    filters.$or = [
+      { "header.document_date": search },
+      { "header.posting_date": search },
+      { "header.document_number": search },
+      { "header.reference": search },
+      { "header.doc_header_text": search },
+      { "header.trading_part_ba": search },
+      { "header.type": search },
+      { "header.period": search },
+      { "header.fiscal_year": search },
+      { "header.company_code_id": search },
+      { "header.currency": search },
+      { "header.translatn_date": search },
+      { "item.pstky": search },
+      { "item.gl_account_id": search },
+      { "item.sgl_ind": search },
+      { "item.ttype": search }
+
+    ];
+  }
+
+  if (options.allowed_inactive && options.allowed_inactive == true)
+    filters.status = DefaultModel.STATUS_INACTIVE;
+
+  const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+  const mappedResults = results.map(result => this.mapData(result));
+
+  return { data: mappedResults, total: mappedResults.length };
+};
+
+
 exports.create = async (data) => {
   const defaultVariable = await DefaultModel.create(data);
 

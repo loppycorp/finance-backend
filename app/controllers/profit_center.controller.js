@@ -282,7 +282,7 @@ exports.defaultsearch = async (req, res) => {
         const pagination = query.pagination;
         const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
 
-        const searchTerm = decodeURIComponent(req.params.searchTerm);
+        const searchTerm = decodeURIComponent(query);
 
         const { data, total } = await profitCenterService.search(searchTerm, query);
 

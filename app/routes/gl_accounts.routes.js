@@ -13,4 +13,6 @@ module.exports = (app) => {
   app.put(process.env.BASE_URL + "/gl-accounts/:id", auth.validateToken, gl_accounts.update);
   // Delete gl accounts
   app.delete(process.env.BASE_URL + "/gl-accounts/:id", auth.validateToken, gl_accounts.delete);
+  // Search gl accounts
+  app.get(process.env.BASE_URL + '/gl-accounts-search', auth.validateToken, pagination.setAttributes, gl_accounts.defaultsearch);
 };

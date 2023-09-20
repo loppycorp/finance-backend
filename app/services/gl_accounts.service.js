@@ -1,6 +1,46 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Gl_accounts = require('../models/gl_accounts.model');
 
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: Gl_accounts.STATUS_ACTIVE };
+
+    if (searchTerm) {
+        const search = new RegExp(options.search, 'i');
+        filters.$or = [
+            { "header.gl_account_code": search },
+            { "header.company_code": search },
+            { "type_description.control_in_chart_of_accounts.account_group": search },
+            { "type_description.control_in_chart_of_accounts.statement_account": search },
+            { "type_description.control_in_chart_of_accounts.balance_sheet_account": search },
+            { "type_description.description.short_text": search },
+            { "type_description.description.long_text": search },
+            { "type_description.consolidation_data_in_chart_of_accounts.trading_partner": search },
+            { "control_data.account_control_in_company_code.account_currency": search },
+            { "control_data.account_control_in_company_code.local_crcy": search },
+            { "control_data.account_control_in_company_code.exchange_rate": search },
+            { "control_data.account_control_in_company_code.valuation_group": search },
+            { "control_data.account_control_in_company_code.tax_category": search },
+            { "control_data.account_control_in_company_code.posting_tax_allowed": search },
+            { "control_data.account_management_in_company_code.item_mgmt": search },
+            { "control_data.account_management_in_company_code.line_item": search },
+            { "control_data.account_management_in_company_code.sort_key": search },
+            { "create_bank_interest.control_of_document_creation_in_company_code.field_status_group": search },
+            { "create_bank_interest.control_of_document_creation_in_company_code.post_automatically": search },
+            { "type.account_type": search },
+            { "items.items.invoice": search }
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = Gl_accounts.STATUS_INACTIVE;
+
+    const results = await Gl_accounts.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
 
 exports.create = async (data, req) => {
 

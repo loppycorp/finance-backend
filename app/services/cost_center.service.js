@@ -22,6 +22,41 @@ exports.get = async (id, options = {}) => {
 
     return this.mapData(costCenter);
 };
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: CostCenter.STATUS_ACTIVE };
+
+    if (searchTerm) {
+        const search = new RegExp(searchTerm, 'i');
+        filters.$or = [
+            { "header.cost_center_code": search },
+            { "header.controlling_area": search },
+            { "header.valid_range.from": search },
+            { "header.valid_range.to": search },
+            { "basic_data.names.name": search },
+            { "basic_data.names.description": search },
+            { "basic_data.basic_data.user_responsible": search },
+            { "basic_data.basic_data.person_responsible": search },
+            { "basic_data.basic_data.department": search },
+            { "basic_data.basic_data.cost_ctr_category": search },
+            { "basic_data.basic_data.hierarchy_area": search },
+            { "basic_data.basic_data.company": search },
+            { "basic_data.basic_data.business_area": search },
+            { "basic_data.basic_data.functional_area": search },
+            { "basic_data.basic_data.currency": search },
+            { "basic_data.basic_data.profit_center": search }
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = CostCenter.STATUS_INACTIVE;
+
+    const results = await CostCenter.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
 
 exports.update = async (id, data) => {
     data.date_updated = new Date();

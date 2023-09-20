@@ -1,6 +1,108 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Fixed_asset = require('../models/fixed_asset.model');
 
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: Fixed_asset.STATUS_ACTIVE };
+
+    if (searchTerm) {
+        const search = new RegExp(options.search, 'i');
+        filters.$or = [
+            { "header.material": search },
+            { "header.industry_sector": search },
+            { "header.material_type": search },
+            { "header.change_number": search },
+            { "header.plant": search },
+            { "header.stor_location": search },
+            { "header.cost_center": search },
+
+            { "basic_data1.general_data.base_unit_of_measure": search },
+            { "basic_data1.general_data.old_material_number": search },
+            { "basic_data1.general_data.division": search },
+            { "basic_data1.general_data.product_allocation": search },
+            { "basic_data1.general_data.x_plant_matl_status": search },
+            { "basic_data1.general_data.assign_effet_vals": search },
+            { "basic_data1.general_data.material_group": search },
+            { "basic_data1.general_data.ext_matl_group": search },
+            { "basic_data1.general_data.lab_office": search },
+            { "basic_data1.general_data.valid_from": search },
+            { "basic_data1.general_data.gen_item_cat_group": search },
+            { "basic_data1.material_authorization_group.authorization_group": search },
+            { "basic_data1.dimensions_eans.gross_weight": search },
+            { "basic_data1.dimensions_eans.net_weight": search },
+            { "basic_data1.dimensions_eans.volume": search },
+            { "basic_data1.dimensions_eans.size_dimensions": search },
+            { "basic_data1.dimensions_eans.ean_upc": search },
+            { "basic_data1.dimensions_eans.weight_unit": search },
+            { "basic_data1.dimensions_eans.volume_unit": search },
+            { "basic_data1.dimensions_eans.ean_category": search },
+            { "basic_data1.packaging_materil_data.matl_grp_pack_matls": search },
+
+            { "purchasing.general_data.base_unit_of_measure": search },
+            { "purchasing.general_data.purchasing_group": search },
+            { "purchasing.general_data.plant_sp_matl_status": search },
+            { "purchasing.general_data.tax_ind_f_material": search },
+            { "purchasing.general_data.material_freight_grp": search },
+            { "purchasing.general_data.batch_management": search },
+            { "purchasing.general_data.order_unit": search },
+            { "purchasing.general_data.material_group": search },
+            { "purchasing.general_data.valid_from": search },
+            { "purchasing.general_data.qual_f_free_goods_dis": search },
+            { "purchasing.general_data.autom_po": search },
+            { "purchasing.general_data.var_oun": search },
+            { "purchasing.purchasing_value.purchasing_value_key": search },
+            { "purchasing.purchasing_value.first_rem_exped": search },
+            { "purchasing.purchasing_value.second_reminder_exped": search },
+            { "purchasing.purchasing_value.third_reminder_exped": search },
+            { "purchasing.purchasing_value.std_value_deliv_date_var": search },
+            { "purchasing.purchasing_value.shipping_instr": search },
+            { "purchasing.purchasing_value.underdel_tolerance": search },
+            { "purchasing.purchasing_value.overdeliv_tolerance": search },
+            { "purchasing.purchasing_value.min_del_qty_in_percent": search },
+            { "purchasing.purchasing_value.unltd_overdelivery": search },
+            { "purchasing.purchasing_value.acknowledgement_reqd": search },
+            { "purchasing.other_data_manufacturer_data.gr_processing_time": search },
+            { "purchasing.other_data_manufacturer_data.quota_arr_usage": search },
+            { "purchasing.other_data_manufacturer_data.post_to_insp_stock": search },
+            { "purchasing.other_data_manufacturer_data.source_list": search },
+            { "purchasing.other_data_manufacturer_data.critical_part": search },
+            { "purchasing.other_data_manufacturer_data.sched_indicator": search },
+
+            { "foreign_trade_import.header.cas_Number": search },
+            { "foreign_trade_import.header.prodcom_no": search },
+            { "foreign_trade_import.header.control_code": search },
+            { "foreign_trade_import.origin_eu_market_organization_preferences.country_of_origin": search },
+            { "foreign_trade_import.origin_eu_market_organization_preferences.cap_product_list_no": search },
+            { "foreign_trade_import.origin_eu_market_organization_preferences.cap_prod_group": search },
+            { "foreign_trade_import.origin_eu_market_organization_preferences.preference_status": search },
+            { "foreign_trade_import.origin_eu_market_organization_preferences.vendor_decl_status": search },
+            { "foreign_trade_import.origin_eu_market_organization_preferences.region_of_origin": search },
+            { "foreign_trade_import.legal_control.exemption_certificate": search },
+            { "foreign_trade_import.legal_control.iss_date_of_ex_cert": search },
+            { "foreign_trade_import.legal_control.military_goods": search },
+            { "foreign_trade_import.legal_control.exemption_cert_no": search },
+            { "foreign_trade_import.excise_data.chapter_id": search },
+            { "foreign_trade_import.excise_data.no_grs_per_ei": search },
+            { "foreign_trade_import.excise_data.valid_from": search },
+            { "foreign_trade_import.excise_data.currency_key": search },
+            { "foreign_trade_import.excise_data.net_dealer_price": search },
+            { "foreign_trade_import.excise_data.subcontractors": search },
+            { "foreign_trade_import.excise_data.output_matl": search },
+            { "foreign_trade_import.excise_data.assessable_val": search },
+
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = Fixed_asset.STATUS_INACTIVE;
+
+    const results = await Fixed_asset.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
+
 
 exports.create = async (data) => {
     const fixed_asset = await Fixed_asset.create(data);

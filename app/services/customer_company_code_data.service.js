@@ -1,6 +1,88 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const DefaultModel = require('../models/customer_company_code_data.model');
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: DefaultModel.STATUS_ACTIVE };
 
+    if (searchTerm) {
+        const search = new RegExp(options.search, 'i');
+        filters.$or = [
+            { "header.customer_code": search },
+            { "header.company_code": search },
+            { "account_management.accounting_information.recon_account": search },
+            { "account_management.accounting_information.head_office": search },
+            { "account_management.accounting_information.authorization": search },
+            { "account_management.accounting_information.sort_key": search },
+            { "account_management.accounting_information.cash_mgmnt_group": search },
+            { "account_management.accounting_information.value_adjustment": search },
+            { "account_management.interest_calculation.interest_indic": search },
+            { "account_management.interest_calculation.interest_freq": search },
+            { "account_management.interest_calculation.lastkey_date": search },
+            { "account_management.interest_calculation.interest_run": search },
+            { "account_management.reference_data.prev_account_no": search },
+            { "account_management.reference_data.personnel_number": search },
+            { "account_management.reference_data.buying_group": search },
+            { "payment_transactions.payment_data.payment_terms": search },
+            { "payment_transactions.payment_data.charges_payment_terms": search },
+            { "payment_transactions.payment_data.check_paid_time": search },
+            { "payment_transactions.payment_data.tolerance_group": search },
+            { "payment_transactions.payment_data.leave": search },
+            { "payment_transactions.payment_data.pleding_ind": search },
+            { "payment_transactions.payment_data.payment_history": search },
+            { "payment_transactions.auto_payment_transactions.payment_methods": search },
+            { "payment_transactions.auto_payment_transactions.alternate_payee": search },
+            { "payment_transactions.auto_payment_transactions.exch_limit": search },
+            { "payment_transactions.auto_payment_transactions.single_payment": search },
+            { "payment_transactions.auto_payment_transactions.pmnt_adv": search },
+            { "payment_transactions.auto_payment_transactions.payment_block": search },
+            { "payment_transactions.auto_payment_transactions.house_bank": search },
+            { "payment_transactions.auto_payment_transactions.grouping_key": search },
+            { "payment_transactions.auto_payment_transactions.next_payee": search },
+            { "payment_transactions.auto_payment_transactions.lockbox": search },
+            { "payment_transactions.payment_advice.rsn_code": search },
+            { "payment_transactions.payment_advice.selection_rule": search },
+            { "correspondence.dunning_data.dunn_procedure": search },
+            { "correspondence.dunning_data.dunn_recipient": search },
+            { "correspondence.dunning_data.last_dunned_date": search },
+            { "correspondence.dunning_data.dunning_clerk": search },
+            { "correspondence.dunning_data.dunn_block": search },
+            { "correspondence.dunning_data.legal_dunn_procedure": search },
+            { "correspondence.dunning_data.dunn_level": search },
+            { "correspondence.dunning_data.grouping_key": search },
+            { "correspondence.correspondences.acct_clerk": search },
+            { "correspondence.correspondences.acct_customer": search },
+            { "correspondence.correspondences.customer_user": search },
+            { "correspondence.correspondences.act_clk_tel_no": search },
+            { "correspondence.correspondences.clerks_fax": search },
+            { "correspondence.correspondences.clerks_internet": search },
+            { "correspondence.correspondences.acct_memo": search },
+            { "correspondence.correspondences.bank": search },
+            { "correspondence.correspondences.invoice": search },
+            { "correspondence.correspondences.decentralized": search },
+            { "correspondence.payment_notices.customer_with": search },
+            { "correspondence.payment_notices.customer_without": search },
+            { "correspondence.payment_notices.sales": search },
+            { "correspondence.payment_notices.accounting": search },
+            { "correspondence.payment_notices.legal_department": search },
+            { "with_holding_tax.with_tax_information.wth_t_ty": search },
+            { "with_holding_tax.with_tax_information.w_tax_c": search },
+            { "with_holding_tax.with_tax_information.w_tax": search },
+            { "with_holding_tax.with_tax_information.oblig_form": search },
+            { "with_holding_tax.with_tax_information.oblig_to": search },
+            { "with_holding_tax.with_tax_information.w_tax_number": search },
+            { "with_holding_tax.with_tax_information.name": search }
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = DefaultModel.STATUS_INACTIVE;
+
+    const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
 exports.create = async (data) => {
     const defaultVariable = await DefaultModel.create(data);
 

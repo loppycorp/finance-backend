@@ -4,7 +4,51 @@ const posting_keys = require('../services/posting_key.service');
 const invoice_items = require('../services/gl_accounts.service');
 const chequeDetails = require('../services/cheque_lot_reference.service');
 
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: DefaultModel.STATUS_ACTIVE };
 
+    if (searchTerm) {
+        const search = new RegExp(options.search, 'i');
+        filters.$or = [
+            { "header.vendor": search },
+            { "header.customer": search },
+            { "header.document_number": search },
+            { "header.invoice_date": search },
+            { "header.posting_date": search },
+            { "header.document_type": search },
+            { "header.company_code": search },
+            { "header.cross_cc_no": search },
+            { "header.business_place": search },
+            { "header.section": search },
+            { "header.text": search },
+            { "header.sgl_ind": search },
+            { "header.reference": search },
+            { "header.currency": search },
+            { "header.cheque_lot": search },
+            { "header.cheque_number": search },
+            { "header.calculate_tax": search },
+            { "items.items.gl_account": search },
+            { "items.items.sl_account": search },
+            { "items.items.transaction_type": search },
+            { "items.items.amount": search },
+            { "items.items.tax_amount": search },
+            { "items.items.trading_part_ba": search },
+            { "items.items.segment": search },
+            { "items.items.cost_center": search },
+            { "items.items.tax": search }
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = DefaultModel.STATUS_INACTIVE;
+
+    const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
 
 exports.create = async (data, req) => {
 

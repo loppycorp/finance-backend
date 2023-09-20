@@ -67,7 +67,7 @@ exports.search = async (searchTerm, options = {}) => {
     const filters = { status: ProfitCenter.STATUS_ACTIVE };
 
     if (searchTerm) {
-        const search = new RegExp(searchTerm, 'i');
+        const search = new RegExp(options.search, 'i');
         filters.$or = [
             { "_id": search },
             { "header.controlling_area._id": search },

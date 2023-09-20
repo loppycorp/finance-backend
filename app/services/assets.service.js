@@ -21,6 +21,50 @@ exports.get = async (id, options = {}) => {
 
   return this.mapData(dftModel);
 };
+
+exports.search = async (searchTerm, options = {}) => {
+  const filters = { status: ProfitCenter.STATUS_ACTIVE };
+
+  if (searchTerm) {
+    const search = new RegExp(searchTerm, 'i');
+    filters.$or = [
+      { "header.asset_class": search },
+      { "header.company_code": search },
+      { "header.number_of_similar_assets": search },
+      { "header.class": search },
+      { "general.general_data.description": search },
+      { "general.general_data.asset_main_no": search },
+      { "general.general_data.acct_determination": search },
+      { "general.general_data.serial_number": search },
+      { "general.general_data.inventory_number": search },
+      { "general.general_data.quantity": search },
+      { "general.general_data.manage_historically": search },
+      { "general.inventory.last_inventory_on": search },
+      { "general.inventory.inventory_note": search },
+      { "general.inventory.include_asset_in_inventory_list": search },
+      { "general.posting_information.capitalized_on": search },
+      { "general.posting_information.first_acquisition_on": search },
+      { "general.posting_information.acquisition_year": search },
+      { "general.posting_information.deactivation_on": search },
+      { "time_dependent.interval.cost_center": search },
+      { "time_dependent.interval.plant": search },
+      { "time_dependent.interval.location": search },
+      { "time_dependent.interval.room": search },
+      { "time_dependent.interval.shift_factor": search }
+
+    ];
+  }
+
+  if (options.allowed_inactive && options.allowed_inactive == true)
+    filters.status = ProfitCenter.STATUS_INACTIVE;
+
+  const results = await ProfitCenter.aggregate(this.pipeline(filters));
+
+  const mappedResults = results.map(result => this.mapData(result));
+
+  return { data: mappedResults, total: mappedResults.length };
+};
+
 exports.update = async (id, data) => {
   data.date_updated = new Date();
 

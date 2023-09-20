@@ -1,6 +1,82 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Vendor = require('../models/vendor_company_code_data.model');
 
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: Vendor.STATUS_ACTIVE };
+
+    if (searchTerm) {
+        const search = new RegExp(options.search, 'i');
+        filters.$or = [
+            { "header.vendor": search },
+            { "header.company_code": search },
+            { "account_management.accounting_information.recon_account": search },
+            { "account_management.accounting_information.head_office": search },
+            { "account_management.accounting_information.authorization": search },
+            { "account_management.accounting_information.minority_indic": search },
+            { "account_management.accounting_information.sort_key": search },
+            { "account_management.accounting_information.cash_mgmnt_group": search },
+            { "account_management.accounting_information.release_group": search },
+            { "account_management.accounting_information.certification_date": search },
+            { "account_management.interest_calculation.interest_indic": search },
+            { "account_management.interest_calculation.interest_freq": search },
+            { "account_management.interest_calculation.lastkey_date": search },
+            { "account_management.interest_calculation.interest_run": search },
+            { "account_management.reference_data.prev_account_no": search },
+            { "account_management.reference_data.personnel_number": search },
+            { "payment_transactions.payment_data.payment_terms": search },
+            { "payment_transactions.payment_data.chk_cashing_time": search },
+            { "payment_transactions.payment_data.tolerance_groups": search },
+            { "payment_transactions.payment_data.chk_double_inv": search },
+            { "payment_transactions.auto_payment_transactions.payment_methods": search },
+            { "payment_transactions.auto_payment_transactions.alternate_payee": search },
+            { "payment_transactions.auto_payment_transactions.individual_pmnt": search },
+            { "payment_transactions.auto_payment_transactions.exch_limit": search },
+            { "payment_transactions.auto_payment_transactions.pmnt_adv": search },
+            { "payment_transactions.auto_payment_transactions.payment_block": search },
+            { "payment_transactions.auto_payment_transactions.house_bank": search },
+            { "payment_transactions.auto_payment_transactions.grouping_key": search },
+            { "payment_transactions.invoice_verification.tolerance_group": search },
+            { "correspondence.dunning_data.dunn_procedure": search },
+            { "correspondence.dunning_data.dunn_recipient": search },
+            { "correspondence.dunning_data.last_dunned_date": search },
+            { "correspondence.dunning_data.dunning_clerk": search },
+            { "correspondence.dunning_data.dunn_block": search },
+            { "correspondence.dunning_data.legal_dunn_procedure": search },
+            { "correspondence.dunning_data.dunn_level": search },
+            { "correspondence.dunning_data.grouping_key": search },
+            { "correspondence.correspondences.local_process": search },
+            { "correspondence.correspondences.acct_clerk": search },
+            { "correspondence.correspondences.acct_vendor": search },
+            { "correspondence.correspondences.clerk_vendor": search },
+            { "correspondence.correspondences.act_clk_tel_no": search },
+            { "correspondence.correspondences.clerks_fax": search },
+            { "correspondence.correspondences.clerks_internet": search },
+            { "correspondence.correspondences.acct_memo": search },
+            { "with_tax_information.with_tax_information.wth_t_ty": search },
+            { "with_tax_information.with_tax_information.w_tax_c": search },
+            { "with_tax_information.with_tax_information.liable": search },
+            { "with_tax_information.with_tax_information.rec_ty": search },
+            { "with_tax_information.with_tax_information.w_tax_id": search },
+            { "with_tax_information.with_tax_information.exemption_number": search },
+            { "with_tax_information.with_tax_information.exem": search },
+            { "with_tax_information.with_tax_information.exmpt_r": search },
+            { "with_tax_information.with_tax_information.exempt_form": search },
+            { "with_tax_information.with_tax_information.exempt_to": search },
+            { "with_tax_information.with_tax_information.description": search }
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = Vendor.STATUS_INACTIVE;
+
+    const results = await Vendor.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
+};
+
 exports.create = async (data) => {
     const vendor = await Vendor.create(data);
 

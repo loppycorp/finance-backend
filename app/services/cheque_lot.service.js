@@ -11,7 +11,7 @@ const CLRModel = require('../services/cheque_lot_reference.service');
 exports.create = async (data) => {
     const dftModel = await DefaultModel.create(data);
     const { cheque_number_from, cheque_number_to } = data.lot.lot;
-    
+
 
     for (let i = cheque_number_from; i <= cheque_number_to; i++) {
         data["cheque_id"] = dftModel._id;
@@ -19,13 +19,49 @@ exports.create = async (data) => {
         data["cheque_lot"] = data.lot.lot.lot_number;
         createdRows = await CLRModel.create(data);
         console.log(data)
-           
+
     }
 
 
     if (!createdRows) return false;
     return await this.get(dftModel._id);
 
+};
+
+exports.search = async (searchTerm, options = {}) => {
+    const filters = { status: DefaultModel.STATUS_ACTIVE };
+
+    if (searchTerm) {
+        const search = new RegExp(options.search, 'i');
+        filters.$or = [
+            {
+                "header.paying_company_code": search,
+                "header.house_bank": search,
+                "header.gl_account": search,
+
+                "lot.lot_number": search,
+                "lot.cheque_number_from": search,
+                "lot.cheque_number_to": search,
+
+                "control_data.next_lot_number": search,
+                "control_data.pmnt_meths_list": search,
+                "control_data.non_sequential": search,
+
+                "additional_information.short_info": search,
+                "additional_information.purchase_date": search
+            }
+
+        ];
+    }
+
+    if (options.allowed_inactive && options.allowed_inactive == true)
+        filters.status = DefaultModel.STATUS_INACTIVE;
+
+    const results = await DefaultModel.aggregate(this.pipeline(filters));
+
+    const mappedResults = results.map(result => this.mapData(result));
+
+    return { data: mappedResults, total: mappedResults.length };
 };
 
 
