@@ -1,21 +1,49 @@
-require('dotenv').config();
-const cstCtr = require('../controllers/cost_center.controller');
-const auth = require('../middlewares/authorization.middleware');
-const pagination = require('../middlewares/pagination.middleware');
+require("dotenv").config();
+const cstCtr = require("../controllers/cost_center.controller");
+const auth = require("../middlewares/authorization.middleware");
+const pagination = require("../middlewares/pagination.middleware");
 
 module.exports = (app) => {
-    // Create new cost centers record
-    app.post(process.env.BASE_URL + '/cost-centers', auth.validateToken, cstCtr.create);
+  // Create new cost centers record
+  app.post(
+    process.env.BASE_URL + "/cost-centers",
+    auth.validateToken,
+    cstCtr.create
+  );
 
-    // List available cost centers records
-    app.get(process.env.BASE_URL + '/cost-centers', auth.validateToken, pagination.setAttributes, cstCtr.search);
+  // List available cost centers records
+  app.get(
+    process.env.BASE_URL + "/cost-centers",
+    auth.validateToken,
+    pagination.setAttributes,
+    cstCtr.search
+  );
 
-    // View cost centers record
-    app.get(process.env.BASE_URL + '/cost-centers/:id', auth.validateToken, cstCtr.read);
+  // View cost centers record
+  app.get(
+    process.env.BASE_URL + "/cost-centers/:id",
+    auth.validateToken,
+    cstCtr.read
+  );
 
-    // Edit cost centers record
-    app.put(process.env.BASE_URL + '/cost-centers/:id', auth.validateToken, cstCtr.update);
+  //search
+  app.get(
+    process.env.BASE_URL + "/cost-centers-search",
+    auth.validateToken,
+    pagination.setAttributes,
+    cstCtr.defaultsearch
+  );
+  // Edit cost centers record
+  app.put(
+    process.env.BASE_URL + "/cost-centers/:id",
+    auth.validateToken,
+    cstCtr.update
+  );
 
-    // Delete cost centers record
-    app.delete(process.env.BASE_URL + '/cost-centers/:id', auth.validateToken, cstCtr.delete);
-}
+  // Delete cost centers record
+  app.delete(
+    process.env.BASE_URL + "/cost-centers/:id",
+    auth.validateToken,
+    cstCtr.delete
+  );
+};

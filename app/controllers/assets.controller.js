@@ -5,7 +5,44 @@ const { paramsSchema } = require("../helpers/validations/common.validation");
 const DefaulService = require("../services/assets.service");
 const company_code_service = require("../services/company.service");
 const cost_center_service = require("../services/cost_center.service");
-const { createSchema, updateSchema, } = require("../helpers/validations/assets.validation");
+const {
+  createSchema,
+  updateSchema,
+} = require("../helpers/validations/assets.validation");
+
+exports.defaultsearch = async (req, res) => {
+  try {
+    logger.info(req.path);
+    const query = req.query;
+    const pagination = query.pagination;
+    const { pageNum, pageLimit, sortOrder, sortBy } = pagination;
+
+    const searchTerm = decodeURIComponent(query);
+
+    const { data, total } = await DefaulService.search(searchTerm, query);
+
+    return res.status(200).send({
+      status: "success",
+      message: lang.t("suc.search"),
+      data: data,
+      pagination: {
+        page_num: pageNum,
+        page_limit: pageLimit,
+        page_count: data.length,
+        sort_order: sortOrder,
+        sort_by: sortBy,
+        total_result: total,
+      },
+    });
+  } catch (err) {
+    logger.error(req.path);
+    logger.error(err);
+    return res.status(500).send({
+      status: "error",
+      message: utilities.getMessage(err),
+    });
+  }
+};
 
 exports.create = async (req, res) => {
   try {
@@ -20,22 +57,25 @@ exports.create = async (req, res) => {
         message: lang.t("global.err.validation_failed"),
         error: validationBody.error.details,
       });
-
     }
     // validate company_code
-    const company_code = await company_code_service.get(body.header.company_code);
+    const company_code = await company_code_service.get(
+      body.header.company_code
+    );
     if (!company_code) {
       return res.status(200).send({
         status: false,
-        message: lang.t('company_code.err.not_exists')
+        message: lang.t("company_code.err.not_exists"),
       });
     }
     // validate cost_center
-    const cost_center = await cost_center_service.get(body.time_dependent.interval.cost_center);
+    const cost_center = await cost_center_service.get(
+      body.time_dependent.interval.cost_center
+    );
     if (!cost_center) {
       return res.status(200).send({
         status: false,
-        message: lang.t('cost_center.err.not_exists')
+        message: lang.t("cost_center.err.not_exists"),
       });
     }
     const defaulService = await DefaulService.create(body);
@@ -55,7 +95,6 @@ exports.create = async (req, res) => {
     });
   }
 };
-
 
 exports.search = async (req, res) => {
   try {

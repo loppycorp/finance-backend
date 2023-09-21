@@ -10,6 +10,13 @@ module.exports = (app) => {
     auth.validateToken,
     defaultController.create
   );
+  //search
+  app.get(
+    process.env.BASE_URL + "/sample-document-search",
+    auth.validateToken,
+    pagination.setAttributes,
+    defaultController.defaultsearch
+  );
   // List available accrual_deferral_document
   app.get(
     process.env.BASE_URL + "/sample-document",

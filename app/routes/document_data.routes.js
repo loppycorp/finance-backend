@@ -5,51 +5,57 @@ const pagination = require("../middlewares/pagination.middleware");
 const auth = require("../middlewares/authorization.middleware");
 
 module.exports = (app) => {
-    app.post(
-        process.env.BASE_URL + '/document-data',
-        auth.validateToken,
-        defaultController.create
-    );
+  app.post(
+    process.env.BASE_URL + "/document-data",
+    auth.validateToken,
+    defaultController.create
+  );
 
-    app.get(
-        process.env.BASE_URL + '/document-data/:id',
-        auth.validateToken,
-        defaultController.read
-    );
+  app.get(
+    process.env.BASE_URL + "/document-data/:id",
+    auth.validateToken,
+    defaultController.read
+  );
 
-    app.get(
-        process.env.BASE_URL + '/document-data/:id/reports',
-        defaultController.reports
-    );
+  app.get(
+    process.env.BASE_URL + "/document-data/:id/reports",
+    defaultController.reports
+  );
 
-    app.put(
-        process.env.BASE_URL + '/document-data/:id',
-        auth.validateToken,
-        defaultController.update
-    );
+  app.put(
+    process.env.BASE_URL + "/document-data/:id",
+    auth.validateToken,
+    defaultController.update
+  );
 
-    app.delete(
-        process.env.BASE_URL + '/document-data/:id',
-        auth.validateToken,
-        defaultController.delete
-    );
+  app.delete(
+    process.env.BASE_URL + "/document-data/:id",
+    auth.validateToken,
+    defaultController.delete
+  );
+  //search
+  app.get(
+    process.env.BASE_URL + "/document-data-search",
+    auth.validateToken,
+    pagination.setAttributes,
+    defaultController.defaultsearch
+  );
+  app.get(
+    process.env.BASE_URL + "/document-data",
+    auth.validateToken,
+    pagination.setAttributes,
+    defaultController.search
+  );
 
-    app.get(
-        process.env.BASE_URL + '/document-data',
-        auth.validateToken,
-        pagination.setAttributes,
-        defaultController.search
-    );
+  app.put(
+    process.env.BASE_URL + "/document-data/:id/posting",
+    auth.validateToken,
+    defaultController.simulate
+  );
 
-    app.put(
-        process.env.BASE_URL + '/document-data/:id/posting',
-        auth.validateToken,
-        defaultController.simulate
-    );
-
-    app.put(
-        process.env.BASE_URL + '/document-data/:id/status',
-        auth.validateToken,
-        defaultController.status
-    );
+  app.put(
+    process.env.BASE_URL + "/document-data/:id/status",
+    auth.validateToken,
+    defaultController.status
+  );
 };

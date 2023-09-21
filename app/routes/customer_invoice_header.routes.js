@@ -12,11 +12,12 @@ module.exports = (app) => {
   );
   // List available customer-invoice-header
   app.get(
-    process.env.BASE_URL + "/customer-invoice-header",
+    process.env.BASE_URL + "/customer-invoice-header-search",
     auth.validateToken,
     pagination.setAttributes,
     defaultController.search
   );
+
   // Edit customer-invoice-header
   app.put(
     process.env.BASE_URL + "/customer-invoice-header/:id",

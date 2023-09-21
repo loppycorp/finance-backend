@@ -14,7 +14,7 @@ exports.get = async (id, options = {}) => {
   if (options.allowed_inactive && options.allowed_inactive == true)
     filters.status = DefaultModel.STATUS_INACTIVE;
 
-  const results = await DefaultModel.aggregate(this.pipeline(filters))
+  const results = await DefaultModel.aggregate(this.pipeline(filters));
   const dftModel = results[0];
 
   if (!dftModel) return null;
@@ -23,10 +23,10 @@ exports.get = async (id, options = {}) => {
 };
 
 exports.search = async (searchTerm, options = {}) => {
-  const filters = { status: ProfitCenter.STATUS_ACTIVE };
+  const filters = { status: DefaultModel.STATUS_ACTIVE };
 
   if (searchTerm) {
-    const search = new RegExp(searchTerm, 'i');
+    const search = new RegExp(options.search, "i");
     filters.$or = [
       { "header.asset_class": search },
       { "header.company_code": search },
@@ -50,17 +50,16 @@ exports.search = async (searchTerm, options = {}) => {
       { "time_dependent.interval.plant": search },
       { "time_dependent.interval.location": search },
       { "time_dependent.interval.room": search },
-      { "time_dependent.interval.shift_factor": search }
-
+      { "time_dependent.interval.shift_factor": search },
     ];
   }
 
   if (options.allowed_inactive && options.allowed_inactive == true)
-    filters.status = ProfitCenter.STATUS_INACTIVE;
+    filters.status = DefaultModel.STATUS_INACTIVE;
 
-  const results = await ProfitCenter.aggregate(this.pipeline(filters));
+  const results = awaitDefaultModel.aggregate(this.pipeline(filters));
 
-  const mappedResults = results.map(result => this.mapData(result));
+  const mappedResults = results.map((result) => this.mapData(result));
 
   return { data: mappedResults, total: mappedResults.length };
 };
@@ -109,10 +108,12 @@ exports.getAll = async (query) => {
 };
 
 exports.getByCode = async (code, existing_id) => {
-  const options = { "header.cost_element_code": code, status: DefaultModel.STATUS_ACTIVE, };
+  const options = {
+    "header.cost_element_code": code,
+    status: DefaultModel.STATUS_ACTIVE,
+  };
 
-  if (existing_id && existing_id != "")
-    options["_id"] = { $ne: existing_id };
+  if (existing_id && existing_id != "") options["_id"] = { $ne: existing_id };
 
   return (await DefaultModel.countDocuments(options)) > 0;
 };
@@ -121,31 +122,29 @@ exports.pipeline = (filters) => {
   return [
     {
       $lookup: {
-        from: 'companies',
-        localField: 'header.company_code',
-        foreignField: '_id',
-        as: 'company_code',
+        from: "companies",
+        localField: "header.company_code",
+        foreignField: "_id",
+        as: "company_code",
       },
     },
     // if the id is required
-    { $unwind: '$company_code', },
+    { $unwind: "$company_code" },
     {
       $lookup: {
-        from: 'cost_centers',
-        localField: 'time_dependent.interval.cost_center',
-        foreignField: '_id',
-        as: 'cost_center',
+        from: "cost_centers",
+        localField: "time_dependent.interval.cost_center",
+        foreignField: "_id",
+        as: "cost_center",
       },
     },
     // if the id is optional or nullable
-    { $unwind: '$cost_center', },
+    { $unwind: "$cost_center" },
 
     { $match: filters },
   ];
 };
 exports.mapData = (data) => {
-
-
   return {
     _id: data._id,
     header: {
@@ -153,7 +152,7 @@ exports.mapData = (data) => {
       company_code: {
         _id: data.company_code._id,
         code: data.company_code.code,
-        description: data.company_code.desc
+        description: data.company_code.desc,
       },
       number_of_similar_assets: data.header.number_of_similar_assets,
       class: data.header.class,
@@ -171,11 +170,13 @@ exports.mapData = (data) => {
       inventory: {
         last_inventory_on: data.general.inventory.last_inventory_on,
         inventory_note: data.general.inventory.inventory_note,
-        include_asset_in_inventory_list: data.general.inventory.include_asset_in_inventory_list,
+        include_asset_in_inventory_list:
+          data.general.inventory.include_asset_in_inventory_list,
       },
       posting_information: {
         capitalized_on: data.general.posting_information.capitalized_on,
-        first_acquisition_on: data.general.posting_information.first_acquisition_on,
+        first_acquisition_on:
+          data.general.posting_information.first_acquisition_on,
         acquisition_year: data.general.posting_information.acquisition_year,
         deactivation_on: data.general.posting_information.deactivation_on,
       },
@@ -186,7 +187,7 @@ exports.mapData = (data) => {
           _id: data.cost_center._id,
           code: data.cost_center.cost_center_code,
           name: data.cost_center.name,
-          description: data.cost_center.description
+          description: data.cost_center.description,
         },
         plant: data.time_dependent.interval.plant,
         location: data.time_dependent.interval.location,
@@ -195,7 +196,7 @@ exports.mapData = (data) => {
       },
     },
     status: data.status,
-    date_created: data.date_created.toISOString().split('T')[0],
-    date_updated: data.date_updated.toISOString().split('T')[0]
+    date_created: data.date_created.toISOString().split("T")[0],
+    date_updated: data.date_updated.toISOString().split("T")[0],
   };
 };

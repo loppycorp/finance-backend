@@ -17,6 +17,7 @@ module.exports = (app) => {
     pagination.setAttributes,
     defaultController.search
   );
+
   // Edit accrual_deferral_document
   app.put(
     process.env.BASE_URL + "/posting-document/:id",
