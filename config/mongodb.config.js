@@ -10,13 +10,13 @@ const MONGO_PORT = process.env.MONGO_DB_PORT;
 const MONGO_DB = process.env.MONGO_DB_NAME;
 const MONGO_DB_AUTH_DB_NAME = process.env.MONGO_DB_AUTH_DB_NAME;
 
-// let url = `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}`;
-let url = `mongodb+srv://${MONGO_HOSTNAME}:${MONGO_PASSWORD}@${MONGO_DB}.t9kzhow.mongodb.net/AsiaFiCo?retryWrites=true&w=majority`;
+let url = `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}`;
 
 
-// if (MONGO_USERNAME != '' && MONGO_PASSWORD != '') {
-//     url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=${MONGO_DB_AUTH_DB_NAME}`;
-// }
+if (MONGO_USERNAME != '' && MONGO_PASSWORD != '') {
+    let url = `mongodb+srv://${MONGO_HOSTNAME}:${MONGO_PASSWORD}@${MONGO_DB}.t9kzhow.mongodb.net/AsiaFiCo?retryWrites=true&w=majority`;
+    // url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=${MONGO_DB_AUTH_DB_NAME}`;
+}
 
 mongoose.set("strictQuery", false);
 mongoose.connect(url)
